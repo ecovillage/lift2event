@@ -1,0 +1,182 @@
+Ich will mit dir eine Webanwendung programmieren, die es Seminargästen ermöglicht, sich bei der Anreise zum Seminar zu Fahrgemeinschaften zusammenzuschließen. Teilnehmer mit Autos können Mitfahrangebote mit ihren Kontaktdaten einstellen, Teilnehmer ohne Autos können Mitfahrgesuche mit ihren Kontaktdaten einstellen. Auf diese Weise können sich beide Gruppen finden und Fahrgemeinschaften vereinbaren, z.B. über Telefon, Messenger oder Email.
+
+TECHNISCHE VORGABEN
+
+Du schreibst eine Webanwendung mit dem Namen "Lift2Event".
+Laravel im Backend
+Vue.js im Frontend
+Dockerisiert mit Apache-Server, MariaDB, Vue.js Containern, aber nur für das Entwickeln. Produktiv soll es Docker nicht brauchen.
+Datenbank: mindestens MariaDB und PostgreSQL sollen unterstützt werden.
+Ansible-Skript, das die Anwendung auf einen typischen LAMP-Webspace mit SSH-Zugang deployt, indem es vom Webserver aus den master-Branch git-pullt und Migrationen laufen lässt. Server-Pfad will ich in einer Variablen selbst anpassen.
+Leg die DB-Zugangsdaten und andere relevanten Einstellungen in einer config-Datei ab, die nicht versioniert wird. Stattdessen soll es eine config.php.sample geben, die ein Format-Beispiel enthält. Alles andere unter Versionskontrolle mit Git, Hauptbranch: master.
+Umfassende Integrations-Testsuite für die Funktionen, die vom Nutzer genutzt werden.
+Das Frontend soll komplett mit I18n übersetzt sein und auf Deutsch, Englisch, Französisch und Chinesisch verfügbar.
+Es gibt ein Logo für Lift2Event, verwende es als Favicon und oben links in allen Webseiten
+
+DB-Model:
+event: Name, Beginn (mit Uhrzeit), Ende (mit Uhrzeit), Fremdschlüssel zu "location", Fremdschlüssel zu anlegendem "user" ("created_by" oder "created_by_id")
+user: Name, Email, Passwort, bestätigt-Status (Boolean), bevorzugte Sprache
+language: Name der Sprache
+ride: Fremdschlüssel zu "event", Fremdschlüssel zu anlegendem "user", beginn, ende, Fremdschlüssel zu "location"
+location: adresse
+
+Es gibt nur im eingeloggten Bereich ein Menü. Alle vom Menü aus erreichbaren Seiten haben eine URL im Namensraum /admin. Zum Beispiel findet sich die Seite »Nutzerverwaltung« unter /admin/users
+Das Design der Seite ist mobile-first.
+Es gibt Mitfahr-Gesuche und Mitfahr-Angebote. Beide bezeichne ich im folgenden als "Mitfahrt(en)"
+Mitfahr-Gesuche haben eine Farbe (orange), die mit einer CSS-Variablen für die ganze Seite eingestellt werden kann. Mitfahr-Angebote auch (grün).
+
+UI-BESCHREIBUNGEN
+
+Im Backend:
+UI-Beschreibung für die URL: /login
+Die Seite enthält ein Login-Formular mit
+- Emailadresse
+- Passwort
+- Passwort-vergessen-Link
+- Submit-button (führt zu /admin)
+- Registrieren-Link
+
+Menü auf allen Seiten im eingeloggten Bereich: Für Admins enthält es die Einträge "Nutzerverwaltung", "Veranstaltungen" und "Mein Profil", für Nicht-Admins entfällt der Eintrag "Nutzer", und der Eintrag »Veranstaltungen« heißt »Meine Veranstaltungen«.
+
+UI-Beschreibung der Seite "Veranstaltungen" (erreichbar unter dem Menüpunkt "Veranstaltungen"):
+von oben nach unten:
+Rechts oben: Knopf "Neue Veranstaltung anlegen", Link führt zur Anlege-Seite einer neuen Veranstaltung
+Liste mit allen Veranstaltungen, zeitlich sortiert (neuste zuerst), die der Nutzer schon angelegt hat; in der Liste zu sehen sind die Attribute
+Name
+Beginn (mit Uhrzeit)
+Ende (mit Uhrzeit)
+Ort aus dem Feld "Adresse"
+Anzahl der eingetragenen Mitfahrgesuche und Mitfahrangebote
+
+UI-Beschreibung der Neu-erstellen- bzw. Bearbeiten-Seite einer Veranstaltung (RESTful URLs in der Convention von Vue.js):
+Zwei Spalten in der Desktop-Ansicht:
+Rechts: Landkarte, der Veranstaltungsport ist als ein gelbes Stern-Emoji eingezeichnet. Im Neu-erstellen-Modus: Karte zeigt Europa und Steuerelemente Zoom in und out. Im Bearbeitung-Modus: Karte mit allen eingetragenen Routen mit einem Pin beim Abfahrtsort, plus: den Seminarort. Angebote sind grün, Gesuche sind orange, sowohl Routen als auch Pins.
+Links (20% der Breite, mindestens 200px): enthält ein simples Formular zum Eingeben der Attribute des event-Models, dabei ist Adresse ein Feld mit live-Vorschlägen aus einer Geo-Datenbank. Bei Mehrdeutigkeit soll der Nutzer eine der Möglichkeiten auswählen.
+(mobile Ansicht: horizontale Teilung; erst die Karte (obere Hälfte des Bildschirms), dann die Liste mit Mitfahrten)
+
+UI-Beschreibung der Seite "Nutzerverwaltung" (erreichbar unter dem Menüpunkt "Nutzerverwaltung"):
+Eine Liste aller Nutzer mit folgenden Spalten:
+Name, Email, Anzahl der angelegten Veranstaltungen, bestätigt-Status mit Knopf zum Bestätigt-Status toggeln, Knopf zum Löschen
+
+UI-Beschreibung der Seite "Mein Profil":
+Eine Liste mit untereinander Name, Email, Passwort, dahinter jeweils ein Icon zum Bearbeiten (Beispieleintrag: Name: Max Muster). Darunter bevorzugte Sprache des eingeloggten Nutzers in einem Dropdown
+
+
+Im Frontend:
+UI-Beschreibung der Startseite:
+Überschrift (klein): Mitfahrbörse zur Veranstaltung
+Überschrift (groß): [Veranstaltungsname]
+Darunter Box mit:
+- Veranstaltungszeiten im langen Format (mit Uhrzeit)
+- Adresse
+
+Darunter: Eine Zeile mit den Filtermöglichkeiten »Angebote«, »Gesuche« und »Alle« [»Alle« heißt: zeig sowohl Gesuche als auch Angebote an]; neben dem Filter eine Datumsauswahl, mit dem nur Tage ausgewählt werden können, an denen jemand fährt oder eine Mitfahrt sucht; rechts davon ein Knopf: +Eintrag erstellen
+
+Darunter zweigeteilte Seite in der Desktop-Ansicht:
+Rechts: Karte mit allen eingetragenen Routen mit einem Pin beim Abfahrtsort. Der Veranstaltungsport selbst ist ein gelber Stern. Angebote sind grün, Gesuche sind orange, sowohl Routen als auch Pins. Steuerelemente: Zoom in und out 
+Links (20% der Breite, mindestens 200px): Vertikal gestapelte Kacheln mit allen Mitfahrgesuchen und -angeboten, die im Kartenausschnitt sichtbar sind, eine Kachel pro Listeneintrag. Dezent orange oder grün eingefärbt je nachdem, ob es ein Gesuch oder Angebot ist. Information in der Kachel: 
+    - Angebot/Gesuch
+    - Abfahrts- bzw. Zielort
+    - optional, falls gegeben: Info, dass es sich nur um eine Hin- oder Rückfahrt handelt
+    - Wenn Hinfahrtsdatum dem Veranstaltungsstartdatum entspricht: nur die Uhrzeit der Hinfahrt.
+    - Wenn Hinfahrtsdatum nicht dem Veranstaltungsstartdatum entspricht: Datum und Uhrzeit der Hinfahrt, mit einem Warndreieck versehen und der Schrift "N Tage vor/nach Veranstaltungsbeginn"
+    - Wenn Rückfahrtsdatum nicht dem Veranstaltungsenddatum entspricht: Datum und Uhrzeit der Rückfahrt, mit einem Warndreieck versehen und der Schrift "N Tage vor/nach Veranstaltungsende"
+(mobile Ansicht: horizontale Teilung; erst die Karte (obere Hälfte des Bildschirms), dann die Liste mit Mitfahrten)
+
+UI-Beschreibung Mitfahrt-Popup (bei Klick auf eine Mitfahrt-kachel im Frontend):
+Oben: in einer Reihe:
+    - Badge mit Menschen-icon und daneben die Anzahl der suchenden Menschen bzw. der angebotenen Plätze, in den jeweiligen Farben orange und grün.
+    - Bearbeiten-Icon
+    - Löschen-Icon
+darunter: Info ob es eine Hin- oder Rückfahrt oder beides ist
+in der nächsten Reihe: Datum und Uhrzeit mit jeweiligen Icons
+darunter: Wenn Hinfahrt mit angeboten wird, dann Label "Abfahrtsort: ". Wenn nur Rückfahrt angeboten wird, dann Label "Zielort nach der Veranstaltung: " mit der entsprechenden Angabe.
+darunter: Info aus der Text-Area im Erstell-Formular
+darunter: Überschrift "Kontakt"
+darunter: Box mit Email und Telefonnummer, jeweils mit Icon
+darunter: Knöpfe zum Kontaktieren über einen Messenger
+
+Fußbereich der Startseite:
+- Impressum
+- Github-Link
+- Benutzerdefinierte Links, die in der Konfig-Datei angepasst werden können.
+
+UI-Beschreibung "Mitfahrt-Erstellen-Popup":
+Überschrift: Eintrag erstellen
+Folgende Form-Elemente nacheinander:
+Radio-Knöpfe, nicht-optional (Knöpfe nebeneinander):
+- Label: Was möchtest du eintragen?
+- Knopf 1: Ich *biete* eine Mitfahrgelegenheit.
+- Knopf 2: Ich *suche* eine Mitfahrgelegenheit.
+
+Radio-Knöpfe, nicht-optional (Knöpfe untereinander):
+- Label: Es geht um eine Mitfahrgelegenheit für …
+- Knopf 1: … Hin- und Rückfahrt
+- Knopf 2: … nur Hinfahrt
+- Knopf 3: … nur Rückfahrt
+
+Text-Feld, nicht-optional: Name
+Text-Feld, optional: Email
+Text-Feld, optional: Telefonnummer
+
+Checkboxen, nicht optional:
+- Label: Wie möchtest du kontaktiert werden?
+- Checkbox: Signal
+- Checkbox: Telegram
+- Checkbox: WhatsApp
+- Checkbox: E-Mail
+- Checkbox: SMS
+- Checkbox: Anruf
+
+Überschrift: "Deine Route"
+Text-Feld, nicht-optional: Wenn Hinfahrt mit angeboten wird, dann Label: "Dein Abfahrtsort". Wenn nur Rückfahrt angeboten wird, dann Label: "Dein Zielort nach der Veranstaltung"
+
+Datums-Feld mit Datepicker, voreingestellt ist das Startdatum der Veranstaltung (wird nur angezeigt, wenn Hinfahrt im ersten Form-Element weiter oben mit angeboten/gesucht wurde)
+Label: "Hinfahrt:"
+Label 2, unter dem Datumsfeld: Am Tag des Veranstaltungsbeginns
+Neben dem Datums-Feld: Zeit-Feld, mit Time-Picker, nicht-optional, Placeholder: --:--
+Darunter: Pfeil-Knöpfe nebeneinander, einer nach rechts und einer nach links, beschriftet mit: "1 Tag vor" und "1 Tag zurück"
+
+Datums-Feld mit Datepicker, voreingestellt ist das Enddatum der Veranstaltung (wird nur angezeigt, wenn Rückfahrt im ersten Form-Element weiter oben mit angeboten/gesucht wurde)
+Label: "Rückfahrt:" 
+Label 2, unter dem Datumsfeld: Am letzten Veranstaltungstag
+Neben dem Datums-Feld: Zeit-Feld, mit Time-Picker, optional, Placeholder: End-Uhrzeit der Veranstaltung
+Darunter: Pfeil-Knöpfe nebeneinander, einer nach rechts und einer nach links, beschriftet mit: "1 Tag vor" und "1 Tag zurück"
+
+Zahl-Feld mit Minus-Knopf links und Plus-Knopf rechts davon
+Label bei Mitfahrangeboten: Verfügbare Plätze
+Label bei Mitfahrgesuchen: Benötigte Plätze
+
+Textarea
+Label: Infos zu deiner Fahrt
+Placeholder: z.B. Infos zur Route, besondere Wünsche etc.
+
+Darunter in einer Reihe ein transparenter Abbrechen-Knopf und rechts davon ein grüner "Eintrag erstellen!"-Knopf
+
+USER STORIES
+Als Admin…
+… lande ich nach dem Login in der Nutzerverwaltung
+… kann ich alles tun, was ein normaler Nutzer auch kann.
+
+Als normaler Nutzer…
+… lande ich nach dem Login auf der Seite "Veranstaltungen"
+… kann ich eine Veranstaltung bearbeiten, indem ich in der Liste darauf klicke.
+Rechts vom Eingabeformular: eine Karte von Deutschland. Wenn der Nutzer eine Adresse eingibt, wird auf der Karte eine entsprechende Pin-Nadel gesetzt.
+
+Als Besucher (= nicht eingeloggter Nutzer) …
+… kann ich die Startseite besuchen, um Mitfahrten einzusehen oder einzustellen.
+… sehe ich sofort nach Aufruf der Startseite auf der Karte, wo die Veranstaltung ist und von wo aus Mitfahr-Routen dort hinführen, um schon einmal einen Überblick zu erhalten.
+… kann ich mit den Zoom-Steuerelementen und Ziehen bzw. Skrollen mit der Maus den Ausschnitt der Karte ändern, ähnlich wie bei Google Maps, weil ich das gewohnt bin.
+… sehe ich in der Mitfahrten-Liste links von der Karte nur die Mitfahrten, die im Kartenausschnitt zu sehen sind.
+… passen sich bei einer Veränderung der Filter sofort Liste und Kartenausschnitt an den Filter an, damit ich sofort ein visuelles Feedback habe.
+… kann ich auf eine Mitfahrt-Kachel klicken und sehe alle Daten zu dieser Mitfahrt in einem Popup.
+… kann ich in einem Mitfahrt-Popup auf eine Kontaktmöglichkeit klicken, und es öffnet sich je nach Kontaktmöglichkeit: Mein Emailprogramm oder ein Messenger oder eine Anruf-App (mobil und Desktop).
+… kann ich eine neue Mitfahrt erstellen, indem ich auf "+ Eintrag erstellen" klicke, wobei sich ein Mitfahrt-Erstellen-Popup öffnet.
+… bekomme ich eine Fehlermeldung beim Klick auf "Eintragen", wenn Veranstaltungsort und mein Heimat-Adresse in verschiedenen Ländern liegen, meine Telefonnummer aber nicht mit einem Plus-Zeichen beginnt, um Verwirrung darüber zu vermeiden, in welchem Land mein Telefon registriert ist.
+… bekomme ich eine Fehlermeldung beim Klick auf "Eintragen", wenn ich weder Emailadresse noch Händinummer angegeben habe, damit Mitfahrer mich kontaktieren können und Lift2Event eine Bestätigungsnachricht an mich schicken kann.
+… kann ich beim Erstellen einer Mitfahrt auf die Pfeil-Knöpfe unter dem Datum klicken und dabei das Datumsfeld um einen Tag vor- oder zurück stellen.
+… kann ich beim Erstellen einer Mitfahrt auf die Pfeil-Knöpfe unter dem Datum klicken und dabei sehen, wie sich Label 2 wie folgt verändert:
+    Hinfahrt-Label-2: Aus "Am Tag des Veranstaltungsbeginn" wird "N Tage vor Veranstaltungsbeginn" bzw. "N Tage nach Veranstaltungsbeginn", wobei N die Anzahl an Tagen ist.
+    Rückfahrt-Label-2: Aus "Am letzten Veranstaltungstag" wird "N Tage vor Veranstaltungsende" bzw. "N Tage nach Veranstaltungsende", wobei N die Anzahl an Tagen ist.
+… kann ich mit den Plus- und Minus-Knöpfen des Feldes "Verfügbare Plätze" die Zahl im Feld erhöhen und senken, aber voreingestellter Wert und Minimum ist 1.
+
