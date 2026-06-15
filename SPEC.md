@@ -30,8 +30,8 @@ Veranstaltung hat eine eigene öffentliche Mitfahrbörsen-Seite mit eigener URL.
   SSH-Zugang; pullt vom Webserver aus den `master`-Branch und führt
   Migrationen aus. Der Server-Pfad ist als Variable konfigurierbar.
 - **Konfiguration**: `config.php` enthält DB-Zugangsdaten, SMTP-Einstellungen
-  (für Passwort-Reset- und Bestätigungsmails), Geocoding-/Karten-Konfiguration
-  und benutzerdefinierte Footer-Links. Sie wird **nicht versioniert**.
+  (für Passwort-Reset- und Bestätigungsmails) und Geocoding-/Karten-Konfiguration.
+  Sie wird **nicht versioniert**.
   `config.php.sample` dient als Format-Vorlage. Alles andere ist unter Git
   versioniert.
 - **Git**: Hauptbranch `master`.
@@ -61,6 +61,7 @@ Veranstaltung hat eine eigene öffentliche Mitfahrbörsen-Seite mit eigener URL.
 | end_at | datetime | Ende (Datum + Uhrzeit) |
 | location_id | FK → location | Veranstaltungsort |
 | created_by_id | FK → user | Ersteller |
+| slug | string | a 64 bit hash to be used in URL to event, automatisch  beim Anlegen erstellt und nicht vom Nutzer änderbar |
 
 **Öffentliche Sichtbarkeit**: Die Mitfahrbörse eines Events ist für Besucher nur
 erreichbar, wenn `created_by.bestaetigt == true` (Admins gelten implizit als
@@ -76,13 +77,13 @@ unabhängig davon.
 | email | string, unique | |
 | password | hash | |
 | is_admin | boolean, default false | Im initial-prompt nicht explizit gelistet, aber für die Admin/Nutzer-Unterscheidung notwendig (ergänzt) |
-| bestaetigt | boolean, default false | Admin-Freischaltung, siehe Workflow unten |
+| approved | boolean, default false | Admin-Freischaltung, siehe Workflow unten |
 | preferred_language | enum('de','en','fr','zh'), default 'de' | ersetzt die ursprünglich vorgesehene `language`-Tabelle |
 
-**bestaetigt-Workflow**: Login ist auch ohne Bestätigung möglich. Ein
+**approved-Workflow**: Login ist auch ohne Bestätigung möglich. Ein
 unbestätigter Nutzer kann sich einloggen und Veranstaltungen anlegen/bearbeiten,
 sieht diese aber nur im eingeloggten Bereich. Erst nach Admin-Freischaltung
-(`bestaetigt = true`, Toggle in der Nutzerverwaltung) werden die
+(`approved = true`, Toggle in der Nutzerverwaltung) werden die
 Veranstaltungen dieses Nutzers öffentlich (für Besucher) erreichbar.
 
 ### `location`
@@ -105,19 +106,19 @@ UI-Beschreibungen erfordern deutlich mehr Felder, die hier ergänzt sind.
 |---|---|---|
 | id | PK | |
 | event_id | FK → event | |
-| user_id | FK → user, nullable | gesetzt, wenn beim Anlegen eingeloggt; sonst `null` (anonymer Besucher) |
+| user_id | FK → user | anlegender Nutzer, muss zum Anlegen eingeloggt sein |
 | location_id | FK → location | Heimat-/Routenort (Abfahrtsort bei Hinfahrt bzw. Zielort bei Rückfahrt – derselbe Ort für beide Richtungen) |
 | type | enum('offer','request') | Angebot oder Gesuch |
-| direction | enum('both','outbound','return') | Hin+Rück / nur Hin / nur Rück |
-| outbound_at | datetime, nullable | Datum+Uhrzeit Hinfahrt (gesetzt, wenn `direction` ∈ {both, outbound}) |
-| return_at | datetime, nullable | Datum+Uhrzeit Rückfahrt (gesetzt, wenn `direction` ∈ {both, return}) |
+| direction | enum('both-ways','outbound-only','return-only') | Hin+Rück / nur Hin / nur Rück |
+| outbound_at | datetime, nullable | Datum+Uhrzeit Hinfahrt (gesetzt, wenn `direction` ∈ {both-ways, outbound-only}) |
+| return_at | datetime, nullable | Datum+Uhrzeit Rückfahrt (gesetzt, wenn `direction` ∈ {both-ways, return-only}) |
 | seats | integer, default 1, min 1 | "Verfügbare Plätze" (offer) bzw. "Benötigte Plätze" (request) |
 | name | string | |
-| email | string, nullable | mind. eines von `email`/`phone` ist erforderlich |
+| email | string | |
 | phone | string, nullable | inkl. Landesvorwahl mit `+`, falls Event-Land ≠ Heimat-Land |
 | contact_methods | set/JSON | Teilmenge von {signal, telegram, whatsapp, email, sms, call}; mindestens 1 Eintrag erforderlich |
 | info | text, nullable | Freitext "Infos zu deiner Fahrt" |
-| edit_token | string, unique, nullable | Token für den Bearbeiten/Löschen-Link aus der Bestätigungsmail (nur gesetzt, wenn `email` angegeben wurde) |
+| edit_token | string, unique, nullable | Token für den Bearbeiten/Löschen-Link aus der Bestätigungsmail |
 
 ### `settings`
 
@@ -140,8 +141,8 @@ Abschnitt 8.
 
 ### Öffentlich (kein Login nötig)
 
-- `/e/{event}` – Mitfahrbörsen-Startseite einer Veranstaltung
-- `/e/{event}/ride/{ride}/edit?token=...` – Bearbeiten/Löschen einer eigenen
+- `/e/{event.slug}` – Mitfahrbörsen-Startseite einer Veranstaltung
+- `/e/{event.slug}/ride/{ride}/edit?token=...` – Bearbeiten/Löschen einer eigenen
   Mitfahrt über den per Email verschickten Link
 
 ### Authentifizierung
@@ -203,9 +204,6 @@ Zwei Spalten in der Desktop-Ansicht:
   - Formular zum Eingeben der Event-Attribute. Adresse ist ein Feld mit
     Live-Vorschlägen aus Nominatim; bei Mehrdeutigkeit wählt der Nutzer eine
     der Möglichkeiten aus.
-  - Darunter: vertikal gestapelte Kacheln mit allen Mitfahrgesuchen und
-    -angeboten dieses Events – dieselben Kacheln wie auf der öffentlichen
-    Startseite (siehe unten). Im Neu-Anlegen-Modus ist diese Liste leer.
   - Öffentlicher Link zur Mitfahrbörse dieser Veranstaltung (`/e/{event}`),
     zum Kopieren/Teilen.
 - **Rechts**: Karte. Der Veranstaltungsort ist als gelbes Stern-Emoji
@@ -216,6 +214,9 @@ Zwei Spalten in der Desktop-Ansicht:
   - Bearbeiten-Modus: Karte mit allen eingetragenen Routen, je einem Pin beim
     Abfahrtsort, plus dem Veranstaltungsort. Angebote sind grün, Gesuche
     orange (Routen und Pins).
+- Darunter: Kacheln mit allen Mitfahrgesuchen und
+  -angeboten dieses Events – dieselben Kacheln wie auf der öffentlichen
+  Startseite (siehe unten). Im Neu-Anlegen-Modus ist diese Liste leer.
 
 Mobile Ansicht: horizontale Teilung – oben die Karte (obere Hälfte des
 Bildschirms), darunter Formular und Kachel-Liste gestapelt (das, was auf dem
@@ -223,7 +224,7 @@ Desktop nebeneinander in der linken Spalte steht).
 
 #### `/admin/settings` – "Einstellungen" (neu, nur Admin)
 
-Bisher einzige Einstellungsmöglichkeit: der Default-Kartenausschnitt für die
+Einstellungsmöglichkeit 1: der Default-Kartenausschnitt für die
 Veranstaltungs-Anlegen-Seite.
 
 - Interaktive Karte (Leaflet); der Admin verändert den Ausschnitt per Zoom und
@@ -232,6 +233,8 @@ Veranstaltungs-Anlegen-Seite.
   Veranstaltung. Verändern mit Zoom und Ziehen mit der Maus."
 - Speichern-Button schreibt den aktuellen Kartenausschnitt (Mittelpunkt +
   Zoomstufe) in `settings`.
+
+Einstellungsmöglichkeit 2: Benutzerdefinierte Links im Footer
 
 #### `/admin/users` – "Nutzerverwaltung"
 
@@ -251,7 +254,7 @@ Liste mit (jeweils mit Bearbeiten-Icon):
 
 Darunter: Dropdown "bevorzugte Sprache" des eingeloggten Nutzers.
 
-### Frontend (öffentlich, `/e/{event}`)
+### Frontend (öffentlich, `/e/{event.slug}`)
 
 #### Startseite
 
@@ -299,8 +302,6 @@ gefiltert, kein Reload).
 - Oben, in einer Reihe:
   - Badge mit Personen-Icon und Anzahl der suchenden Personen bzw.
     angebotenen Plätze (`seats`), in Orange (Gesuch) bzw. Grün (Angebot)
-  - Bearbeiten-Icon
-  - Löschen-Icon
 - darunter: Info, ob Hin-, Rück- oder beide Fahrten angeboten/gesucht werden
 - nächste Reihe: Datum und Uhrzeit mit jeweiligen Icons
 - darunter: Label "Abfahrtsort: " (wenn Hinfahrt mit angeboten wird) bzw.
@@ -312,8 +313,10 @@ gefiltert, kein Reload).
 - Buttons zum Kontaktieren über die ausgewählten Messenger (`contact_methods`)
 
 **Bearbeiten/Löschen-Berechtigung**:
-- Für anonyme Besucher sind Bearbeiten/Löschen nur über den Token-Link aus der
-  Bestätigungsmail nutzbar (`/e/{event}/ride/{ride}/edit?token=...`).
+- Für anonyme Besucher ist Bearbeiten nur über den Token-Link aus der
+  Bestätigungsmail nutzbar (`/e/{event.slug}/ride/{ride}/edit?token=...`).
+- Für anonyme Besucher ist Löschen nur über den Token-Link aus der
+  Bestätigungsmail nutzbar (`/e/{event.slug}/ride/{ride}/delete?token=...`). Der Link führt zu einer Seite, auf der die Löschung noch einmal explizit bestätigt werden muss.
 - Der Event-Ersteller und Admins können im eingeloggten Bereich (Kachel-Liste
   auf der Event-Bearbeiten-Seite) jede Mitfahrt ihres Events ohne Token
   bearbeiten/löschen.
@@ -332,7 +335,7 @@ gefiltert, kein Reload).
 
 - Impressum
 - Github-Link
-- Benutzerdefinierte Links (konfigurierbar in `config.php`)
+- Benutzerdefinierte Links (konfigurierbar in "Einstellungen")
 
 #### "Mitfahrt-Erstellen-Popup"
 
@@ -350,24 +353,21 @@ gefiltert, kein Reload).
    - "… nur Rückfahrt" → `direction = return`
 
 3. Text-Feld, nicht-optional: Name
-4. Text-Feld, optional: Email
+4. Text-Feld: Email
 5. Text-Feld, optional: Telefonnummer
 
-   Validierung: mindestens eines von Email/Telefonnummer ist Pflicht (siehe
-   User Stories).
-
-6. Checkboxen, nicht optional (mind. 1 muss ausgewählt sein):
+6. Checkboxen, nicht optional (mind. 1 muss ausgewählt sein; ausgegraut, solange keine Telefonnummer angegeben ist):
    - Label: "Wie möchtest du kontaktiert werden?"
    - Signal, Telegram, WhatsApp, E-Mail, SMS, Anruf
 
 7. Überschrift: "Deine Route"
 
 8. Text-Feld, nicht-optional: Label ist "Dein Abfahrtsort", wenn Hinfahrt mit
-   angeboten wird (`direction` ∈ {both, outbound}); "Dein Zielort nach der
-   Veranstaltung", wenn nur Rückfahrt (`direction = return`). → erzeugt
+   angeboten wird (`direction` ∈ {both-ways, outbound-only}); "Dein Zielort nach der
+   Veranstaltung", wenn nur Rückfahrt (`direction = return-only`). → erzeugt
    `location`.
 
-9. **Hinfahrt-Block** (nur sichtbar, wenn `direction` ∈ {both, outbound}):
+9. **Hinfahrt-Block** (nur sichtbar, wenn `direction` ∈ {both-ways, outbound-only}):
    - Datums-Feld mit Datepicker, voreingestellt = Startdatum der Veranstaltung
    - Label: "Hinfahrt:"
    - Label 2 unter dem Datumsfeld: "Am Tag des Veranstaltungsbeginns"
@@ -378,7 +378,7 @@ gefiltert, kein Reload).
      Veranstaltungsbeginns" → "N Tage vor Veranstaltungsbeginn" bzw. "N Tage
      nach Veranstaltungsbeginn"
 
-10. **Rückfahrt-Block** (nur sichtbar, wenn `direction` ∈ {both, return}):
+10. **Rückfahrt-Block** (nur sichtbar, wenn `direction` ∈ {both-ways, return-only}):
     - Datums-Feld mit Datepicker, voreingestellt = Enddatum der Veranstaltung
     - Label: "Rückfahrt:"
     - Label 2 unter dem Datumsfeld: "Am letzten Veranstaltungstag"
@@ -400,19 +400,17 @@ gefiltert, kein Reload).
     - Placeholder: "z.B. Infos zur Route, besondere Wünsche etc."
 
 13. Reihe mit transparentem "Abbrechen"-Knopf und grünem
-    "Eintrag erstellen!"-Knopf.
+    "Eintrag einstellen!"-Knopf.
 
 #### Bestätigungsmail
 
 Nach dem Erstellen einer Mitfahrt mit angegebener Email erhält der Ersteller
 eine Email mit:
 - Bestätigung der Eintragung
-- Link zum Bearbeiten/Löschen
-  (`/e/{event}/ride/{ride}/edit?token={edit_token}`)
-
-Wurde nur eine Telefonnummer angegeben (keine Email), entfällt diese Mail und
-damit der Bearbeiten/Löschen-Link; die Mitfahrt kann dann nur vom
-Event-Ersteller bzw. einem Admin entfernt werden.
+- Link zum Bearbeiten
+  (`/e/{event.slug}/ride/{ride}/edit?token={edit_token}`)
+- Link zum Löschen
+  (`/e/{event.slug}/ride/{ride}/delete?token={edit_token}`)
 
 ## 6. User Stories
 
@@ -430,12 +428,12 @@ Event-Ersteller bzw. einem Admin entfernt werden.
   klicke.
 - … kann ich, auch wenn mein Account noch nicht von einem Admin bestätigt
   wurde, Veranstaltungen anlegen und bearbeiten; die öffentliche
-  Mitfahrbörsen-Seite (`/e/{event}`) ist für Besucher aber erst nach
+  Mitfahrbörsen-Seite (`/e/{event.slug}`) ist für Besucher aber erst nach
   Admin-Freischaltung erreichbar.
 
 ### Als Besucher (= nicht eingeloggter Nutzer) …
 
-- … kann ich die Startseite einer Veranstaltung (`/e/{event}`) besuchen, um
+- … kann ich die Startseite einer Veranstaltung (`/e/{event.slug}`) besuchen, um
   Mitfahrten einzusehen oder einzustellen.
 - … sehe ich sofort nach Aufruf der Startseite auf der Karte, wo die
   Veranstaltung ist und von wo aus Mitfahr-Routen dort hinführen, um schon
@@ -461,10 +459,6 @@ Event-Ersteller bzw. einem Admin entfernt werden.
   Veranstaltungsort und meine Heimat-Adresse in verschiedenen Ländern liegen,
   meine Telefonnummer aber nicht mit einem Plus-Zeichen beginnt, um Verwirrung
   darüber zu vermeiden, in welchem Land mein Telefon registriert ist.
-- … bekomme ich beim Klick auf "Eintragen" eine Fehlermeldung, wenn ich weder
-  Emailadresse noch Handynummer angegeben habe, damit Mitfahrer mich
-  kontaktieren können und Lift2Event mir eine Bestätigungsnachricht schicken
-  kann.
 - … kann ich beim Erstellen einer Mitfahrt auf die Pfeil-Knöpfe unter dem
   Datum klicken und dabei das Datumsfeld um einen Tag vor- oder zurückstellen.
 - … sehe ich beim Klick auf die Pfeil-Knöpfe, wie sich Label 2 entsprechend
@@ -478,7 +472,6 @@ Event-Ersteller bzw. einem Admin entfernt werden.
 Diese Punkte sind keine Blocker, sollten aber während der Implementierung
 entschieden werden:
 
-- Genaues Format des `/e/{event}`-Identifiers (numerische ID vs. Slug).
 - Genaues Schema für `contact_methods` (JSON-Spalte vs. Pivot-Tabelle
   `ride_contact_methods`).
 - Persistenz der Karten-Filter (Angebote/Gesuche/Alle, Datum) in der URL
