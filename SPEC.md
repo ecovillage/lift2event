@@ -106,7 +106,7 @@ UI-Beschreibungen erfordern deutlich mehr Felder, die hier ergänzt sind.
 |---|---|---|
 | id | PK | |
 | event_id | FK → event | |
-| user_id | FK → user | anlegender Nutzer, muss zum Anlegen eingeloggt sein |
+| user_id | FK → user, nullable | gesetzt, wenn beim Anlegen eingeloggt; sonst `null` (anonymer Besucher) |
 | location_id | FK → location | Heimat-/Routenort (Abfahrtsort bei Hinfahrt bzw. Zielort bei Rückfahrt – derselbe Ort für beide Richtungen) |
 | type | enum('offer','request') | Angebot oder Gesuch |
 | direction | enum('both-ways','outbound-only','return-only') | Hin+Rück / nur Hin / nur Rück |
@@ -129,6 +129,7 @@ Singleton-Tabelle (eine Zeile) für globale, admin-konfigurierbare Einstellungen
 | map_center_lat | decimal | Default-Kartenmittelpunkt beim Anlegen einer Veranstaltung |
 | map_center_lng | decimal | |
 | map_zoom | integer | Default-Zoomstufe |
+| footer_links | JSON, nullable | Benutzerdefinierte Links (Label + URL) für den Footer der öffentlichen Startseite |
 
 Wird über die neue Admin-Seite **Einstellungen** verwaltet (siehe Abschnitt 5).
 
@@ -218,9 +219,8 @@ Zwei Spalten in der Desktop-Ansicht:
   -angeboten dieses Events – dieselben Kacheln wie auf der öffentlichen
   Startseite (siehe unten). Im Neu-Anlegen-Modus ist diese Liste leer.
 
-Mobile Ansicht: horizontale Teilung – oben die Karte (obere Hälfte des
-Bildschirms), darunter Formular und Kachel-Liste gestapelt (das, was auf dem
-Desktop nebeneinander in der linken Spalte steht).
+Mobile Ansicht: vertikal gestapelt – Karte oben (obere Hälfte des
+Bildschirms), darunter das Formular, darunter die Kachel-Liste.
 
 #### `/admin/settings` – "Einstellungen" (neu, nur Admin)
 
@@ -317,9 +317,10 @@ gefiltert, kein Reload).
   Bestätigungsmail nutzbar (`/e/{event.slug}/ride/{ride}/edit?token=...`).
 - Für anonyme Besucher ist Löschen nur über den Token-Link aus der
   Bestätigungsmail nutzbar (`/e/{event.slug}/ride/{ride}/delete?token=...`). Der Link führt zu einer Seite, auf der die Löschung noch einmal explizit bestätigt werden muss.
-- Der Event-Ersteller und Admins können im eingeloggten Bereich (Kachel-Liste
-  auf der Event-Bearbeiten-Seite) jede Mitfahrt ihres Events ohne Token
-  bearbeiten/löschen.
+- Der Event-Ersteller und Admins sehen auf der Event-Bearbeiten-Seite
+  zusätzlich eigene Bearbeiten- und Löschen-Icons direkt auf jeder Kachel
+  (nicht im Popup), mit denen sie jede Mitfahrt ihres Events ohne Token
+  bearbeiten/löschen können.
 
 **Kontakt-Buttons / Deep-Links**:
 - Email: `mailto:`
@@ -356,9 +357,12 @@ gefiltert, kein Reload).
 4. Text-Feld: Email
 5. Text-Feld, optional: Telefonnummer
 
-6. Checkboxen, nicht optional (mind. 1 muss ausgewählt sein; ausgegraut, solange keine Telefonnummer angegeben ist):
+6. Checkboxen, nicht optional (mind. 1 muss ausgewählt sein):
    - Label: "Wie möchtest du kontaktiert werden?"
    - Signal, Telegram, WhatsApp, E-Mail, SMS, Anruf
+   - Die telefonbasierten Optionen (Signal, Telegram, WhatsApp, SMS, Anruf)
+     sind ausgegraut, solange keine Telefonnummer angegeben ist. "E-Mail" ist
+     immer wählbar (Email ist Pflichtfeld).
 
 7. Überschrift: "Deine Route"
 
@@ -490,7 +494,7 @@ entschieden werden:
 | 7 | Branch-Name | `master` bleibt Hauptbranch | initial-prompt forderte `master`; das Repo hat aktuell auch nur `master` (kein `main`) |
 | 8 | Karten-Default-Ausschnitt | Konfigurierbar über neue Admin-Seite "Einstellungen" (Center + Zoom), statt fest "Europa"/"Deutschland" | Löst den Widerspruch zwischen den beiden im initial-prompt genannten Default-Ausschnitten auf und macht ihn nutzbar für beliebige Zielgruppen |
 | 9 | `language`-Tabelle | Entfällt; `user.preferred_language` ist ein Enum (de/en/fr/zh) | UI unterstützt ohnehin nur 4 feste, im Code übersetzte Sprachen; eine DB-Tabelle bringt keinen Mehrwert |
-| 10 | Mitfahrten-Liste auf Event-Bearbeiten-Seite | Auch im Desktop, in der linken Spalte unter dem Formular (gleiche Kacheln wie auf der Startseite) | initial-prompt erwähnte die Liste nur in der Mobil-Ansicht; auf Desktop fehlte sie ohne ersichtlichen Grund |
+| 10 | Mitfahrten-Liste auf Event-Bearbeiten-Seite | Auch im Desktop, unterhalb von Formular und Karte über die volle Breite (gleiche Kacheln wie auf der Startseite); mobil ebenfalls ganz unten | initial-prompt erwähnte die Liste nur in der Mobil-Ansicht; auf Desktop fehlte sie ohne ersichtlichen Grund |
 | 11 | Logo | Einfaches SVG-Platzhalter-Logo (`logo.svg`, `favicon.svg`) erstellt | Kein Logo im Repo vorhanden; SVG ist leicht austauschbar |
 | 12 | Telegram-Kontakt | `href="https://t.me/{telefonnummer}"`, kein separates Username-Feld | Einfachste Lösung ohne zusätzliches Formularfeld, vom Nutzer so vorgegeben |
 | 13 | `ride`-Datenmodell | Um Typ, Richtung, Kontaktdaten, Plätze, Freitext, Edit-Token etc. erweitert (siehe Abschnitt 3) | initial-prompt listete nur FKs + `beginn`/`ende`; UI-Beschreibungen erfordern deutlich mehr Felder |
