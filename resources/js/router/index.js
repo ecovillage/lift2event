@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import { useAuth } from '@/composables/useAuth';
 
 const routes = [
     // Public event pages
@@ -23,16 +24,19 @@ const routes = [
         path: '/login',
         name: 'login',
         component: () => import('@/views/admin/Login.vue'),
+        meta: { guestOnly: true },
     },
     {
         path: '/register',
         name: 'register',
         component: () => import('@/views/admin/Register.vue'),
+        meta: { guestOnly: true },
     },
     {
         path: '/forgot-password',
         name: 'password.request',
         component: () => import('@/views/admin/ForgotPassword.vue'),
+        meta: { guestOnly: true },
     },
 
     // Admin area
@@ -44,7 +48,7 @@ const routes = [
             {
                 path: '',
                 name: 'admin.home',
-                redirect: (to) => ({ name: 'admin.events' }),
+                redirect: () => ({ name: 'admin.events' }),
             },
             {
                 path: 'events',
@@ -89,12 +93,22 @@ const router = createRouter({
     routes,
 });
 
-router.beforeEach((to, from, next) => {
-    const token = localStorage.getItem('auth_token');
-    if (to.meta.requiresAuth && !token) {
-        return next({ name: 'login' });
+router.beforeEach(async (to) => {
+    const { state, isAuthenticated, isAdmin, fetchUser } = useAuth();
+
+    if (!state.ready) {
+        await fetchUser();
     }
-    next();
+
+    if (to.meta.requiresAuth && !isAuthenticated.value) {
+        return { name: 'login' };
+    }
+    if (to.meta.requiresAdmin && !isAdmin.value) {
+        return { name: 'admin.events' };
+    }
+    if (to.meta.guestOnly && isAuthenticated.value) {
+        return { name: 'admin.events' };
+    }
 });
 
 export default router;

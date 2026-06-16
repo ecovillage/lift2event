@@ -1,0 +1,43 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class AuthController extends Controller
+{
+    public function login(Request $request): JsonResponse
+    {
+        $credentials = $request->validate([
+            'email'    => ['required', 'email'],
+            'password' => ['required'],
+        ]);
+
+        if (! Auth::attempt($credentials)) {
+            return response()->json(['message' => 'Die eingegebenen Zugangsdaten sind falsch.'], 401);
+        }
+
+        $user  = Auth::user();
+        $token = $user->createToken('spa')->plainTextToken;
+
+        return response()->json([
+            'token' => $token,
+            'user'  => $user,
+        ]);
+    }
+
+    public function logout(Request $request): JsonResponse
+    {
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->json(['message' => 'Abgemeldet.']);
+    }
+
+    public function user(Request $request): JsonResponse
+    {
+        return response()->json($request->user());
+    }
+}
