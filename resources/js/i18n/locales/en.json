@@ -29,7 +29,11 @@
         "location": "Location",
         "ride_count": "Rides",
         "public_link": "Public link",
-        "none": "No events yet."
+        "none": "No events yet.",
+        "location_placeholder": "Search address…",
+        "location_required": "Please select a venue.",
+        "copy": "Copy",
+        "save_error": "Failed to save."
     },
     "ride": {
         "offer": "Offer",

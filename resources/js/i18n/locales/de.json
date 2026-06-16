@@ -29,7 +29,11 @@
         "end": "Ende",
         "location": "Ort",
         "ride_count": "Mitfahrten",
-        "public_link": "Öffentlicher Link"
+        "public_link": "Öffentlicher Link",
+        "location_placeholder": "Adresse suchen…",
+        "location_required": "Bitte wähle einen Veranstaltungsort aus.",
+        "copy": "Kopieren",
+        "save_error": "Speichern fehlgeschlagen."
     },
     "ride": {
         "offer": "Angebot",

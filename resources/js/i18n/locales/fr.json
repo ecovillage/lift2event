@@ -29,7 +29,11 @@
         "location": "Lieu",
         "ride_count": "Trajets",
         "public_link": "Lien public",
-        "none": "Aucun événement."
+        "none": "Aucun événement.",
+        "location_placeholder": "Rechercher une adresse…",
+        "location_required": "Veuillez sélectionner un lieu.",
+        "copy": "Copier",
+        "save_error": "Échec de l'enregistrement."
     },
     "ride": {
         "offer": "Offre",
