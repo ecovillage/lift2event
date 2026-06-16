@@ -1,0 +1,8 @@
+# Pfad zur Lift2Event-Installation auf dem Server
+deploy_path: /var/www/lift2event
+
+# Git-Branch, der deployed wird
+deploy_branch: master
+
+# PHP-Binary auf dem Server (ggf. anpassen)
+php_bin: php8.3

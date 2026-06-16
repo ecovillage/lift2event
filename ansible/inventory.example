@@ -1,0 +1,2 @@
+[webserver]
+mein-server.example.com ansible_user=deploy

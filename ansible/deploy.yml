@@ -1,0 +1,61 @@
+---
+- name: Deploy Lift2Event
+  hosts: webserver
+  vars_files:
+    - vars/main.yml
+
+  tasks:
+    - name: Pull latest code from master
+      git:
+        repo: "{{ lookup('env', 'GIT_REPO') | default('') }}"
+        dest: "{{ deploy_path }}"
+        version: "{{ deploy_branch }}"
+        update: yes
+      when: lookup('env', 'GIT_REPO') != ''
+
+    - name: Pull latest code (local git on server)
+      command: git pull origin {{ deploy_branch }}
+      args:
+        chdir: "{{ deploy_path }}"
+      when: lookup('env', 'GIT_REPO') == ''
+
+    - name: Install PHP dependencies (no dev)
+      command: composer install --no-dev --optimize-autoloader
+      args:
+        chdir: "{{ deploy_path }}"
+
+    - name: Install and build frontend assets
+      command: npm ci --omit=dev
+      args:
+        chdir: "{{ deploy_path }}"
+
+    - name: Build frontend for production
+      command: npm run build
+      args:
+        chdir: "{{ deploy_path }}"
+
+    - name: Run database migrations
+      command: "{{ php_bin }} artisan migrate --force"
+      args:
+        chdir: "{{ deploy_path }}"
+
+    - name: Clear and cache config
+      command: "{{ php_bin }} artisan config:cache"
+      args:
+        chdir: "{{ deploy_path }}"
+
+    - name: Clear and cache routes
+      command: "{{ php_bin }} artisan route:cache"
+      args:
+        chdir: "{{ deploy_path }}"
+
+    - name: Clear and cache views
+      command: "{{ php_bin }} artisan view:cache"
+      args:
+        chdir: "{{ deploy_path }}"
+
+    - name: Set storage permissions
+      file:
+        path: "{{ deploy_path }}/storage"
+        mode: "0775"
+        recurse: yes
