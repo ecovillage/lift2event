@@ -13,6 +13,7 @@
     "auth": {
         "email": "Emailadresse",
         "password": "Passwort",
+        "confirm_password": "Passwort bestätigen",
         "login": "Anmelden",
         "register": "Registrieren",
         "forgot_password": "Passwort vergessen?",
@@ -22,6 +23,7 @@
         "rideshare_for": "Mitfahrbörse zur Veranstaltung",
         "new": "Neue Veranstaltung anlegen",
         "edit": "Veranstaltung bearbeiten",
+        "none": "Noch keine Veranstaltungen.",
         "name": "Name",
         "start": "Beginn",
         "end": "Ende",

@@ -1,5 +1,7 @@
 {
-    "app": { "name": "Lift2Event" },
+    "app": {
+        "name": "Lift2Event"
+    },
     "nav": {
         "users": "Gestion des utilisateurs",
         "events": "Événements",
@@ -14,7 +16,8 @@
         "login": "Connexion",
         "register": "S'inscrire",
         "forgot_password": "Mot de passe oublié ?",
-        "name": "Nom"
+        "name": "Nom",
+        "confirm_password": "Confirmer le mot de passe"
     },
     "event": {
         "rideshare_for": "Covoiturage pour l'événement",
@@ -25,7 +28,8 @@
         "end": "Fin",
         "location": "Lieu",
         "ride_count": "Trajets",
-        "public_link": "Lien public"
+        "public_link": "Lien public",
+        "none": "Aucun événement."
     },
     "ride": {
         "offer": "Offre",
@@ -87,7 +91,9 @@
         "approved": "Approuvé",
         "delete": "Supprimer"
     },
-    "footer": { "imprint": "Mentions légales" },
+    "footer": {
+        "imprint": "Mentions légales"
+    },
     "error": {
         "phone_country": "Si votre lieu de départ est dans un autre pays que l'événement, votre numéro de téléphone doit commencer par +.",
         "contact_required": "Veuillez fournir au moins une adresse email ou un numéro de téléphone."

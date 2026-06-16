@@ -1,13 +1,15 @@
 <template>
-    <div class="auth-page">
-        <div class="auth-card">
-            <div class="auth-logo">
-                <img src="/logo.svg" alt="Lift2Event" height="48" />
+    <div class="min-h-screen flex items-center justify-center bg-gray-100">
+        <div class="bg-white rounded-lg shadow-md p-8 w-full max-w-sm">
+            <div class="text-center mb-6">
+                <img src="/logo.svg" alt="Lift2Event" class="h-12 mx-auto" />
             </div>
 
-            <form @submit.prevent="submit">
-                <div class="field">
-                    <label for="email">{{ t('auth.email') }}</label>
+            <form @submit.prevent="submit" class="space-y-4">
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">
+                        {{ t('auth.email') }}
+                    </label>
                     <input
                         id="email"
                         v-model="email"
@@ -15,30 +17,42 @@
                         autocomplete="email"
                         required
                         autofocus
+                        class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-[--color-primary] focus:ring-2 focus:ring-[--color-primary]/20"
                     />
                 </div>
 
-                <div class="field">
-                    <label for="password">{{ t('auth.password') }}</label>
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-1">
+                        {{ t('auth.password') }}
+                    </label>
                     <input
                         id="password"
                         v-model="password"
                         type="password"
                         autocomplete="current-password"
                         required
+                        class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-[--color-primary] focus:ring-2 focus:ring-[--color-primary]/20"
                     />
                 </div>
 
-                <p v-if="error" class="error-msg">{{ error }}</p>
+                <p v-if="error" class="text-red-600 text-sm">{{ error }}</p>
 
-                <button type="submit" :disabled="loading" class="btn-primary btn-block">
+                <button
+                    type="submit"
+                    :disabled="loading"
+                    class="w-full mt-2 py-2 px-4 bg-[--color-primary] hover:bg-[--color-primary-dark] text-white rounded font-medium transition-colors disabled:opacity-60"
+                >
                     {{ loading ? '…' : t('auth.login') }}
                 </button>
             </form>
 
-            <div class="auth-links">
-                <RouterLink :to="{ name: 'password.request' }">{{ t('auth.forgot_password') }}</RouterLink>
-                <RouterLink :to="{ name: 'register' }">{{ t('auth.register') }}</RouterLink>
+            <div class="mt-4 flex justify-between text-sm">
+                <RouterLink :to="{ name: 'password.request' }" class="text-[--color-primary] hover:underline">
+                    {{ t('auth.forgot_password') }}
+                </RouterLink>
+                <RouterLink :to="{ name: 'register' }" class="text-[--color-primary] hover:underline">
+                    {{ t('auth.register') }}
+                </RouterLink>
             </div>
         </div>
     </div>
@@ -72,95 +86,3 @@ async function submit() {
     }
 }
 </script>
-
-<style scoped>
-.auth-page {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #f5f5f5;
-}
-
-.auth-card {
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, .1);
-    padding: 2rem;
-    width: 100%;
-    max-width: 380px;
-}
-
-.auth-logo {
-    text-align: center;
-    margin-bottom: 1.5rem;
-}
-
-.field {
-    margin-bottom: 1rem;
-}
-
-label {
-    display: block;
-    font-size: .875rem;
-    margin-bottom: .25rem;
-    color: #333;
-}
-
-input {
-    width: 100%;
-    padding: .5rem .75rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 1rem;
-    box-sizing: border-box;
-}
-
-input:focus {
-    outline: none;
-    border-color: #4a9f6e;
-    box-shadow: 0 0 0 2px rgba(74, 159, 110, .2);
-}
-
-.error-msg {
-    color: #c0392b;
-    font-size: .875rem;
-    margin: .5rem 0;
-}
-
-.btn-primary {
-    background: #4a9f6e;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    padding: .6rem 1.25rem;
-    font-size: 1rem;
-    cursor: pointer;
-}
-
-.btn-primary:disabled {
-    opacity: .6;
-    cursor: default;
-}
-
-.btn-block {
-    width: 100%;
-    margin-top: .5rem;
-}
-
-.auth-links {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 1rem;
-    font-size: .875rem;
-}
-
-.auth-links a {
-    color: #4a9f6e;
-    text-decoration: none;
-}
-
-.auth-links a:hover {
-    text-decoration: underline;
-}
-</style>

@@ -1,5 +1,7 @@
 {
-    "app": { "name": "Lift2Event" },
+    "app": {
+        "name": "Lift2Event"
+    },
     "nav": {
         "users": "User Management",
         "events": "Events",
@@ -14,7 +16,8 @@
         "login": "Log in",
         "register": "Register",
         "forgot_password": "Forgot password?",
-        "name": "Name"
+        "name": "Name",
+        "confirm_password": "Confirm password"
     },
     "event": {
         "rideshare_for": "Rideshare for event",
@@ -25,7 +28,8 @@
         "end": "End",
         "location": "Location",
         "ride_count": "Rides",
-        "public_link": "Public link"
+        "public_link": "Public link",
+        "none": "No events yet."
     },
     "ride": {
         "offer": "Offer",
@@ -87,7 +91,9 @@
         "approved": "Approved",
         "delete": "Delete"
     },
-    "footer": { "imprint": "Imprint" },
+    "footer": {
+        "imprint": "Imprint"
+    },
     "error": {
         "phone_country": "If your home location is in a different country than the event, your phone number must start with +.",
         "contact_required": "Please provide at least an email address or phone number."

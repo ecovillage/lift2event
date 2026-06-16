@@ -1,5 +1,7 @@
 {
-    "app": { "name": "Lift2Event" },
+    "app": {
+        "name": "Lift2Event"
+    },
     "nav": {
         "users": "用户管理",
         "events": "活动",
@@ -14,7 +16,8 @@
         "login": "登录",
         "register": "注册",
         "forgot_password": "忘记密码？",
-        "name": "姓名"
+        "name": "姓名",
+        "confirm_password": "确认密码"
     },
     "event": {
         "rideshare_for": "活动拼车信息",
@@ -25,7 +28,8 @@
         "end": "结束",
         "location": "地点",
         "ride_count": "拼车信息",
-        "public_link": "公开链接"
+        "public_link": "公开链接",
+        "none": "暂无活动。"
     },
     "ride": {
         "offer": "提供搭车",
@@ -87,7 +91,9 @@
         "approved": "已审核",
         "delete": "删除"
     },
-    "footer": { "imprint": "法律声明" },
+    "footer": {
+        "imprint": "法律声明"
+    },
     "error": {
         "phone_country": "如果您的出发地与活动地点不在同一个国家，您的电话号码必须以 + 开头。",
         "contact_required": "请提供至少一个电子邮箱或电话号码。"
