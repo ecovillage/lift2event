@@ -1,0 +1,101 @@
+{
+    "app": {
+        "name": "Lift2Event"
+    },
+    "nav": {
+        "users": "Nutzerverwaltung",
+        "events": "Veranstaltungen",
+        "my_events": "Meine Veranstaltungen",
+        "settings": "Einstellungen",
+        "profile": "Mein Profil",
+        "logout": "Abmelden"
+    },
+    "auth": {
+        "email": "Emailadresse",
+        "password": "Passwort",
+        "login": "Anmelden",
+        "register": "Registrieren",
+        "forgot_password": "Passwort vergessen?",
+        "name": "Name"
+    },
+    "event": {
+        "rideshare_for": "Mitfahrbörse zur Veranstaltung",
+        "new": "Neue Veranstaltung anlegen",
+        "edit": "Veranstaltung bearbeiten",
+        "name": "Name",
+        "start": "Beginn",
+        "end": "Ende",
+        "location": "Ort",
+        "ride_count": "Mitfahrten",
+        "public_link": "Öffentlicher Link"
+    },
+    "ride": {
+        "offer": "Angebot",
+        "request": "Gesuch",
+        "create": "Eintrag einstellen!",
+        "cancel": "Abbrechen",
+        "new_entry": "+ Eintrag erstellen",
+        "type_label": "Was möchtest du eintragen?",
+        "type_offer": "Ich biete eine Mitfahrgelegenheit.",
+        "type_request": "Ich suche eine Mitfahrgelegenheit.",
+        "direction_label": "Es geht um eine Mitfahrgelegenheit für …",
+        "direction_both": "… Hin- und Rückfahrt",
+        "direction_outbound": "… nur Hinfahrt",
+        "direction_return": "… nur Rückfahrt",
+        "name": "Name",
+        "email": "Email",
+        "phone": "Telefonnummer",
+        "contact_label": "Wie möchtest du kontaktiert werden?",
+        "contact_signal": "Signal",
+        "contact_telegram": "Telegram",
+        "contact_whatsapp": "WhatsApp",
+        "contact_email": "E-Mail",
+        "contact_sms": "SMS",
+        "contact_call": "Anruf",
+        "route_heading": "Deine Route",
+        "departure": "Dein Abfahrtsort",
+        "destination": "Dein Zielort nach der Veranstaltung",
+        "outbound_label": "Hinfahrt:",
+        "return_label": "Rückfahrt:",
+        "on_start_day": "Am Tag des Veranstaltungsbeginns",
+        "on_last_day": "Am letzten Veranstaltungstag",
+        "days_before": "{n} Tag vor | {n} Tage vor",
+        "days_after": "{n} Tag nach | {n} Tage nach",
+        "seats_available": "Verfügbare Plätze",
+        "seats_needed": "Benötigte Plätze",
+        "info_label": "Infos zu deiner Fahrt",
+        "info_placeholder": "z.B. Infos zur Route, besondere Wünsche etc.",
+        "day_back": "1 Tag zurück",
+        "day_forward": "1 Tag vor",
+        "filter_all": "Alle",
+        "filter_offers": "Angebote",
+        "filter_requests": "Gesuche",
+        "contact_heading": "Kontakt",
+        "departure_label": "Abfahrtsort:",
+        "destination_label": "Zielort nach der Veranstaltung:",
+        "days_before_start": "{n} Tage vor Veranstaltungsbeginn",
+        "days_after_start": "{n} Tage nach Veranstaltungsbeginn",
+        "days_before_end": "{n} Tage vor Veranstaltungsende",
+        "days_after_end": "{n} Tage nach Veranstaltungsende",
+        "warning_date": "Achtung: abweichendes Datum"
+    },
+    "settings": {
+        "map_default": "Folgenden Kartenausschnitt sehen Nutzer beim Anlegen einer Veranstaltung. Verändern mit Zoom und Ziehen mit der Maus.",
+        "footer_links": "Benutzerdefinierte Footer-Links",
+        "save": "Speichern"
+    },
+    "users": {
+        "name": "Name",
+        "email": "Email",
+        "event_count": "Veranstaltungen",
+        "approved": "Bestätigt",
+        "delete": "Löschen"
+    },
+    "footer": {
+        "imprint": "Impressum"
+    },
+    "error": {
+        "phone_country": "Wenn dein Heimatort in einem anderen Land liegt als die Veranstaltung, muss deine Telefonnummer mit + beginnen.",
+        "contact_required": "Bitte gib mindestens eine Emailadresse oder Telefonnummer an."
+    }
+}
