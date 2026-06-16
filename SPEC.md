@@ -29,11 +29,11 @@ Veranstaltung hat eine eigene öffentliche Mitfahrbörsen-Seite mit eigener URL.
 - **Deployment**: Ansible-Skript für einen typischen LAMP-Webspace mit
   SSH-Zugang; pullt vom Webserver aus den `master`-Branch und führt
   Migrationen aus. Der Server-Pfad ist als Variable konfigurierbar.
-- **Konfiguration**: `config.php` enthält DB-Zugangsdaten, SMTP-Einstellungen
+- **Konfiguration**: `.env` enthält DB-Zugangsdaten, SMTP-Einstellungen
   (für Passwort-Reset- und Bestätigungsmails) und Geocoding-/Karten-Konfiguration.
   Sie wird **nicht versioniert**.
-  `config.php.sample` dient als Format-Vorlage. Alles andere ist unter Git
-  versioniert.
+  `.env.example` dient als kommentierte Format-Vorlage und wird mit versioniert.
+  Alles andere ebenfalls unter Git versioniert.
 - **Git**: Hauptbranch `master`.
 - **Tests**: Umfassende Integrations-Testsuite für alle nutzergerichteten
   Funktionen.
@@ -45,7 +45,7 @@ Veranstaltung hat eine eigene öffentliche Mitfahrbörsen-Seite mit eigener URL.
   Asset-Verzeichnis übernommen.
 - **Karten**: Leaflet + OpenStreetMap-Tiles.
 - **Geocoding** (Adress-Autovervollständigung & Koordinaten): Nominatim
-  (OpenStreetMap); Dienst und Endpunkt über `config.php` austauschbar.
+  (OpenStreetMap); Dienst und Endpunkt über `.env` austauschbar.
 - **Farben**: CSS-Variablen für Mitfahrgesuche (orange) und Mitfahrangebote
   (grün), global definiert und anpassbar.
 
@@ -490,7 +490,7 @@ entschieden werden:
 | 3 | Admin-Sicht auf "Veranstaltungen" | Admin sieht alle Veranstaltungen aller Nutzer | Passt zur Menü-Unterscheidung "Veranstaltungen" (Admin) vs. "Meine Veranstaltungen" (Nutzer) und macht eine Moderation überhaupt möglich |
 | 4 | `bestaetigt`-Status | Login auch ohne Bestätigung möglich; Admin-Freischaltung steuert, ob die Veranstaltungen des Nutzers öffentlich sichtbar sind | So gewählt vom Nutzer; erlaubt Nutzern, Events vorzubereiten, ohne dass sie sofort öffentlich sind |
 | 5 | Kartenanbieter | Leaflet + OpenStreetMap-Tiles | Kostenlos, kein API-Key, passt zum produktiven Deploy ohne Cloud-Abhängigkeiten |
-| 6 | Geocoding | Nominatim, austauschbar über `config.php` | Kostenlos nutzbar, passt zu Leaflet/OSM; Austauschbarkeit lässt spätere Migration zu kommerziellem Dienst offen |
+| 6 | Geocoding | Nominatim, austauschbar über `.env` | Kostenlos nutzbar, passt zu Leaflet/OSM; Austauschbarkeit lässt spätere Migration zu kommerziellem Dienst offen |
 | 7 | Branch-Name | `master` bleibt Hauptbranch | initial-prompt forderte `master`; das Repo hat aktuell auch nur `master` (kein `main`) |
 | 8 | Karten-Default-Ausschnitt | Konfigurierbar über neue Admin-Seite "Einstellungen" (Center + Zoom), statt fest "Europa"/"Deutschland" | Löst den Widerspruch zwischen den beiden im initial-prompt genannten Default-Ausschnitten auf und macht ihn nutzbar für beliebige Zielgruppen |
 | 9 | `language`-Tabelle | Entfällt; `user.preferred_language` ist ein Enum (de/en/fr/zh) | UI unterstützt ohnehin nur 4 feste, im Code übersetzte Sprachen; eine DB-Tabelle bringt keinen Mehrwert |
