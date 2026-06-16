@@ -109,7 +109,7 @@ const menuOpen = ref(false);
 async function doLogout() {
     menuOpen.value = false;
     await logout();
-    router.push({ name: 'login' });
+    await router.push({ name: 'login' });
 }
 </script>
 

@@ -34,9 +34,14 @@ export function useAuth() {
     }
 
     async function logout() {
-        await api.post('/logout');
-        localStorage.removeItem('auth_token');
-        state.user = null;
+        try {
+            await api.post('/logout');
+        } catch {
+            // token already invalid – proceed with local cleanup
+        } finally {
+            localStorage.removeItem('auth_token');
+            state.user = null;
+        }
     }
 
     return { state, isAuthenticated, isAdmin, fetchUser, login, logout };
