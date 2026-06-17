@@ -18,7 +18,7 @@ class EventFactory extends Factory
             'start_at'      => $start,
             'end_at'        => $end,
             'location_id'   => Location::factory(),
-            'created_by_id' => User::factory(),
+            'created_by_id' => User::factory()->approved(),
         ];
     }
 }

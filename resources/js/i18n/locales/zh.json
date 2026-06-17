@@ -86,14 +86,25 @@
     "settings": {
         "map_default": "用户创建活动时将看到以下地图视图。可通过缩放和拖动来调整。",
         "footer_links": "自定义页脚链接",
-        "save": "保存"
+        "add_link": "添加链接",
+        "save": "保存",
+        "saved": "已保存！"
     },
     "users": {
         "name": "姓名",
         "email": "电子邮箱",
         "event_count": "活动数",
         "approved": "已审核",
+        "approve": "审核",
         "delete": "删除"
+    },
+    "profile": {
+        "current_password": "当前密码",
+        "new_password": "新密码",
+        "change_password": "修改密码",
+        "language": "首选语言",
+        "saved": "已保存！",
+        "error": "保存失败。"
     },
     "footer": {
         "imprint": "法律声明"

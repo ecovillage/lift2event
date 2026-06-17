@@ -86,14 +86,25 @@
     "settings": {
         "map_default": "Les utilisateurs verront cette vue de carte lors de la création d'un événement. Modifiez-la en zoomant et en faisant glisser.",
         "footer_links": "Liens personnalisés dans le pied de page",
-        "save": "Enregistrer"
+        "add_link": "Ajouter un lien",
+        "save": "Enregistrer",
+        "saved": "Enregistré !"
     },
     "users": {
         "name": "Nom",
         "email": "Email",
         "event_count": "Événements",
         "approved": "Approuvé",
+        "approve": "Approuver",
         "delete": "Supprimer"
+    },
+    "profile": {
+        "current_password": "Mot de passe actuel",
+        "new_password": "Nouveau mot de passe",
+        "change_password": "Changer le mot de passe",
+        "language": "Langue préférée",
+        "saved": "Enregistré !",
+        "error": "Échec de l'enregistrement."
     },
     "footer": {
         "imprint": "Mentions légales"

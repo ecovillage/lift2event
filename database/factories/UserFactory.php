@@ -34,4 +34,14 @@ class UserFactory extends Factory
             'preferred_language' => 'de',
         ];
     }
+
+    public function approved(): static
+    {
+        return $this->state(['approved' => true]);
+    }
+
+    public function admin(): static
+    {
+        return $this->state(['is_admin' => true, 'approved' => true]);
+    }
 }

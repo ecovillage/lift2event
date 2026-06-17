@@ -88,14 +88,25 @@
     "settings": {
         "map_default": "Folgenden Kartenausschnitt sehen Nutzer beim Anlegen einer Veranstaltung. Verändern mit Zoom und Ziehen mit der Maus.",
         "footer_links": "Benutzerdefinierte Footer-Links",
-        "save": "Speichern"
+        "add_link": "Link hinzufügen",
+        "save": "Speichern",
+        "saved": "Gespeichert!"
     },
     "users": {
         "name": "Name",
         "email": "Email",
         "event_count": "Veranstaltungen",
         "approved": "Bestätigt",
+        "approve": "Freigeben",
         "delete": "Löschen"
+    },
+    "profile": {
+        "current_password": "Aktuelles Passwort",
+        "new_password": "Neues Passwort",
+        "change_password": "Passwort ändern",
+        "language": "Bevorzugte Sprache",
+        "saved": "Gespeichert!",
+        "error": "Speichern fehlgeschlagen."
     },
     "footer": {
         "imprint": "Impressum"

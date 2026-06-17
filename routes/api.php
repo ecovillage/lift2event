@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\GeocodingController;
 use App\Http\Controllers\Api\PublicEventController;
 use App\Http\Controllers\Api\PublicRideController;
 use App\Http\Controllers\Api\SettingController;
+use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 
 // Public
@@ -25,10 +26,17 @@ Route::prefix('e')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
     Route::get('user', [AuthController::class, 'user']);
+    Route::put('user/profile', [UserController::class, 'updateProfile']);
 
     Route::get('events', [EventController::class, 'index']);
     Route::post('events', [EventController::class, 'store']);
     Route::get('events/{event}', [EventController::class, 'show']);
     Route::put('events/{event}', [EventController::class, 'update']);
     Route::delete('events/{event}', [EventController::class, 'destroy']);
+
+    // Admin-only
+    Route::get('users', [UserController::class, 'index']);
+    Route::put('users/{user}/approve', [UserController::class, 'toggleApprove']);
+    Route::delete('users/{user}', [UserController::class, 'destroy']);
+    Route::put('settings', [SettingController::class, 'update']);
 });

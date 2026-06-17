@@ -30,20 +30,20 @@
 
             <!-- Name -->
             <div>
-                <label class="field-label">{{ t('ride.name') }}</label>
-                <input v-model="form.name" type="text" required class="field-input" />
+                <label for="ride-name" class="field-label">{{ t('ride.name') }}</label>
+                <input id="ride-name" v-model="form.name" type="text" required class="field-input" data-testid="ride-name" />
             </div>
 
             <!-- Email -->
             <div>
-                <label class="field-label">{{ t('ride.email') }}</label>
-                <input v-model="form.email" type="email" required class="field-input" />
+                <label for="ride-email" class="field-label">{{ t('ride.email') }}</label>
+                <input id="ride-email" v-model="form.email" type="email" required class="field-input" data-testid="ride-email" />
             </div>
 
             <!-- Phone -->
             <div>
-                <label class="field-label">{{ t('ride.phone') }}</label>
-                <input v-model="form.phone" type="tel" class="field-input" />
+                <label for="ride-phone" class="field-label">{{ t('ride.phone') }}</label>
+                <input id="ride-phone" v-model="form.phone" type="tel" class="field-input" data-testid="ride-phone" />
                 <p v-if="countryWarning" class="mt-1 text-xs text-amber-600">{{ t('error.phone_country') }}</p>
             </div>
 
@@ -83,11 +83,13 @@
                         type="text"
                         autocomplete="off"
                         class="field-input"
+                        data-testid="ride-address"
                         @input="onAddressInput"
                         @blur="closeSuggestions"
                     />
                     <ul
                         v-if="suggestions.length"
+                        data-testid="ride-suggestions"
                         class="absolute z-50 left-0 right-0 bg-white border border-gray-200 rounded shadow-lg max-h-48 overflow-y-auto text-sm"
                     >
                         <li
@@ -166,6 +168,7 @@
                     type="submit"
                     :disabled="saving || !form.location || form.contact_methods.length === 0"
                     class="flex-1 py-2 bg-[--color-primary] hover:bg-[--color-primary-dark] text-white rounded text-sm font-medium transition-colors disabled:opacity-60"
+                    data-testid="ride-submit"
                 >{{ saving ? '…' : t('ride.create') }}</button>
             </div>
         </form>

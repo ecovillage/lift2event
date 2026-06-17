@@ -88,4 +88,28 @@ class PublicEventTest extends TestCase
         // A missing 'q' param triggers a 422 (validation), not 401.
         $this->getJson('/api/geocode/search')->assertStatus(422);
     }
+
+    public function test_event_from_unapproved_user_returns_404(): void
+    {
+        $creator = User::factory()->create(['approved' => false, 'is_admin' => false]);
+        $event   = Event::factory()->create(['created_by_id' => $creator->id]);
+
+        $this->getJson("/api/e/{$event->slug}")->assertNotFound();
+    }
+
+    public function test_event_from_admin_is_always_publicly_accessible(): void
+    {
+        $admin = User::factory()->create(['approved' => false, 'is_admin' => true]);
+        $event = Event::factory()->create(['created_by_id' => $admin->id]);
+
+        $this->getJson("/api/e/{$event->slug}")->assertOk();
+    }
+
+    public function test_event_from_approved_user_is_publicly_accessible(): void
+    {
+        $creator = User::factory()->approved()->create();
+        $event   = Event::factory()->create(['created_by_id' => $creator->id]);
+
+        $this->getJson("/api/e/{$event->slug}")->assertOk();
+    }
 }

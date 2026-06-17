@@ -10,9 +10,14 @@ class PublicEventController extends Controller
 {
     public function show(string $slug): JsonResponse
     {
-        $event = Event::with('location')
+        $event = Event::with(['location', 'createdBy'])
             ->where('slug', $slug)
             ->firstOrFail();
+
+        // Only accessible when the creator is approved; admins are always visible
+        if (! $event->createdBy->is_admin && ! $event->createdBy->approved) {
+            abort(404);
+        }
 
         $rides = $event->rides()
             ->with('location')

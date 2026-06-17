@@ -86,14 +86,25 @@
     "settings": {
         "map_default": "Users will see the following map view when creating an event. Change it by zooming and dragging.",
         "footer_links": "Custom footer links",
-        "save": "Save"
+        "add_link": "Add link",
+        "save": "Save",
+        "saved": "Saved!"
     },
     "users": {
         "name": "Name",
         "email": "Email",
         "event_count": "Events",
         "approved": "Approved",
+        "approve": "Approve",
         "delete": "Delete"
+    },
+    "profile": {
+        "current_password": "Current password",
+        "new_password": "New password",
+        "change_password": "Change password",
+        "language": "Preferred language",
+        "saved": "Saved!",
+        "error": "Failed to save."
     },
     "footer": {
         "imprint": "Imprint"
