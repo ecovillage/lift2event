@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Route;
 // Public
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
+Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
+Route::post('reset-password', [AuthController::class, 'resetPassword']);
 Route::get('settings', [SettingController::class, 'show']);
 Route::get('geocode/search', [GeocodingController::class, 'search']);
 

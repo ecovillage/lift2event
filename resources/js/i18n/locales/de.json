@@ -17,7 +17,14 @@
         "login": "Anmelden",
         "register": "Registrieren",
         "forgot_password": "Passwort vergessen?",
-        "name": "Name"
+        "name": "Name",
+        "send_reset_link": "Reset-Link senden",
+        "reset_password": "Passwort zurücksetzen",
+        "new_password": "Neues Passwort",
+        "reset_link_sent": "Falls diese E-Mail-Adresse bei uns registriert ist, haben wir dir einen Link zum Zurücksetzen deines Passworts geschickt.",
+        "back_to_login": "Zurück zur Anmeldung",
+        "password_reset_success": "Dein Passwort wurde erfolgreich zurückgesetzt. Du kannst dich jetzt anmelden.",
+        "invalid_token": "Dieser Link ist ungültig oder abgelaufen."
     },
     "event": {
         "rideshare_for": "Mitfahrbörse zur Veranstaltung",

@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 
 class AuthController extends Controller
 {
@@ -55,5 +58,41 @@ class AuthController extends Controller
     public function user(Request $request): JsonResponse
     {
         return response()->json($request->user());
+    }
+
+    public function forgotPassword(Request $request): JsonResponse
+    {
+        $request->validate(['email' => ['required', 'email']]);
+
+        ResetPassword::createUrlUsing(function ($user, $token) {
+            return url('/reset-password?token=' . $token . '&email=' . urlencode($user->getEmailForPasswordReset()));
+        });
+
+        Password::sendResetLink($request->only('email'));
+
+        return response()->json(['message' => 'Falls diese E-Mail-Adresse bei uns registriert ist, haben wir einen Reset-Link verschickt.']);
+    }
+
+    public function resetPassword(Request $request): JsonResponse
+    {
+        $request->validate([
+            'token'                 => ['required'],
+            'email'                 => ['required', 'email'],
+            'password'              => ['required', 'min:8', 'confirmed'],
+        ]);
+
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function (User $user, string $password) {
+                $user->forceFill(['password' => Hash::make($password)])->save();
+                $user->tokens()->delete();
+            }
+        );
+
+        if ($status === Password::PASSWORD_RESET) {
+            return response()->json(['message' => 'Passwort erfolgreich zurückgesetzt.']);
+        }
+
+        return response()->json(['message' => __($status)], 422);
     }
 }

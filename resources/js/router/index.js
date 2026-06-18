@@ -38,6 +38,12 @@ const routes = [
         component: () => import('@/views/admin/ForgotPassword.vue'),
         meta: { guestOnly: true },
     },
+    {
+        path: '/reset-password',
+        name: 'password.reset',
+        component: () => import('@/views/admin/ResetPassword.vue'),
+        meta: { guestOnly: true },
+    },
 
     // Admin area
     {

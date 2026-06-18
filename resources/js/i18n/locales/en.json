@@ -17,7 +17,14 @@
         "register": "Register",
         "forgot_password": "Forgot password?",
         "name": "Name",
-        "confirm_password": "Confirm password"
+        "confirm_password": "Confirm password",
+        "send_reset_link": "Send reset link",
+        "reset_password": "Reset password",
+        "new_password": "New password",
+        "reset_link_sent": "If this email address is registered with us, we have sent you a password reset link.",
+        "back_to_login": "Back to login",
+        "password_reset_success": "Your password has been reset successfully. You can now log in.",
+        "invalid_token": "This link is invalid or has expired."
     },
     "event": {
         "rideshare_for": "Rideshare for event",
