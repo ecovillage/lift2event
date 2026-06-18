@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Mail\RideConfirmation;
 use App\Models\Event;
 use App\Models\Location;
 use App\Models\Ride;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
 
 class PublicRideController extends Controller
@@ -64,6 +66,8 @@ class PublicRideController extends Controller
             'info'            => $data['info'] ?? null,
             'edit_token'      => bin2hex(random_bytes(32)),
         ]);
+
+        Mail::to($ride->email)->send(new RideConfirmation($ride, $event));
 
         return response()->json($ride->load('location'), 201);
     }

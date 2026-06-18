@@ -2,15 +2,23 @@
 
 namespace Tests\Feature\Api;
 
+use App\Mail\RideConfirmation;
 use App\Models\Event;
 use App\Models\Location;
 use App\Models\Ride;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class PublicRideTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Mail::fake();
+    }
 
     private array $validLocation = [
         'address'      => 'Teststraße 1, 10115 Berlin',
@@ -195,6 +203,25 @@ class PublicRideTest extends TestCase
         $loc = array_merge($this->validLocation, ['latitude' => 91]);
         $this->postJson("/api/e/{$event->slug}/rides", $this->payload(['location' => $loc]))
             ->assertUnprocessable()->assertJsonValidationErrors(['location.latitude']);
+    }
+
+    public function test_create_sends_confirmation_email(): void
+    {
+        Mail::fake();
+
+        $event = Event::factory()->create(['name' => 'Testkongress 2025']);
+
+        $this->postJson("/api/e/{$event->slug}/rides", $this->payload([
+            'email' => 'max@example.com',
+            'name'  => 'Max Mustermann',
+        ]))->assertCreated();
+
+        Mail::assertSent(RideConfirmation::class, function (RideConfirmation $mail) use ($event) {
+            return $mail->hasTo('max@example.com')
+                && str_contains($mail->envelope()->subject, 'Testkongress 2025')
+                && str_contains($mail->editUrl, '/edit?token=')
+                && str_contains($mail->deleteUrl, '/delete?token=');
+        });
     }
 
     // -------------------------------------------------------------------------
