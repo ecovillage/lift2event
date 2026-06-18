@@ -1,0 +1,3 @@
+CREATE DATABASE IF NOT EXISTS `lift2event_e2e`;
+GRANT ALL PRIVILEGES ON `lift2event_e2e`.* TO 'lift2event'@'%';
+FLUSH PRIVILEGES;
