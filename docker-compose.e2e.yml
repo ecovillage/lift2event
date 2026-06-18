@@ -2,3 +2,4 @@ services:
   app:
     environment:
       DB_DATABASE: lift2event_e2e
+      MAIL_MAILER: log
