@@ -37,6 +37,18 @@ test.describe('Authentifizierung', () => {
         await expect(page.getByRole('link', { name: 'Einstellungen' })).toBeVisible();
     });
 
+    test('Admin wird von /admin auf /admin/users umgeleitet', async ({ page }) => {
+        await loginAs(page, ADMIN_EMAIL);
+        await page.goto('/admin');
+        await expect(page).toHaveURL(/\/admin\/users/);
+    });
+
+    test('Normaler Nutzer wird von /admin auf /admin/events umgeleitet', async ({ page }) => {
+        await loginAs(page, USER_EMAIL);
+        await page.goto('/admin');
+        await expect(page).toHaveURL(/\/admin\/events/);
+    });
+
     test('Normaler Nutzer sieht kein Admin-Menü', async ({ page }) => {
         await loginAs(page, USER_EMAIL);
         await expect(page).toHaveURL(/\/admin\/events/);

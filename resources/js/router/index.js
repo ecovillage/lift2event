@@ -54,7 +54,7 @@ const routes = [
             {
                 path: '',
                 name: 'admin.home',
-                redirect: () => ({ name: 'admin.events' }),
+                component: { render: () => null },
             },
             {
                 path: 'events',
@@ -114,6 +114,9 @@ router.beforeEach(async (to) => {
     }
     if (to.meta.guestOnly && isAuthenticated.value) {
         return { name: 'admin.events' };
+    }
+    if (to.name === 'admin.home') {
+        return { name: isAdmin.value ? 'admin.users' : 'admin.events' };
     }
 });
 
