@@ -91,6 +91,27 @@
                 </div>
             </div>
         </form>
+
+        <!-- Ride tiles: same cards as the public page, empty in create mode -->
+        <div v-if="isEdit" class="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+            <RideCard
+                v-for="ride in rides"
+                :key="ride.id"
+                :ride="ride"
+                :event="event"
+                @open="selectedRide = ride"
+            />
+        </div>
+
+        <!-- Ride detail popup -->
+        <Teleport to="body">
+            <RidePopup
+                v-if="selectedRide"
+                :ride="selectedRide"
+                :event="event"
+                @close="selectedRide = null"
+            />
+        </Teleport>
     </div>
 </template>
 
@@ -101,6 +122,8 @@ import { useRouter, useRoute } from 'vue-router';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import api from '@/api/axios';
+import RideCard from '../public/RideCard.vue';
+import RidePopup from '../public/RidePopup.vue';
 
 const { t }  = useI18n();
 const router = useRouter();
@@ -111,6 +134,8 @@ const eventId = computed(() => route.params.id);
 
 const form    = reactive({ name: '', start_at: '', end_at: '', location: null });
 const event   = ref(null);
+const rides   = ref([]);
+const selectedRide = ref(null);
 const saving  = ref(false);
 const errors  = ref([]);
 const copied  = ref(false);
@@ -161,6 +186,7 @@ onMounted(async () => {
     if (isEdit.value) {
         const { data } = await api.get(`/events/${eventId.value}`);
         event.value   = data;
+        rides.value   = data.rides ?? [];
         form.name     = data.name;
         form.start_at = toLocalInput(data.start_at);
         form.end_at   = toLocalInput(data.end_at);

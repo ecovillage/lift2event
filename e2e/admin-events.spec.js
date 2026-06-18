@@ -84,6 +84,29 @@ test.describe('Admin – Veranstaltungen', () => {
         await expect(page.getByRole('button', { name: 'Kopieren' })).toBeVisible();
     });
 
+    test('Bearbeiten-Seite zeigt Mitfahrten-Kacheln des Events', async ({ page }) => {
+        await mockGeocode(page);
+        await loginAs(page, ADMIN_EMAIL);
+        await page.goto('/admin/events');
+        await page.getByText('Testveranstaltung Berlin').click();
+        await expect(page).toHaveURL(/\/admin\/events\/\d+\/edit/);
+
+        // Pre-seeded ride tile (same RideCard as on the public page)
+        await expect(page.getByText('Hauptbahnhof, 80335 München')).toBeVisible();
+        await expect(page.getByText('Angebot')).toBeVisible();
+
+        // Clicking the tile opens the detail popup with contact info
+        await page.getByText('Hauptbahnhof, 80335 München').click();
+        await expect(page.getByText('Max Muster')).toBeVisible();
+    });
+
+    test('Neu-Anlegen-Seite zeigt keine Mitfahrten-Kacheln', async ({ page }) => {
+        await loginAs(page, ADMIN_EMAIL);
+        await page.getByRole('link', { name: /Neue Veranstaltung/i }).click();
+        await expect(page).toHaveURL(/\/admin\/events\/create/);
+        await expect(page.getByText('Angebot')).not.toBeVisible();
+    });
+
     test('Admin kann nicht-eigene Veranstaltung bearbeiten', async ({ page }) => {
         await mockGeocode(page);
         await loginAs(page, ADMIN_EMAIL);

@@ -2,6 +2,8 @@
 
 Feature #1 (Bestätigungsmail nach Ride-Erstellung) ist implementiert (commit f0ea89c).
 Feature #2 (Passwort-vergessen-Flow) ist implementiert.
+Feature #3 (Admin-Landing-Page-Redirect) ist implementiert.
+Feature #4 (Mitfahrten-Liste auf der Event-Bearbeiten-Seite) ist implementiert.
 
 ---
 

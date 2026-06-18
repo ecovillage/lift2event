@@ -56,7 +56,10 @@ class EventController extends Controller
             return response()->json(['message' => 'Forbidden'], 403);
         }
 
-        return response()->json($event->load(['location', 'createdBy', 'rides.location']));
+        $event->load(['location', 'createdBy', 'rides.location']);
+        $event->rides->makeHidden('edit_token');
+
+        return response()->json($event);
     }
 
     public function update(Request $request, Event $event): JsonResponse

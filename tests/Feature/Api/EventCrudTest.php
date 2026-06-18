@@ -221,6 +221,18 @@ class EventCrudTest extends TestCase
         $this->assertCount(2, $response->json('rides'));
     }
 
+    public function test_show_rides_do_not_contain_edit_tokens(): void
+    {
+        [$user, $headers] = $this->auth();
+        $event = Event::factory()->create(['created_by_id' => $user->id]);
+        Ride::factory()->create(['event_id' => $event->id, 'edit_token' => 'secret_token']);
+
+        $response = $this->getJson("/api/events/{$event->id}", $headers);
+
+        $this->assertNull($response->json('rides.0.edit_token'));
+        $this->assertArrayNotHasKey('edit_token', $response->json('rides.0'));
+    }
+
     // -------------------------------------------------------------------------
     // PUT /api/events/{id}
     // -------------------------------------------------------------------------
