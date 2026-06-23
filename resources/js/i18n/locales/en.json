@@ -34,7 +34,6 @@
         "start": "Start",
         "end": "End",
         "location": "Location",
-        "ride_count": "Rides",
         "public_link": "Public link",
         "none": "No events yet.",
         "location_placeholder": "Search address…",

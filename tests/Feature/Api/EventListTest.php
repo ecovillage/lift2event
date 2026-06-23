@@ -86,27 +86,31 @@ class EventListTest extends TestCase
         $this->assertSame('Musterstraße 1, Berlin', $event['location']['address']);
     }
 
-    public function test_response_includes_ride_count(): void
+    public function test_response_includes_separate_offer_and_request_counts(): void
     {
         [$user, $headers] = $this->actingAsUser();
         $event            = Event::factory()->create(['created_by_id' => $user->id]);
 
-        Ride::factory()->count(3)->create(['event_id' => $event->id]);
+        Ride::factory()->count(2)->create(['event_id' => $event->id, 'type' => 'offer']);
+        Ride::factory()->count(3)->create(['event_id' => $event->id, 'type' => 'request']);
 
         $result = $this->getJson('/api/events', $headers)->json(0);
 
-        $this->assertArrayHasKey('rides_count', $result);
-        $this->assertSame(3, $result['rides_count']);
+        $this->assertArrayHasKey('offers_count', $result);
+        $this->assertArrayHasKey('requests_count', $result);
+        $this->assertSame(2, $result['offers_count']);
+        $this->assertSame(3, $result['requests_count']);
     }
 
-    public function test_ride_count_is_zero_for_event_without_rides(): void
+    public function test_offer_and_request_counts_are_zero_for_event_without_rides(): void
     {
         [$user, $headers] = $this->actingAsUser();
         Event::factory()->create(['created_by_id' => $user->id]);
 
         $result = $this->getJson('/api/events', $headers)->json(0);
 
-        $this->assertSame(0, $result['rides_count']);
+        $this->assertSame(0, $result['offers_count']);
+        $this->assertSame(0, $result['requests_count']);
     }
 
     public function test_user_with_no_events_receives_empty_list(): void

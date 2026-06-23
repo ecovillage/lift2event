@@ -35,7 +35,6 @@
         "start": "Beginn",
         "end": "Ende",
         "location": "Ort",
-        "ride_count": "Mitfahrten",
         "public_link": "Öffentlicher Link",
         "location_placeholder": "Adresse suchen…",
         "location_required": "Bitte wähle einen Veranstaltungsort aus.",

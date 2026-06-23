@@ -23,7 +23,8 @@
                         <th class="px-4 py-3 hidden sm:table-cell">{{ t('event.start') }}</th>
                         <th class="px-4 py-3 hidden md:table-cell">{{ t('event.end') }}</th>
                         <th class="px-4 py-3 hidden lg:table-cell">{{ t('event.location') }}</th>
-                        <th class="px-4 py-3 text-right">{{ t('event.ride_count') }}</th>
+                        <th class="px-4 py-3 text-right">{{ t('ride.filter_offers') }}</th>
+                        <th class="px-4 py-3 text-right">{{ t('ride.filter_requests') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -37,7 +38,8 @@
                         <td class="px-4 py-3 hidden sm:table-cell text-gray-600">{{ fmt(event.start_at) }}</td>
                         <td class="px-4 py-3 hidden md:table-cell text-gray-600">{{ fmt(event.end_at) }}</td>
                         <td class="px-4 py-3 hidden lg:table-cell text-gray-600">{{ event.location?.address ?? '–' }}</td>
-                        <td class="px-4 py-3 text-right text-gray-600">{{ event.rides_count }}</td>
+                        <td class="px-4 py-3 text-right text-gray-600">{{ event.offers_count }}</td>
+                        <td class="px-4 py-3 text-right text-gray-600">{{ event.requests_count }}</td>
                     </tr>
                 </tbody>
             </table>

@@ -14,7 +14,10 @@ class EventController extends Controller
     {
         $user  = $request->user();
         $query = Event::with(['location', 'createdBy'])
-            ->withCount('rides')
+            ->withCount([
+                'rides as offers_count'   => fn ($q) => $q->where('type', 'offer'),
+                'rides as requests_count' => fn ($q) => $q->where('type', 'request'),
+            ])
             ->orderByDesc('start_at');
 
         if (! $user->is_admin) {
