@@ -18,6 +18,11 @@ const routes = [
         name: 'ride.delete',
         component: () => import('@/views/public/RideDelete.vue'),
     },
+    {
+        path: '/impressum',
+        name: 'imprint',
+        component: () => import('@/views/public/Imprint.vue'),
+    },
 
     // Auth
     {

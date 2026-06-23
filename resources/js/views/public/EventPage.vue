@@ -69,6 +69,20 @@
             </div>
         </div>
 
+        <!-- Footer -->
+        <footer class="bg-white border-t px-4 py-2 flex-shrink-0 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-500">
+            <router-link :to="{ name: 'imprint' }" class="hover:text-gray-700 hover:underline">{{ t('footer.imprint') }}</router-link>
+            <a :href="githubUrl" target="_blank" rel="noopener" class="hover:text-gray-700 hover:underline">{{ t('footer.github') }}</a>
+            <a
+                v-for="(link, i) in footerLinks"
+                :key="i"
+                :href="link.url"
+                target="_blank"
+                rel="noopener"
+                class="hover:text-gray-700 hover:underline"
+            >{{ link.label }}</a>
+        </footer>
+
         <!-- Ride detail popup -->
         <Teleport to="body">
             <RidePopup
@@ -122,6 +136,9 @@ const selectedRide = ref(null);
 const mapBounds    = ref(null);
 const activeFilter = ref('all');
 const dateFilter   = ref('');
+const footerLinks  = ref([]);
+
+const githubUrl = 'https://github.com/ecovillage/lift2event';
 
 // Map state
 const mapEl    = ref(null);
@@ -286,6 +303,15 @@ async function load() {
     }
 }
 
+async function loadFooterLinks() {
+    try {
+        const { data } = await axios.get('/api/settings');
+        footerLinks.value = data.footer_links ?? [];
+    } catch {
+        footerLinks.value = [];
+    }
+}
+
 function onRideCreated(ride) {
     if (ride.edit_token) {
         localStorage.setItem(`ride_token_${ride.id}`, ride.edit_token);
@@ -300,6 +326,7 @@ function onRideCreated(ride) {
 }
 
 onMounted(async () => {
+    loadFooterLinks();
     await load();
     if (!fetchError.value && mapEl.value) {
         initMap();

@@ -117,7 +117,11 @@
         "error": "保存失败。"
     },
     "footer": {
-        "imprint": "法律声明"
+        "imprint": "法律声明",
+        "github": "GitHub"
+    },
+    "imprint": {
+        "placeholder": "此页面应包含本安装运营者的法定信息披露内容。"
     },
     "error": {
         "phone_country": "如果您的出发地与活动地点不在同一个国家，您的电话号码必须以 + 开头。",

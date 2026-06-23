@@ -119,7 +119,11 @@
         "error": "Speichern fehlgeschlagen."
     },
     "footer": {
-        "imprint": "Impressum"
+        "imprint": "Impressum",
+        "github": "GitHub"
+    },
+    "imprint": {
+        "placeholder": "Hier stehen die Anbieterkennzeichnung und die rechtlichen Pflichtangaben des Betreibers dieser Installation."
     },
     "error": {
         "phone_country": "Wenn dein Heimatort in einem anderen Land liegt als die Veranstaltung, muss deine Telefonnummer mit + beginnen.",

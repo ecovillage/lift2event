@@ -117,7 +117,11 @@
         "error": "Échec de l'enregistrement."
     },
     "footer": {
-        "imprint": "Mentions légales"
+        "imprint": "Mentions légales",
+        "github": "GitHub"
+    },
+    "imprint": {
+        "placeholder": "Cette page doit contenir les mentions légales obligatoires de l'exploitant de cette installation."
     },
     "error": {
         "phone_country": "Si votre lieu de départ est dans un autre pays que l'événement, votre numéro de téléphone doit commencer par +.",

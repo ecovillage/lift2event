@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
-import { resetDb, mockGeocode } from './helpers.js';
-import { ADMIN_EVENT_SLUG, UNAPPROVED_EMAIL } from './fixtures.js';
+import { resetDb, mockGeocode, loginAs } from './helpers.js';
+import { ADMIN_EVENT_SLUG, UNAPPROVED_EMAIL, ADMIN_EMAIL } from './fixtures.js';
 
 test.describe('Öffentliche Mitfahrbörse', () => {
     test.beforeAll(() => resetDb());
@@ -102,6 +102,32 @@ test.describe('Öffentliche Mitfahrbörse', () => {
         await page.locator('.cursor-pointer').first().click();
         // Should have at least an email contact button
         await expect(page.getByText(/E-Mail|email/i).first()).toBeVisible();
+    });
+
+    test('Footer zeigt Impressum- und GitHub-Link', async ({ page }) => {
+        await page.goto(eventUrl);
+        await expect(page.getByRole('link', { name: 'Impressum' })).toBeVisible();
+        await expect(page.getByRole('link', { name: 'GitHub' })).toBeVisible();
+    });
+
+    test('Klick auf Impressum öffnet die Impressum-Seite', async ({ page }) => {
+        await page.goto(eventUrl);
+        await page.getByRole('link', { name: 'Impressum' }).click();
+        await expect(page).toHaveURL(/\/impressum$/);
+        await expect(page.getByRole('heading', { name: 'Impressum' })).toBeVisible();
+    });
+
+    test('Footer zeigt benutzerdefinierte Links aus den Einstellungen', async ({ page }) => {
+        await loginAs(page, ADMIN_EMAIL);
+        await page.goto('/admin/settings');
+        await page.getByTestId('add-footer-link-btn').click();
+        await page.getByTestId('footer-link-label-0').fill('Datenschutz');
+        await page.getByTestId('footer-link-url-0').fill('https://example.com/datenschutz');
+        await page.getByTestId('save-footer-btn').click();
+        await expect(page.getByText('Gespeichert!')).toBeVisible({ timeout: 8000 });
+
+        await page.goto(eventUrl);
+        await expect(page.getByRole('link', { name: 'Datenschutz' })).toBeVisible();
     });
 
     test('Event von nicht-bestätigtem Nutzer ist nicht öffentlich', async ({ page }) => {

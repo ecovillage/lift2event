@@ -117,7 +117,11 @@
         "error": "Failed to save."
     },
     "footer": {
-        "imprint": "Imprint"
+        "imprint": "Imprint",
+        "github": "GitHub"
+    },
+    "imprint": {
+        "placeholder": "This page should contain the legally required provider information for the operator of this installation."
     },
     "error": {
         "phone_country": "If your home location is in a different country than the event, your phone number must start with +.",
