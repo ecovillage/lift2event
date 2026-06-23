@@ -150,8 +150,12 @@ const publicLink = computed(() =>
 
 // Map
 const mapEl = ref(null);
-let map    = null;
-let marker = null;
+let map       = null;
+let marker    = null;
+let rideLayer = null;
+
+const offerColor   = '#4a9f6e';
+const requestColor = '#e07b30';
 
 const starIcon = () => L.divIcon({
     html: '<span style="font-size:22px;display:block;transform:translate(-50%,-50%)">⭐</span>',
@@ -162,6 +166,42 @@ const starIcon = () => L.divIcon({
 function setMarker(lat, lng) {
     if (marker) marker.remove();
     marker = L.marker([lat, lng], { icon: starIcon() }).addTo(map);
+}
+
+// Draw a route (line + pin) for every ride, green for offers, orange for requests
+function drawRides() {
+    if (!rideLayer || !form.location) return;
+    rideLayer.clearLayers();
+
+    const evLat = form.location.latitude;
+    const evLng = form.location.longitude;
+
+    rides.value.forEach(ride => {
+        if (!ride.location) return;
+        const lat   = parseFloat(ride.location.latitude);
+        const lng   = parseFloat(ride.location.longitude);
+        const color = ride.type === 'offer' ? offerColor : requestColor;
+
+        L.polyline([[lat, lng], [evLat, evLng]], { color, weight: 2, opacity: 0.6 })
+            .addTo(rideLayer);
+
+        L.circleMarker([lat, lng], {
+            radius: 7, color: 'white', weight: 2,
+            fillColor: color, fillOpacity: 0.9,
+        })
+            .on('click', () => { selectedRide.value = ride; })
+            .addTo(rideLayer);
+    });
+}
+
+function fitMapToRides() {
+    if (!map || !form.location) return;
+    const points = [[form.location.latitude, form.location.longitude]];
+    rides.value.forEach(r => {
+        if (r.location) points.push([parseFloat(r.location.latitude), parseFloat(r.location.longitude)]);
+    });
+    if (points.length > 1) map.fitBounds(points, { padding: [40, 40] });
+    else map.setView(points[0], 10);
 }
 
 function toLocalInput(iso) {
@@ -182,6 +222,7 @@ onMounted(async () => {
         import.meta.env.VITE_OSM_TILE_URL || 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         { attribution: '© OpenStreetMap contributors' }
     ).addTo(map);
+    rideLayer = L.layerGroup().addTo(map);
 
     if (isEdit.value) {
         const { data } = await api.get(`/events/${eventId.value}`);
@@ -199,7 +240,8 @@ onMounted(async () => {
             };
             addressInput.value = data.location.address;
             setMarker(form.location.latitude, form.location.longitude);
-            map.setView([form.location.latitude, form.location.longitude], 10);
+            drawRides();
+            fitMapToRides();
         }
     }
 });
@@ -235,6 +277,7 @@ function selectSuggestion(s) {
     suggestions.value  = [];
     setMarker(lat, lng);
     map.setView([lat, lng], 12);
+    drawRides();
 }
 
 async function copyLink() {

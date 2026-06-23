@@ -100,6 +100,22 @@ test.describe('Admin – Veranstaltungen', () => {
         await expect(page.getByText('Max Muster')).toBeVisible();
     });
 
+    test('Bearbeiten-Karte zeichnet die Route der Mitfahrt', async ({ page }) => {
+        await mockGeocode(page);
+        await loginAs(page, ADMIN_EMAIL);
+        await page.goto('/admin/events');
+        await page.getByText('Testveranstaltung Berlin').click();
+        await expect(page).toHaveURL(/\/admin\/events\/\d+\/edit/);
+
+        // Pre-seeded offer ride renders as a green pin (circle marker) on the map
+        const pin = page.locator('path.leaflet-interactive[fill="#4a9f6e"]');
+        await expect(pin).toHaveCount(1);
+
+        // Clicking the pin opens the same detail popup as the ride tile
+        await pin.click();
+        await expect(page.getByText('Max Muster')).toBeVisible();
+    });
+
     test('Neu-Anlegen-Seite zeigt keine Mitfahrten-Kacheln', async ({ page }) => {
         await loginAs(page, ADMIN_EMAIL);
         await page.getByRole('link', { name: /Neue Veranstaltung/i }).click();
