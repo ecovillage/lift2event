@@ -1,7 +1,7 @@
 import { execSync } from 'child_process';
 import { readFileSync } from 'fs';
 
-const PROJECT = '/home/martin/werkbank/lift2event';
+const PROJECT = '/home/martin/werkbank/lift2event2';
 
 function getRootPassword() {
     try {

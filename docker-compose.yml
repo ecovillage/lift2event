@@ -12,7 +12,6 @@ services:
     environment:
       APP_ENV: local
       APP_DEBUG: "true"
-    env_file: .env
 
   db:
     image: mariadb:11

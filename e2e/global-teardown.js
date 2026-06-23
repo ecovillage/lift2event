@@ -1,6 +1,6 @@
 import { execSync } from 'child_process';
 
-const PROJECT = '/home/martin/werkbank/lift2event';
+const PROJECT = '/home/martin/werkbank/lift2event2';
 
 async function waitForApp(maxMs = 30_000) {
     const deadline = Date.now() + maxMs;

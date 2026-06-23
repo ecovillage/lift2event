@@ -1,7 +1,7 @@
 import { execSync } from 'child_process';
 import { PASSWORD } from './fixtures.js';
 
-const PROJECT = '/home/martin/werkbank/lift2event';
+const PROJECT = '/home/martin/werkbank/lift2event2';
 
 export function resetDb() {
     execSync(
