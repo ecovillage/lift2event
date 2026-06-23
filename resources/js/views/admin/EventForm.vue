@@ -99,7 +99,10 @@
                 :key="ride.id"
                 :ride="ride"
                 :event="event"
+                manageable
                 @open="selectedRide = ride"
+                @edit="editingRide = ride"
+                @delete="deleteRide(ride)"
             />
         </div>
 
@@ -112,6 +115,25 @@
                 @close="selectedRide = null"
             />
         </Teleport>
+
+        <!-- Ride edit form (modal, no token required for admin / event creator) -->
+        <Teleport to="body">
+            <div
+                v-if="editingRide"
+                class="fixed inset-0 z-[2000] bg-black/50 flex items-end md:items-center justify-center"
+                @click.self="editingRide = null"
+            >
+                <div class="bg-white rounded-t-2xl md:rounded-xl w-full md:max-w-lg max-h-[90vh] overflow-y-auto">
+                    <RideForm
+                        :event="event"
+                        :ride="editingRide"
+                        manage
+                        @submitted="onRideUpdated"
+                        @cancelled="editingRide = null"
+                    />
+                </div>
+            </div>
+        </Teleport>
     </div>
 </template>
 
@@ -123,6 +145,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import api from '@/api/axios';
 import RideCard from '../public/RideCard.vue';
+import RideForm from '../public/RideForm.vue';
 import RidePopup from '../public/RidePopup.vue';
 
 const { t }  = useI18n();
@@ -136,6 +159,7 @@ const form    = reactive({ name: '', start_at: '', end_at: '', location: null })
 const event   = ref(null);
 const rides   = ref([]);
 const selectedRide = ref(null);
+const editingRide  = ref(null);
 const saving  = ref(false);
 const errors  = ref([]);
 const copied  = ref(false);
@@ -202,6 +226,20 @@ function fitMapToRides() {
     });
     if (points.length > 1) map.fitBounds(points, { padding: [40, 40] });
     else map.setView(points[0], 10);
+}
+
+function onRideUpdated(ride) {
+    const idx = rides.value.findIndex(r => r.id === ride.id);
+    if (idx !== -1) rides.value[idx] = ride;
+    editingRide.value = null;
+    drawRides();
+}
+
+async function deleteRide(ride) {
+    if (! window.confirm(t('ride.delete_confirm'))) return;
+    await api.delete(`/events/${eventId.value}/rides/${ride.id}`);
+    rides.value = rides.value.filter(r => r.id !== ride.id);
+    drawRides();
 }
 
 function toLocalInput(iso) {

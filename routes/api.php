@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\EventController;
 use App\Http\Controllers\Api\GeocodingController;
 use App\Http\Controllers\Api\PublicEventController;
 use App\Http\Controllers\Api\PublicRideController;
+use App\Http\Controllers\Api\RideController;
 use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
@@ -35,6 +36,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('events/{event}', [EventController::class, 'show']);
     Route::put('events/{event}', [EventController::class, 'update']);
     Route::delete('events/{event}', [EventController::class, 'destroy']);
+    Route::put('events/{event}/rides/{ride}', [RideController::class, 'update']);
+    Route::delete('events/{event}/rides/{ride}', [RideController::class, 'destroy']);
 
     // Admin-only
     Route::get('users', [UserController::class, 'index']);

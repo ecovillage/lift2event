@@ -132,4 +132,46 @@ test.describe('Admin – Veranstaltungen', () => {
         // Form should be shown (not an error)
         await expect(page.locator('input[type="text"]').first()).toBeVisible();
     });
+
+    // These two tests mutate / remove the only pre-seeded ride – keep them last
+    // so earlier tests in this file still see its original state.
+
+    test('Admin kann Mitfahrt über das Bearbeiten-Icon auf der Kachel ändern (ohne Token)', async ({ page }) => {
+        await mockGeocode(page, [{
+            place_id:     2,
+            display_name: 'Neue Teststraße 5, 99999 Teststadt, Deutschland',
+            lat:          '51.0',
+            lon:          '11.0',
+            address:      { country_code: 'de' },
+        }]);
+        await loginAs(page, ADMIN_EMAIL);
+        await page.goto('/admin/events');
+        await page.getByText('Testveranstaltung Berlin').click();
+        await expect(page).toHaveURL(/\/admin\/events\/\d+\/edit/);
+        await expect(page.getByText('Hauptbahnhof, 80335 München')).toBeVisible();
+
+        // Edit icon on the tile opens the ride form directly, no edit_token needed
+        await page.locator('[data-testid^="ride-edit-"]').click();
+        const addressInput = page.getByTestId('ride-address');
+        await addressInput.fill('Teststadt');
+        await page.waitForSelector('[data-testid="ride-suggestions"] li');
+        await page.locator('[data-testid="ride-suggestions"] li').first().click();
+        await page.getByTestId('ride-submit').click();
+
+        await expect(page.getByText('Neue Teststraße 5, 99999 Teststadt')).toBeVisible();
+        await expect(page.getByText('Hauptbahnhof, 80335 München')).not.toBeVisible();
+    });
+
+    test('Admin kann Mitfahrt über das Löschen-Icon auf der Kachel entfernen (ohne Token)', async ({ page }) => {
+        await loginAs(page, ADMIN_EMAIL);
+        await page.goto('/admin/events');
+        await page.getByText('Testveranstaltung Berlin').click();
+        await expect(page).toHaveURL(/\/admin\/events\/\d+\/edit/);
+        await expect(page.locator('[data-testid^="ride-delete-"]')).toHaveCount(1);
+
+        page.once('dialog', dialog => dialog.accept());
+        await page.locator('[data-testid^="ride-delete-"]').click();
+
+        await expect(page.locator('[data-testid^="ride-delete-"]')).toHaveCount(0);
+    });
 });

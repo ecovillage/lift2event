@@ -4,13 +4,35 @@
             ride.type === 'offer' ? 'border-[--color-offer]' : 'border-[--color-request]']"
         @click="emit('open')"
     >
-        <!-- Type badge -->
-        <span :class="['inline-block px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide mb-1',
-            ride.type === 'offer'
-                ? 'bg-[--color-offer-light] text-[--color-offer]'
-                : 'bg-[--color-request-light] text-[--color-request]']">
-            {{ t('ride.' + ride.type) }}
-        </span>
+        <div class="flex items-start justify-between gap-2">
+            <!-- Type badge -->
+            <span :class="['inline-block px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide mb-1',
+                ride.type === 'offer'
+                    ? 'bg-[--color-offer-light] text-[--color-offer]'
+                    : 'bg-[--color-request-light] text-[--color-request]']">
+                {{ t('ride.' + ride.type) }}
+            </span>
+
+            <!-- Manage icons (admin / event creator on the edit page, no token required) -->
+            <div v-if="manageable" class="flex gap-2 shrink-0 text-gray-400">
+                <button
+                    type="button"
+                    class="hover:text-gray-700"
+                    :title="t('ride.edit')"
+                    :aria-label="t('ride.edit')"
+                    :data-testid="`ride-edit-${ride.id}`"
+                    @click.stop="emit('edit')"
+                >✎</button>
+                <button
+                    type="button"
+                    class="hover:text-red-500"
+                    :title="t('ride.delete')"
+                    :aria-label="t('ride.delete')"
+                    :data-testid="`ride-delete-${ride.id}`"
+                    @click.stop="emit('delete')"
+                >🗑</button>
+            </div>
+        </div>
 
         <!-- Direction note (only when not both-ways) -->
         <span
@@ -40,11 +62,12 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
-    ride:  { type: Object, required: true },
-    event: { type: Object, required: true },
+    ride:       { type: Object, required: true },
+    event:      { type: Object, required: true },
+    manageable: { type: Boolean, default: false },
 });
 
-const emit = defineEmits(['open']);
+const emit = defineEmits(['open', 'edit', 'delete']);
 const { t, locale } = useI18n();
 
 const hasOutbound = computed(() => ['both-ways', 'outbound-only'].includes(props.ride.direction));

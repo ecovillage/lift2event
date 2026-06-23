@@ -5,6 +5,7 @@ Feature #2 (Passwort-vergessen-Flow) ist implementiert.
 Feature #3 (Admin-Landing-Page-Redirect) ist implementiert.
 Feature #4 (Mitfahrten-Liste auf der Event-Bearbeiten-Seite) ist implementiert.
 Feature #5 (Karte im Event-Bearbeiten-Modus zeigt Routen) ist implementiert.
+Feature #6 (Bearbeiten/Löschen-Icons für Admin/Event-Ersteller auf Kacheln) ist implementiert.
 
 ---
 

@@ -184,6 +184,7 @@ const props = defineProps({
     event:     { type: Object, required: true },
     ride:      { type: Object, default: null },
     editToken: { type: String, default: null },
+    manage:    { type: Boolean, default: false },
 });
 
 const emit = defineEmits(['submitted', 'cancelled']);
@@ -361,7 +362,9 @@ async function submit() {
         if (isEdit.value && props.editToken) payload.edit_token = props.editToken;
 
         const url = isEdit.value
-            ? `/e/${props.event.slug}/rides/${props.ride.id}`
+            ? (props.manage
+                ? `/events/${props.event.id}/rides/${props.ride.id}`
+                : `/e/${props.event.slug}/rides/${props.ride.id}`)
             : `/e/${props.event.slug}/rides`;
 
         const { data } = isEdit.value
