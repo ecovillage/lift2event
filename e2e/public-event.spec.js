@@ -97,6 +97,23 @@ test.describe('Öffentliche Mitfahrbörse', () => {
         ).toBeVisible({ timeout: 8000 });
     });
 
+    test('Mitfahrt-Formular: Datum/Uhrzeit sind mit Veranstaltungsdaten vorbefüllt', async ({ page }) => {
+        await page.goto(eventUrl);
+        await page.getByText('+ Neue Mitfahrt einstellen').first().click();
+        await page.getByTestId('ride-name').waitFor();
+
+        const dateInputs = page.locator('input[type="date"]');
+        const timeInputs = page.locator('input[type="time"]');
+
+        // Hinfahrt: Datum = Veranstaltungsbeginn, keine Uhrzeit-Voreinstellung
+        await expect(dateInputs.nth(0)).toHaveValue('2026-08-15');
+        await expect(timeInputs.nth(0)).toHaveValue('');
+
+        // Rückfahrt: Datum = Veranstaltungsende, Uhrzeit = Ende-Uhrzeit der Veranstaltung
+        await expect(dateInputs.nth(1)).toHaveValue('2026-08-17');
+        await expect(timeInputs.nth(1)).toHaveValue('18:00');
+    });
+
     test('Mitfahrt-Popup zeigt Kontakt-Buttons', async ({ page }) => {
         await page.goto(eventUrl);
         await page.locator('.cursor-pointer').first().click();
@@ -132,7 +149,7 @@ test.describe('Öffentliche Mitfahrbörse', () => {
 
     test('Veranstaltung ohne Mitfahrten zeigt Hinweistext statt Kacheln', async ({ page }) => {
         await page.goto(`/e/${USER_EVENT_SLUG}`);
-        await expect(page.getByText('Trag die erste Mitfahrt ein!')).toBeVisible();
+        await expect(page.getByText('Noch keine Mitfahrten – trag die erste ein!')).toBeVisible();
         await expect(page.locator('.cursor-pointer')).toHaveCount(0);
     });
 

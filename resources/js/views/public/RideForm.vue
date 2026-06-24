@@ -194,11 +194,7 @@ const isEdit = computed(() => !!props.ride);
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 function isoDate(iso) { return iso ? iso.substring(0, 10) : ''; }
-function isoTime(iso) {
-    if (!iso) return '';
-    const d = new Date(iso);
-    return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
-}
+function isoTime(iso) { return iso ? iso.substring(11, 16) : ''; }
 function shiftDateStr(dateStr, days) {
     if (!dateStr) return dateStr;
     const d = new Date(dateStr + 'T12:00');
@@ -228,7 +224,7 @@ const form = reactive({
 const outboundDate = ref(props.ride?.outbound_at ? isoDate(props.ride.outbound_at) : isoDate(props.event?.start_at));
 const outboundTime = ref(props.ride?.outbound_at ? isoTime(props.ride.outbound_at) : '');
 const returnDate   = ref(props.ride?.return_at   ? isoDate(props.ride.return_at)   : isoDate(props.event?.end_at));
-const returnTime   = ref(props.ride?.return_at   ? isoTime(props.ride.return_at)   : '');
+const returnTime   = ref(props.ride?.return_at   ? isoTime(props.ride.return_at)   : isoTime(props.event?.end_at));
 
 const eventEndTime = computed(() => isoTime(props.event?.end_at));
 
@@ -248,6 +244,7 @@ watch(() => form.direction, (d) => {
     // Re-apply event defaults for newly shown blocks
     if (['both-ways', 'outbound-only'].includes(d) && !outboundDate.value) outboundDate.value = isoDate(props.event?.start_at);
     if (['both-ways', 'return-only'].includes(d)   && !returnDate.value)   returnDate.value   = isoDate(props.event?.end_at);
+    if (['both-ways', 'return-only'].includes(d)   && !returnTime.value)   returnTime.value   = isoTime(props.event?.end_at);
 });
 
 // ── Contact methods ───────────────────────────────────────────────────────────
