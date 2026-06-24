@@ -1,7 +1,9 @@
 import { execSync } from 'child_process';
 import { readFileSync } from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, resolve } from 'path';
 
-const PROJECT = '/home/martin/werkbank/lift2event2';
+const PROJECT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 function getRootPassword() {
     try {

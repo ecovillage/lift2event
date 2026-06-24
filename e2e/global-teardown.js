@@ -1,6 +1,8 @@
 import { execSync } from 'child_process';
+import { fileURLToPath } from 'url';
+import { dirname, resolve } from 'path';
 
-const PROJECT = '/home/martin/werkbank/lift2event2';
+const PROJECT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 async function waitForApp(maxMs = 30_000) {
     const deadline = Date.now() + maxMs;

@@ -1,7 +1,9 @@
 import { execSync } from 'child_process';
+import { fileURLToPath } from 'url';
+import { dirname, resolve } from 'path';
 import { PASSWORD } from './fixtures.js';
 
-const PROJECT = '/home/martin/werkbank/lift2event2';
+const PROJECT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 export function resetDb() {
     execSync(
