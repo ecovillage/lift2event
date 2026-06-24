@@ -1,15 +1,15 @@
 <template>
     <div
         :class="['border-l-4 bg-white cursor-pointer hover:bg-gray-50 transition-colors p-3',
-            ride.type === 'offer' ? 'border-[--color-offer]' : 'border-[--color-request]']"
+            ride.type === 'offer' ? 'border-[var(--color-offer)]' : 'border-[var(--color-request)]']"
         @click="emit('open')"
     >
         <div class="flex items-start justify-between gap-2">
             <!-- Type badge -->
             <span :class="['inline-block px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide mb-1',
                 ride.type === 'offer'
-                    ? 'bg-[--color-offer-light] text-[--color-offer]'
-                    : 'bg-[--color-request-light] text-[--color-request]']">
+                    ? 'bg-[var(--color-offer-light)] text-[var(--color-offer)]'
+                    : 'bg-[var(--color-request-light)] text-[var(--color-request)]']">
                 {{ t('ride.' + ride.type) }}
             </span>
 

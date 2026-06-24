@@ -67,13 +67,13 @@
                     <span v-for="e in errors" :key="e" class="block">{{ e }}</span>
                 </p>
 
-                <button type="submit" :disabled="loading" class="w-full mt-2 py-2 px-4 bg-[--color-primary] hover:bg-[--color-primary-dark] text-white rounded font-medium transition-colors disabled:opacity-60">
+                <button type="submit" :disabled="loading" class="w-full mt-2 py-2 px-4 bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white rounded font-medium transition-colors disabled:opacity-60">
                     {{ loading ? '…' : t('auth.register') }}
                 </button>
             </form>
 
             <div class="mt-4 text-center text-sm">
-                <RouterLink :to="{ name: 'login' }" class="text-[--color-primary] hover:underline">
+                <RouterLink :to="{ name: 'login' }" class="text-[var(--color-primary)] hover:underline">
                     {{ t('auth.login') }}
                 </RouterLink>
             </div>
@@ -121,6 +121,6 @@ async function submit() {
 @reference "tailwindcss";
 
 .input {
-    @apply w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-[--color-primary] focus:ring-2 focus:ring-[--color-primary]/20;
+    @apply w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20;
 }
 </style>

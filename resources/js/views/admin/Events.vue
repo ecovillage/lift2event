@@ -4,7 +4,7 @@
             <h1 class="text-xl font-semibold">
                 {{ isAdmin ? t('nav.events') : t('nav.my_events') }}
             </h1>
-            <RouterLink :to="{ name: 'admin.events.create' }" class="btn-primary px-4 py-2 rounded font-medium text-sm text-white bg-[--color-primary] hover:bg-[--color-primary-dark] transition-colors">
+            <RouterLink :to="{ name: 'admin.events.create' }" class="btn-primary px-4 py-2 rounded font-medium text-sm text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] transition-colors">
                 + {{ t('event.new') }}
             </RouterLink>
         </div>

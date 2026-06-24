@@ -15,7 +15,7 @@
                     <p class="text-sm text-gray-600 mb-3">Bitte gib deinen Bearbeitungstoken ein:</p>
                     <input v-model="manualToken" type="text" placeholder="Token" class="w-full px-3 py-2 border border-gray-300 rounded text-sm font-mono mb-3" />
                     <button
-                        class="w-full py-2 bg-[--color-primary] text-white rounded text-sm font-medium"
+                        class="w-full py-2 bg-[var(--color-primary)] text-white rounded text-sm font-medium"
                         @click="applyToken"
                     >Weiter</button>
                     <p v-if="tokenError" class="mt-2 text-sm text-red-500">{{ tokenError }}</p>

@@ -7,7 +7,7 @@
 
             <div v-if="success" class="space-y-4">
                 <p class="text-sm text-gray-700">{{ t('auth.password_reset_success') }}</p>
-                <RouterLink :to="{ name: 'login' }" class="block text-center text-sm text-[--color-primary] hover:underline">
+                <RouterLink :to="{ name: 'login' }" class="block text-center text-sm text-[var(--color-primary)] hover:underline">
                     {{ t('auth.back_to_login') }}
                 </RouterLink>
             </div>
@@ -47,7 +47,7 @@
                 <button
                     type="submit"
                     :disabled="loading"
-                    class="w-full mt-2 py-2 px-4 bg-[--color-primary] hover:bg-[--color-primary-dark] text-white rounded font-medium transition-colors disabled:opacity-60"
+                    class="w-full mt-2 py-2 px-4 bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white rounded font-medium transition-colors disabled:opacity-60"
                 >
                     {{ loading ? '…' : t('auth.reset_password') }}
                 </button>
@@ -94,6 +94,6 @@ async function submit() {
 @reference "tailwindcss";
 
 .input {
-    @apply w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-[--color-primary] focus:ring-2 focus:ring-[--color-primary]/20;
+    @apply w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20;
 }
 </style>

@@ -53,7 +53,7 @@ test.describe('Öffentliche Mitfahrbörse', () => {
         const badges = page.locator('.border-l-4');
         const count = await badges.count();
         for (let i = 0; i < count; i++) {
-            await expect(badges.nth(i)).toHaveClass(/border-\[--color-offer\]/);
+            await expect(badges.nth(i)).toHaveClass(/border-\[var\(--color-offer\)\]/);
         }
     });
 
@@ -67,7 +67,7 @@ test.describe('Öffentliche Mitfahrbörse', () => {
     test('Neue Mitfahrt erstellen', async ({ page }) => {
         await mockGeocode(page);
         await page.goto(eventUrl);
-        await page.getByText('+ Eintrag erstellen').click();
+        await page.getByText('+ Neue Mitfahrt einstellen').first().click();
 
         // Wait for the ride form modal to open
         await page.getByTestId('ride-name').waitFor();

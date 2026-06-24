@@ -120,6 +120,6 @@ async function doLogout() {
     @apply px-3 py-1.5 rounded text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors;
 }
 .nav-link.active {
-    @apply bg-gray-100 text-[--color-primary];
+    @apply bg-gray-100 text-[var(--color-primary)];
 }
 </style>

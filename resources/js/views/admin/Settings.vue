@@ -8,7 +8,7 @@
             <div ref="mapEl" class="h-64 rounded overflow-hidden mb-4" data-testid="settings-map"></div>
             <div class="flex items-center gap-3">
                 <button
-                    class="px-4 py-2 bg-[--color-primary] text-white rounded text-sm font-medium hover:bg-[--color-primary-dark] disabled:opacity-60"
+                    class="px-4 py-2 bg-[var(--color-primary)] text-white rounded text-sm font-medium hover:bg-[var(--color-primary-dark)] disabled:opacity-60"
                     :disabled="saving.map"
                     data-testid="save-map-btn"
                     @click="saveMap"
@@ -27,14 +27,14 @@
                     v-model="link.label"
                     type="text"
                     placeholder="Label"
-                    class="flex-1 px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-[--color-primary]"
+                    class="flex-1 px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-[var(--color-primary)]"
                     :data-testid="`footer-link-label-${i}`"
                 />
                 <input
                     v-model="link.url"
                     type="url"
                     placeholder="https://…"
-                    class="flex-1 px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-[--color-primary]"
+                    class="flex-1 px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-[var(--color-primary)]"
                     :data-testid="`footer-link-url-${i}`"
                 />
                 <button
@@ -45,14 +45,14 @@
             </div>
 
             <button
-                class="text-sm text-[--color-primary] hover:underline mt-1"
+                class="text-sm text-[var(--color-primary)] hover:underline mt-1"
                 data-testid="add-footer-link-btn"
                 @click="footerLinks.push({ label: '', url: '' })"
             >+ {{ t('settings.add_link') }}</button>
 
             <div class="mt-4 flex items-center gap-3">
                 <button
-                    class="px-4 py-2 bg-[--color-primary] text-white rounded text-sm font-medium hover:bg-[--color-primary-dark] disabled:opacity-60"
+                    class="px-4 py-2 bg-[var(--color-primary)] text-white rounded text-sm font-medium hover:bg-[var(--color-primary-dark)] disabled:opacity-60"
                     :disabled="saving.footer"
                     data-testid="save-footer-btn"
                     @click="saveFooter"

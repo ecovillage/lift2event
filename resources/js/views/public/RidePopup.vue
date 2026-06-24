@@ -13,8 +13,8 @@
                 <div class="flex items-center gap-2">
                     <span :class="['px-3 py-1.5 rounded-full text-sm font-semibold flex items-center gap-1.5',
                         ride.type === 'offer'
-                            ? 'bg-[--color-offer-light] text-[--color-offer]'
-                            : 'bg-[--color-request-light] text-[--color-request]']">
+                            ? 'bg-[var(--color-offer-light)] text-[var(--color-offer)]'
+                            : 'bg-[var(--color-request-light)] text-[var(--color-request)]']">
                         <span>{{ ride.seats }}</span>
                         <span>{{ t(ride.type === 'offer' ? 'ride.seats_available' : 'ride.seats_needed') }}</span>
                     </span>

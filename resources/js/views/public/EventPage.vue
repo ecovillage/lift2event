@@ -39,7 +39,7 @@
             <div class="flex-1"></div>
 
             <button
-                class="px-3 py-1.5 rounded text-xs font-medium text-white bg-[--color-primary] hover:bg-[--color-primary-dark] transition-colors"
+                class="px-3 py-1.5 rounded text-xs font-medium text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] transition-colors"
                 @click="showForm = true"
             >{{ t('ride.new_entry') }}</button>
         </div>
@@ -62,6 +62,12 @@
                     :event="event"
                     @open="selectedRide = ride"
                 />
+                <div class="p-4 text-center">
+                    <button
+                        class="px-3 py-1.5 rounded text-xs font-medium text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] transition-colors"
+                        @click="showForm = true"
+                    >{{ t('ride.new_entry') }}</button>
+                </div>
             </div>
 
             <!-- Right: Leaflet map (desktop flex-1 / mobile top half) -->

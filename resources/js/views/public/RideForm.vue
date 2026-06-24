@@ -11,7 +11,7 @@
                 <legend class="field-label">{{ t('ride.type_label') }}</legend>
                 <div class="flex flex-wrap gap-4 mt-1">
                     <label v-for="opt in typeOptions" :key="opt.value" class="flex items-center gap-2 text-sm cursor-pointer">
-                        <input type="radio" v-model="form.type" :value="opt.value" class="accent-[--color-primary]" />
+                        <input type="radio" v-model="form.type" :value="opt.value" class="accent-[var(--color-primary)]" />
                         <span v-html="opt.label"></span>
                     </label>
                 </div>
@@ -22,7 +22,7 @@
                 <legend class="field-label">{{ t('ride.direction_label') }}</legend>
                 <div class="flex flex-col gap-1.5 mt-1">
                     <label v-for="opt in directionOptions" :key="opt.value" class="flex items-center gap-2 text-sm cursor-pointer">
-                        <input type="radio" v-model="form.direction" :value="opt.value" class="accent-[--color-primary]" />
+                        <input type="radio" v-model="form.direction" :value="opt.value" class="accent-[var(--color-primary)]" />
                         {{ opt.label }}
                     </label>
                 </div>
@@ -61,7 +61,7 @@
                             v-model="form.contact_methods"
                             :value="m"
                             :disabled="phoneRequired(m)"
-                            class="accent-[--color-primary]"
+                            class="accent-[var(--color-primary)]"
                         />
                         {{ t('ride.contact_' + m) }}
                     </label>
@@ -167,7 +167,7 @@
                 <button
                     type="submit"
                     :disabled="saving || !form.location || form.contact_methods.length === 0"
-                    class="flex-1 py-2 bg-[--color-primary] hover:bg-[--color-primary-dark] text-white rounded text-sm font-medium transition-colors disabled:opacity-60"
+                    class="flex-1 py-2 bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white rounded text-sm font-medium transition-colors disabled:opacity-60"
                     data-testid="ride-submit"
                 >{{ saving ? '…' : t('ride.create') }}</button>
             </div>
@@ -386,7 +386,7 @@ async function submit() {
 <style scoped>
 @reference "tailwindcss";
 .field-label  { @apply block text-sm font-medium text-gray-700 mb-1; }
-.field-input  { @apply w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-[--color-primary] focus:ring-2 focus:ring-[--color-primary]/20; }
+.field-input  { @apply w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20; }
 .day-btn      { @apply px-2 py-1 text-xs border border-gray-200 rounded hover:bg-gray-50 text-gray-500 transition-colors; }
 .stepper-btn  { @apply px-4 py-2 border border-gray-300 text-sm font-medium hover:bg-gray-50 transition-colors; }
 </style>

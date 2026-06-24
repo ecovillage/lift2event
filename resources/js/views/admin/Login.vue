@@ -17,7 +17,7 @@
                         autocomplete="email"
                         required
                         autofocus
-                        class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-[--color-primary] focus:ring-2 focus:ring-[--color-primary]/20"
+                        class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20"
                     />
                 </div>
 
@@ -31,7 +31,7 @@
                         type="password"
                         autocomplete="current-password"
                         required
-                        class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-[--color-primary] focus:ring-2 focus:ring-[--color-primary]/20"
+                        class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20"
                     />
                 </div>
 
@@ -40,17 +40,17 @@
                 <button
                     type="submit"
                     :disabled="loading"
-                    class="w-full mt-2 py-2 px-4 bg-[--color-primary] hover:bg-[--color-primary-dark] text-white rounded font-medium transition-colors disabled:opacity-60"
+                    class="w-full mt-2 py-2 px-4 bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white rounded font-medium transition-colors disabled:opacity-60"
                 >
                     {{ loading ? '…' : t('auth.login') }}
                 </button>
             </form>
 
             <div class="mt-4 flex justify-between text-sm">
-                <RouterLink :to="{ name: 'password.request' }" class="text-[--color-primary] hover:underline">
+                <RouterLink :to="{ name: 'password.request' }" class="text-[var(--color-primary)] hover:underline">
                     {{ t('auth.forgot_password') }}
                 </RouterLink>
-                <RouterLink :to="{ name: 'register' }" class="text-[--color-primary] hover:underline">
+                <RouterLink :to="{ name: 'register' }" class="text-[var(--color-primary)] hover:underline">
                     {{ t('auth.register') }}
                 </RouterLink>
             </div>

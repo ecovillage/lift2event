@@ -16,7 +16,7 @@
                         data-testid="profile-name"
                     />
                     <button
-                        class="px-3 py-2 bg-[--color-primary] text-white rounded text-sm font-medium hover:bg-[--color-primary-dark] disabled:opacity-60"
+                        class="px-3 py-2 bg-[var(--color-primary)] text-white rounded text-sm font-medium hover:bg-[var(--color-primary-dark)] disabled:opacity-60"
                         :disabled="saving.name"
                         data-testid="save-name-btn"
                         @click="save('name')"
@@ -39,7 +39,7 @@
                         data-testid="profile-cpw-email"
                     />
                     <button
-                        class="px-3 py-2 bg-[--color-primary] text-white rounded text-sm font-medium hover:bg-[--color-primary-dark] disabled:opacity-60"
+                        class="px-3 py-2 bg-[var(--color-primary)] text-white rounded text-sm font-medium hover:bg-[var(--color-primary-dark)] disabled:opacity-60"
                         :disabled="saving.email"
                         data-testid="save-email-btn"
                         @click="save('email')"
@@ -65,7 +65,7 @@
                         data-testid="profile-password-confirm"
                     />
                     <button
-                        class="px-3 py-2 bg-[--color-primary] text-white rounded text-sm font-medium hover:bg-[--color-primary-dark] disabled:opacity-60"
+                        class="px-3 py-2 bg-[var(--color-primary)] text-white rounded text-sm font-medium hover:bg-[var(--color-primary-dark)] disabled:opacity-60"
                         :disabled="saving.password"
                         data-testid="save-password-btn"
                         @click="save('password')"
@@ -90,7 +90,7 @@
                         <option value="zh">中文</option>
                     </select>
                     <button
-                        class="px-3 py-2 bg-[--color-primary] text-white rounded text-sm font-medium hover:bg-[--color-primary-dark] disabled:opacity-60"
+                        class="px-3 py-2 bg-[var(--color-primary)] text-white rounded text-sm font-medium hover:bg-[var(--color-primary-dark)] disabled:opacity-60"
                         :disabled="saving.language"
                         data-testid="save-language-btn"
                         @click="save('language')"
@@ -196,5 +196,5 @@ const Feedback = defineComponent({
 <style scoped>
 @reference "tailwindcss";
 .field-label { @apply block text-sm font-medium text-gray-700 mb-1; }
-.field-input { @apply w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-[--color-primary] focus:ring-2 focus:ring-[--color-primary]/20; }
+.field-input { @apply w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20; }
 </style>
