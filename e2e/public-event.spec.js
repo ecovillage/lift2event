@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { resetDb, mockGeocode, loginAs } from './helpers.js';
-import { ADMIN_EVENT_SLUG, UNAPPROVED_EMAIL, ADMIN_EMAIL } from './fixtures.js';
+import { ADMIN_EVENT_SLUG, USER_EVENT_SLUG, UNAPPROVED_EMAIL, ADMIN_EMAIL } from './fixtures.js';
 
 test.describe('Öffentliche Mitfahrbörse', () => {
     test.beforeAll(() => resetDb());
@@ -128,6 +128,12 @@ test.describe('Öffentliche Mitfahrbörse', () => {
 
         await page.goto(eventUrl);
         await expect(page.getByRole('link', { name: 'Datenschutz' })).toBeVisible();
+    });
+
+    test('Veranstaltung ohne Mitfahrten zeigt Hinweistext statt Kacheln', async ({ page }) => {
+        await page.goto(`/e/${USER_EVENT_SLUG}`);
+        await expect(page.getByText('Trag die erste Mitfahrt ein!')).toBeVisible();
+        await expect(page.locator('.cursor-pointer')).toHaveCount(0);
     });
 
     test('Event von nicht-bestätigtem Nutzer ist nicht öffentlich', async ({ page }) => {

@@ -92,7 +92,8 @@
         "days_after_start": "{n} Tage nach Veranstaltungsbeginn",
         "days_before_end": "{n} Tage vor Veranstaltungsende",
         "days_after_end": "{n} Tage nach Veranstaltungsende",
-        "warning_date": "Achtung: abweichendes Datum"
+        "warning_date": "Achtung: abweichendes Datum",
+        "none": "Trag die erste Mitfahrt ein!"
     },
     "settings": {
         "map_default": "Folgenden Kartenausschnitt sehen Nutzer beim Anlegen einer Veranstaltung. Verändern mit Zoom und Ziehen mit der Maus.",

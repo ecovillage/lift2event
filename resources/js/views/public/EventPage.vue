@@ -53,7 +53,8 @@
 
             <!-- Left: ride list (desktop 20% / mobile below map) -->
             <div class="order-2 md:order-1 md:w-1/5 md:min-w-[200px] overflow-y-auto bg-gray-50 border-r border-gray-200">
-                <div v-if="viewportRides.length === 0" class="p-4 text-xs text-gray-400 text-center">–</div>
+                <div v-if="rides.length === 0" class="p-4 text-xs text-gray-400 text-center">{{ t('ride.none') }}</div>
+                <div v-else-if="viewportRides.length === 0" class="p-4 text-xs text-gray-400 text-center">–</div>
                 <RideCard
                     v-for="ride in viewportRides"
                     :key="ride.id"
