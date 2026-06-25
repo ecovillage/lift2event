@@ -93,6 +93,7 @@
                         class="field-input"
                         data-testid="ride-address"
                         @input="onAddressInput"
+                        @keydown="onAddressKeydown"
                         @focus="onFocus('address')"
                         @blur="onAddressBlur"
                     />
@@ -102,9 +103,9 @@
                         class="absolute z-50 left-0 right-0 bg-white border border-gray-200 rounded shadow-lg max-h-48 overflow-y-auto text-sm"
                     >
                         <li
-                            v-for="s in suggestions"
+                            v-for="(s, i) in suggestions"
                             :key="s.place_id"
-                            class="px-3 py-2 hover:bg-gray-100 cursor-pointer leading-snug"
+                            :class="['px-3 py-2 cursor-pointer leading-snug', i === highlightedIndex ? 'bg-gray-100' : 'hover:bg-gray-100']"
                             @mousedown.prevent="selectSuggestion(s)"
                         >{{ s.display_name }}</li>
                     </ul>
@@ -252,11 +253,12 @@ const returnTime   = ref(props.ride?.return_at   ? isoTime(props.ride.return_at)
 
 const eventEndTime = computed(() => isoTime(props.event?.end_at));
 
-const addressInput = ref(props.ride?.location?.address ?? '');
-const suggestions  = ref([]);
-const saving       = ref(false);
-const errors       = ref([]);
-let   searchTimer  = null;
+const addressInput     = ref(props.ride?.location?.address ?? '');
+const suggestions      = ref([]);
+const highlightedIndex = ref(-1);
+const saving           = ref(false);
+const errors           = ref([]);
+let   searchTimer      = null;
 
 const hasOutbound = computed(() => ['both-ways', 'outbound-only'].includes(form.direction));
 const hasReturn   = computed(() => ['both-ways', 'return-only'].includes(form.direction));
@@ -375,19 +377,35 @@ function shiftDay(field, delta) {
 
 function onAddressInput() {
     clearTimeout(searchTimer);
-    form.location = null;
+    form.location          = null;
+    highlightedIndex.value = -1;
     const q = addressInput.value.trim();
     if (q.length < 3) { suggestions.value = []; return; }
     searchTimer = setTimeout(async () => {
         try {
             const { data } = await api.get('/geocode/search', { params: { q } });
-            suggestions.value = data;
+            suggestions.value      = data;
+            highlightedIndex.value = -1;
         } catch { suggestions.value = []; }
     }, 350);
 }
 
 function closeSuggestions() { setTimeout(() => { suggestions.value = []; }, 150); }
 function onAddressBlur() { closeSuggestions(); onBlur('address'); }
+
+function onAddressKeydown(e) {
+    if (!suggestions.value.length) return;
+    if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        highlightedIndex.value = highlightedIndex.value < suggestions.value.length - 1 ? highlightedIndex.value + 1 : 0;
+    } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        highlightedIndex.value = highlightedIndex.value > 0 ? highlightedIndex.value - 1 : suggestions.value.length - 1;
+    } else if (e.key === 'Enter' && highlightedIndex.value >= 0) {
+        e.preventDefault();
+        selectSuggestion(suggestions.value[highlightedIndex.value]);
+    }
+}
 
 function selectSuggestion(s) {
     const cc = (s.address?.country_code ?? '').toUpperCase().slice(0, 2) || null;

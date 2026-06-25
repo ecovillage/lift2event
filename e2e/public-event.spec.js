@@ -105,6 +105,31 @@ test.describe('Öffentliche Mitfahrbörse', () => {
         ).toBeVisible({ timeout: 8000 });
     });
 
+    test('Adressvorschläge lassen sich mit Pfeiltasten und Enter auswählen', async ({ page }) => {
+        await mockGeocode(page, [
+            { place_id: 1, display_name: 'Erste Straße 1, Berlin', lat: '52.1', lon: '13.1', address: { country_code: 'de' } },
+            { place_id: 2, display_name: 'Zweite Straße 2, Berlin', lat: '52.2', lon: '13.2', address: { country_code: 'de' } },
+            { place_id: 3, display_name: 'Dritte Straße 3, Berlin', lat: '52.3', lon: '13.3', address: { country_code: 'de' } },
+        ]);
+        await page.goto(eventUrl);
+        await page.getByText('+ Neue Mitfahrt einstellen').first().click();
+        await page.getByTestId('ride-name').waitFor();
+
+        const address = page.getByTestId('ride-address');
+        await address.fill('Berlin');
+        const suggestions = page.locator('[data-testid="ride-suggestions"] li');
+        await suggestions.first().waitFor();
+
+        // ArrowDown twice highlights the second suggestion
+        await address.press('ArrowDown');
+        await address.press('ArrowDown');
+        await expect(suggestions.nth(1)).toHaveClass(/bg-gray-100/);
+
+        await address.press('Enter');
+        await expect(address).toHaveValue('Zweite Straße 2, Berlin');
+        await expect(page.locator('[data-testid="ride-suggestions"]')).not.toBeVisible();
+    });
+
     test('Mitfahrt-Formular schließt mit Escape-Taste', async ({ page }) => {
         await page.goto(eventUrl);
         await page.getByText('+ Neue Mitfahrt einstellen').first().click();
