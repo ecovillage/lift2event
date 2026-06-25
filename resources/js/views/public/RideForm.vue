@@ -109,7 +109,10 @@
                             @mousedown.prevent="selectSuggestion(s)"
                         >{{ s.display_name }}</li>
                     </ul>
-                    <p v-if="fieldErrors.address" class="mt-1 text-xs text-red-400">
+                    <p v-if="addressNotFound" class="mt-1 text-xs text-amber-600">
+                        {{ t('ride.address_not_found', { query: addressNotFoundQuery }) }}
+                    </p>
+                    <p v-else-if="fieldErrors.address" class="mt-1 text-xs text-red-400">
                         {{ fieldErrors.address }}
                     </p>
                 </div>
@@ -253,12 +256,15 @@ const returnTime   = ref(props.ride?.return_at   ? isoTime(props.ride.return_at)
 
 const eventEndTime = computed(() => isoTime(props.event?.end_at));
 
-const addressInput     = ref(props.ride?.location?.address ?? '');
-const suggestions      = ref([]);
-const highlightedIndex = ref(-1);
-const saving           = ref(false);
-const errors           = ref([]);
-let   searchTimer      = null;
+const addressInput          = ref(props.ride?.location?.address ?? '');
+const suggestions           = ref([]);
+const highlightedIndex      = ref(-1);
+const saving                = ref(false);
+const errors                = ref([]);
+const addressNotFound       = ref(false);
+const addressNotFoundQuery  = ref('');
+let   searchTimer           = null;
+let   notFoundTimer         = null;
 
 const hasOutbound = computed(() => ['both-ways', 'outbound-only'].includes(form.direction));
 const hasReturn   = computed(() => ['both-ways', 'return-only'].includes(form.direction));
@@ -377,7 +383,9 @@ function shiftDay(field, delta) {
 
 function onAddressInput() {
     clearTimeout(searchTimer);
+    clearTimeout(notFoundTimer);
     form.location          = null;
+    addressNotFound.value  = false;
     highlightedIndex.value = -1;
     const q = addressInput.value.trim();
     if (q.length < 3) { suggestions.value = []; return; }
@@ -387,6 +395,15 @@ function onAddressInput() {
             suggestions.value      = data;
             highlightedIndex.value = -1;
         } catch { suggestions.value = []; }
+
+        if (suggestions.value.length === 0) {
+            notFoundTimer = setTimeout(() => {
+                if (addressInput.value.trim() === q && !form.location && suggestions.value.length === 0) {
+                    addressNotFound.value      = true;
+                    addressNotFoundQuery.value = q;
+                }
+            }, 1000);
+        }
     }, 350);
 }
 
@@ -409,9 +426,11 @@ function onAddressKeydown(e) {
 
 function selectSuggestion(s) {
     const cc = (s.address?.country_code ?? '').toUpperCase().slice(0, 2) || null;
-    form.location      = { address: s.display_name, latitude: parseFloat(s.lat), longitude: parseFloat(s.lon), country_code: cc };
-    addressInput.value = s.display_name;
-    suggestions.value  = [];
+    form.location          = { address: s.display_name, latitude: parseFloat(s.lat), longitude: parseFloat(s.lon), country_code: cc };
+    addressInput.value     = s.display_name;
+    suggestions.value      = [];
+    addressNotFound.value  = false;
+    clearTimeout(notFoundTimer);
 }
 
 // ── Submit ────────────────────────────────────────────────────────────────────

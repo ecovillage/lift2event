@@ -69,6 +69,7 @@
         "contact_call": "Phone call",
         "route_heading": "Your route",
         "location_required": "Please select a location.",
+        "address_not_found": "“{query}” could not be found. Is the spelling correct?",
         "departure": "Your departure location",
         "destination": "Your destination after the event",
         "outbound_label": "Outbound:",
@@ -93,6 +94,8 @@
         "days_after_end": "{n} days after event end",
         "warning_date": "Warning: non-standard date",
         "none": "Add the first ride!",
+        "outside_viewport": "{n} rides are outside the map view and are hidden.",
+        "show_all": "Show all",
         "confirmation_pending": "Please confirm your ride via the link in the confirmation email so it becomes visible to other visitors.",
         "confirmation_pending_dismiss": "Close",
         "mail_send_failed": "We couldn't send the confirmation email. Please try again later."

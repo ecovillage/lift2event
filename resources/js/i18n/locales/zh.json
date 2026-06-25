@@ -69,6 +69,7 @@
         "contact_call": "电话",
         "route_heading": "您的路线",
         "location_required": "请选择一个地点。",
+        "address_not_found": "未找到“{query}”。拼写是否正确？",
         "departure": "您的出发地",
         "destination": "活动结束后的目的地",
         "outbound_label": "去程：",
@@ -93,6 +94,8 @@
         "days_after_end": "活动结束后 {n} 天",
         "warning_date": "注意：非标准日期",
         "none": "添加第一个拼车信息！",
+        "outside_viewport": "{n} 条拼车信息在当前地图范围之外，已被隐藏。",
+        "show_all": "显示全部",
         "confirmation_pending": "请通过确认邮件中的链接确认你的拼车信息，这样其他访客才能看到它。",
         "confirmation_pending_dismiss": "关闭",
         "mail_send_failed": "确认邮件发送失败，请稍后再试。"

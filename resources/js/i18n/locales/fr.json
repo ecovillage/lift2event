@@ -69,6 +69,7 @@
         "contact_call": "Appel téléphonique",
         "route_heading": "Votre trajet",
         "location_required": "Veuillez sélectionner un lieu.",
+        "address_not_found": "« {query} » n'a pas été trouvé. L'orthographe est-elle correcte ?",
         "departure": "Votre lieu de départ",
         "destination": "Votre destination après l'événement",
         "outbound_label": "Aller :",
@@ -93,6 +94,8 @@
         "days_after_end": "{n} jours après la fin",
         "warning_date": "Attention : date inhabituelle",
         "none": "Ajoute le premier trajet !",
+        "outside_viewport": "{n} trajets sont hors de la zone de carte affichée et sont masqués.",
+        "show_all": "Tout afficher",
         "confirmation_pending": "Merci de confirmer ton trajet via le lien dans l'e-mail de confirmation pour qu'il soit visible par les autres visiteurs.",
         "confirmation_pending_dismiss": "Fermer",
         "mail_send_failed": "L'e-mail de confirmation n'a pas pu être envoyé. Merci de réessayer plus tard."
