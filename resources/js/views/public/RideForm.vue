@@ -249,8 +249,8 @@ watch(() => form.direction, (d) => {
 
 // ── Contact methods ───────────────────────────────────────────────────────────
 
-const contactMethods = ['email', 'phone', 'signal', 'telegram', 'whatsapp', 'sms', 'call'];
-const phoneMethods   = ['phone', 'signal', 'telegram', 'whatsapp', 'sms', 'call'];
+const contactMethods = ['email', 'signal', 'telegram', 'whatsapp', 'sms', 'call'];
+const phoneMethods   = ['signal', 'telegram', 'whatsapp', 'sms', 'call'];
 
 function phoneRequired(method) {
     return phoneMethods.includes(method) && !form.phone;

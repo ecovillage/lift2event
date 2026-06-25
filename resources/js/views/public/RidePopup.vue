@@ -116,7 +116,7 @@ const hasOutbound = computed(() => ['both-ways', 'outbound-only'].includes(props
 const hasReturn   = computed(() => ['both-ways', 'return-only'].includes(props.ride.direction));
 const showEmail   = computed(() => props.ride.contact_methods?.includes('email'));
 const showPhone   = computed(() => {
-    const pm = ['phone', 'signal', 'telegram', 'whatsapp', 'sms', 'call'];
+    const pm = ['signal', 'telegram', 'whatsapp', 'sms', 'call'];
     return props.ride.phone && props.ride.contact_methods?.some(m => pm.includes(m));
 });
 

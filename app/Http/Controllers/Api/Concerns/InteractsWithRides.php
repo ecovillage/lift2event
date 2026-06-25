@@ -28,7 +28,7 @@ trait InteractsWithRides
             'email'                 => ['required', 'email', 'max:200'],
             'phone'                 => ['nullable', 'string', 'max:50'],
             'contact_methods'       => ['required', 'array', 'min:1'],
-            'contact_methods.*'     => [Rule::in(['email', 'phone', 'signal', 'telegram', 'whatsapp', 'sms', 'call'])],
+            'contact_methods.*'     => [Rule::in(['email', 'signal', 'telegram', 'whatsapp', 'sms', 'call'])],
             'info'                  => ['nullable', 'string', 'max:2000'],
             'location'              => ['required', 'array'],
             'location.address'      => ['required', 'string', 'max:500'],

@@ -16,7 +16,7 @@ class SeedDemoData extends Command
 
     protected $description = 'Legt Demo-Daten an: Admin, zwei Nutzer, Veranstaltungen und Mitfahrten';
 
-    private const CONTACT_METHODS = ['email', 'phone', 'signal', 'telegram', 'whatsapp', 'sms', 'call'];
+    private const CONTACT_METHODS = ['email', 'signal', 'telegram', 'whatsapp', 'sms', 'call'];
 
     public function handle(): void
     {
