@@ -87,6 +87,7 @@ class E2eSeeder extends Seeder
             'email'           => 'max@example.com',
             'contact_methods' => ['email'],
             'edit_token'      => bin2hex(random_bytes(32)),
+            'confirmed_at'    => now(),
         ]);
 
         // Regular user's event (approved creator → publicly visible)

@@ -25,6 +25,7 @@ class RideFactory extends Factory
             'contact_methods' => ['email'],
             'info'            => null,
             'edit_token'      => null,
+            'confirmed_at'    => now(),
         ];
     }
 }

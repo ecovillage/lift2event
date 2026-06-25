@@ -91,7 +91,9 @@
         "days_before_end": "{n} days before event end",
         "days_after_end": "{n} days after event end",
         "warning_date": "Warning: non-standard date",
-        "none": "Add the first ride!"
+        "none": "Add the first ride!",
+        "confirmation_pending": "Please confirm your ride via the link in the confirmation email so it becomes visible to other visitors.",
+        "confirmation_pending_dismiss": "Close"
     },
     "settings": {
         "map_default": "Users will see the following map view when creating an event. Change it by zooming and dragging.",

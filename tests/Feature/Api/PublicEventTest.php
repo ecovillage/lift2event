@@ -47,6 +47,44 @@ class PublicEventTest extends TestCase
         $this->assertArrayNotHasKey('edit_token', $response->json('rides.0'));
     }
 
+    public function test_unconfirmed_ride_is_excluded_from_rides_list(): void
+    {
+        $event = Event::factory()->create();
+        Ride::factory()->create(['event_id' => $event->id, 'confirmed_at' => null]);
+
+        $response = $this->getJson("/api/e/{$event->slug}")->assertOk();
+
+        $this->assertSame([], $response->json('rides'));
+    }
+
+    public function test_unconfirmed_ride_is_included_when_matching_edit_token_is_given(): void
+    {
+        $event = Event::factory()->create();
+        $ride  = Ride::factory()->create([
+            'event_id'     => $event->id,
+            'confirmed_at' => null,
+            'edit_token'   => 'owner_token',
+        ]);
+
+        $response = $this->getJson("/api/e/{$event->slug}?edit_token=owner_token")->assertOk();
+
+        $this->assertSame([$ride->id], array_column($response->json('rides'), 'id'));
+    }
+
+    public function test_unconfirmed_ride_stays_hidden_with_wrong_edit_token(): void
+    {
+        $event = Event::factory()->create();
+        Ride::factory()->create([
+            'event_id'     => $event->id,
+            'confirmed_at' => null,
+            'edit_token'   => 'owner_token',
+        ]);
+
+        $response = $this->getJson("/api/e/{$event->slug}?edit_token=wrong_token")->assertOk();
+
+        $this->assertSame([], $response->json('rides'));
+    }
+
     public function test_rides_are_sorted_offers_first_then_by_newest(): void
     {
         $event = Event::factory()->create();

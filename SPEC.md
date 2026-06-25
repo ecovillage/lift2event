@@ -119,6 +119,7 @@ UI-Beschreibungen erfordern deutlich mehr Felder, die hier ergänzt sind.
 | contact_methods | set/JSON | Teilmenge von {signal, telegram, whatsapp, email, sms, call}; mindestens 1 Eintrag erforderlich |
 | info | text, nullable | Freitext "Infos zu deiner Fahrt" |
 | edit_token | string, unique, nullable | Token für den Bearbeiten/Löschen-Link aus der Bestätigungsmail |
+| confirmed_at | datetime, nullable | Beim Anlegen sofort gesetzt, wenn eingeloggt; sonst `null`, bis der Bestätigungslink aus der Email angeklickt wird. Unbestätigte Mitfahrten erscheinen nicht in der öffentlichen Liste/Karte (außer für die Person, die sie gerade selbst angelegt hat). |
 
 ### `settings`
 
@@ -411,10 +412,18 @@ gefiltert, kein Reload).
 Nach dem Erstellen einer Mitfahrt mit angegebener Email erhält der Ersteller
 eine Email mit:
 - Bestätigung der Eintragung
+- Falls nicht eingeloggt angelegt: Link zum Bestätigen
+  (`/e/{event.slug}/ride/{ride}/confirm?token={edit_token}`) – erst danach ist
+  die Mitfahrt für andere Besucher sichtbar. War der Ersteller eingeloggt,
+  ist die Mitfahrt sofort sichtbar und dieser Link entfällt.
 - Link zum Bearbeiten
   (`/e/{event.slug}/ride/{ride}/edit?token={edit_token}`)
 - Link zum Löschen
   (`/e/{event.slug}/ride/{ride}/delete?token={edit_token}`)
+
+Auf der öffentlichen Mitfahrbörsen-Seite zeigt ein Hinweisbanner direkt nach
+dem Anlegen einer unbestätigten Mitfahrt, dass die Bestätigung per Email noch
+ausstehend ist.
 
 ## 6. User Stories
 
@@ -459,6 +468,10 @@ eine Email mit:
 - … erhalte ich nach dem Erstellen einer Mitfahrt mit angegebener Email eine
   Bestätigungsmail mit einem Link, über den ich diese Mitfahrt später
   bearbeiten oder löschen kann.
+- … sehe ich nach dem Erstellen einer Mitfahrt einen Hinweis, dass ich sie
+  erst über den Link in der Bestätigungsmail bestätigen muss, bevor sie für
+  andere Besucher sichtbar wird. War ich beim Anlegen eingeloggt, entfällt
+  dieser Hinweis und die Mitfahrt ist sofort sichtbar.
 - … bekomme ich beim Klick auf "Eintragen" eine Fehlermeldung, wenn
   Veranstaltungsort und meine Heimat-Adresse in verschiedenen Ländern liegen,
   meine Telefonnummer aber nicht mit einem Plus-Zeichen beginnt, um Verwirrung

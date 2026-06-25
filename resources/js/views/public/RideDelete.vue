@@ -72,7 +72,11 @@ const resolvedToken = ref(
 
 onMounted(async () => {
     try {
-        const { data } = await axios.get(`/api/e/${route.params.slug}`, { headers: { Accept: 'application/json' } });
+        // Pass the edit token so an unconfirmed ride still shows up for its own creator
+        const { data } = await axios.get(`/api/e/${route.params.slug}`, {
+            params:  resolvedToken.value ? { edit_token: resolvedToken.value } : {},
+            headers: { Accept: 'application/json' },
+        });
         ride.value = data.rides.find(r => String(r.id) === String(route.params.id)) ?? null;
     } catch { fetchError.value = 'Fehler beim Laden.'; }
     finally  { loading.value = false; }

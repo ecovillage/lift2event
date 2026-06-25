@@ -90,7 +90,10 @@
         "days_after_start": "{n} jours après le début",
         "days_before_end": "{n} jours avant la fin",
         "days_after_end": "{n} jours après la fin",
-        "warning_date": "Attention : date inhabituelle"
+        "warning_date": "Attention : date inhabituelle",
+        "none": "Ajoute le premier trajet !",
+        "confirmation_pending": "Merci de confirmer ton trajet via le lien dans l'e-mail de confirmation pour qu'il soit visible par les autres visiteurs.",
+        "confirmation_pending_dismiss": "Fermer"
     },
     "settings": {
         "map_default": "Les utilisateurs verront cette vue de carte lors de la création d'un événement. Modifiez-la en zoomant et en faisant glisser.",

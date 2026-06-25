@@ -6,6 +6,7 @@ use App\Mail\RideConfirmation;
 use App\Models\Event;
 use App\Models\Location;
 use App\Models\Ride;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
@@ -50,6 +51,13 @@ class PublicRideTest extends TestCase
             'event_id'   => $event->id,
             'edit_token' => $token,
         ]);
+    }
+
+    private function auth(): array
+    {
+        $user  = User::factory()->create();
+        $token = $user->createToken('spa')->plainTextToken;
+        return [$user, ['Authorization' => "Bearer $token"]];
     }
 
     // -------------------------------------------------------------------------
@@ -219,9 +227,88 @@ class PublicRideTest extends TestCase
         Mail::assertSent(RideConfirmation::class, function (RideConfirmation $mail) use ($event) {
             return $mail->hasTo('max@example.com')
                 && str_contains($mail->envelope()->subject, 'Testkongress 2025')
+                && str_contains($mail->confirmUrl, '/confirm?token=')
                 && str_contains($mail->editUrl, '/edit?token=')
                 && str_contains($mail->deleteUrl, '/delete?token=');
         });
+    }
+
+    public function test_guest_created_ride_is_unconfirmed(): void
+    {
+        $event = Event::factory()->create();
+
+        $response = $this->postJson("/api/e/{$event->slug}/rides", $this->payload())->assertCreated();
+
+        $this->assertNull($response->json('confirmed_at'));
+        $this->assertDatabaseHas('rides', ['id' => $response->json('id'), 'confirmed_at' => null]);
+    }
+
+    public function test_ride_created_while_logged_in_is_confirmed_immediately(): void
+    {
+        [$user, $headers] = $this->auth();
+        $event = Event::factory()->create();
+
+        $response = $this->withHeaders($headers)
+            ->postJson("/api/e/{$event->slug}/rides", $this->payload())
+            ->assertCreated();
+
+        $this->assertNotNull($response->json('confirmed_at'));
+        $this->assertDatabaseHas('rides', ['id' => $response->json('id'), 'user_id' => $user->id]);
+    }
+
+    // -------------------------------------------------------------------------
+    // POST /api/e/{slug}/rides/{id}/confirm
+    // -------------------------------------------------------------------------
+
+    public function test_confirm_with_correct_token_sets_confirmed_at(): void
+    {
+        $event = Event::factory()->create();
+        $ride  = $this->rideWithToken($event, 'confirm_token');
+        $ride->update(['confirmed_at' => null]);
+
+        $response = $this->postJson("/api/e/{$event->slug}/rides/{$ride->id}/confirm", [
+            'edit_token' => 'confirm_token',
+        ])->assertOk();
+
+        $this->assertNotNull($response->json('confirmed_at'));
+        $this->assertNotNull($ride->fresh()->confirmed_at);
+    }
+
+    public function test_confirm_with_wrong_token_returns_403(): void
+    {
+        $event = Event::factory()->create();
+        $ride  = $this->rideWithToken($event, 'real_token');
+        $ride->update(['confirmed_at' => null]);
+
+        $this->postJson("/api/e/{$event->slug}/rides/{$ride->id}/confirm", [
+            'edit_token' => 'wrong_token',
+        ])->assertForbidden();
+
+        $this->assertNull($ride->fresh()->confirmed_at);
+    }
+
+    public function test_confirm_with_wrong_slug_returns_404(): void
+    {
+        $event = Event::factory()->create();
+        $ride  = $this->rideWithToken($event, 'tok');
+        $ride->update(['confirmed_at' => null]);
+
+        $this->postJson("/api/e/wrongslug/rides/{$ride->id}/confirm", [
+            'edit_token' => 'tok',
+        ])->assertNotFound();
+    }
+
+    public function test_confirm_is_idempotent_for_already_confirmed_ride(): void
+    {
+        $event = Event::factory()->create();
+        $ride  = $this->rideWithToken($event, 'tok');
+        $confirmedAt = $ride->confirmed_at;
+
+        $this->postJson("/api/e/{$event->slug}/rides/{$ride->id}/confirm", [
+            'edit_token' => 'tok',
+        ])->assertOk();
+
+        $this->assertEquals($confirmedAt, $ride->fresh()->confirmed_at);
     }
 
     // -------------------------------------------------------------------------

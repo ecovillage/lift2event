@@ -97,6 +97,49 @@ test.describe('Öffentliche Mitfahrbörse', () => {
         ).toBeVisible({ timeout: 8000 });
     });
 
+    test('Neue Mitfahrt als Gast zeigt Hinweis auf ausstehende Bestätigung', async ({ page }) => {
+        await mockGeocode(page);
+        await page.goto(eventUrl);
+        await page.getByText('+ Neue Mitfahrt einstellen').first().click();
+        await page.getByTestId('ride-name').waitFor();
+
+        await page.getByTestId('ride-name').fill('Gast Tester');
+        await page.getByTestId('ride-email').fill('gast@example.com');
+        await page.getByTestId('ride-address').fill('Hamburg');
+        await page.locator('[data-testid="ride-suggestions"]').waitFor();
+        await page.locator('[data-testid="ride-suggestions"] li').first().click();
+        await page.locator('input[type="time"]').first().fill('09:00');
+
+        await expect(page.getByTestId('ride-submit')).toBeEnabled({ timeout: 5000 });
+        await page.getByTestId('ride-submit').click();
+
+        await expect(page.getByText('Bitte bestätige deine Mitfahrt')).toBeVisible({ timeout: 8000 });
+
+        await page.getByRole('button', { name: 'Schließen' }).click();
+        await expect(page.getByText('Bitte bestätige deine Mitfahrt')).not.toBeVisible();
+    });
+
+    test('Neue Mitfahrt als eingeloggter Nutzer zeigt keinen Bestätigungs-Hinweis', async ({ page }) => {
+        await loginAs(page, ADMIN_EMAIL);
+        await mockGeocode(page);
+        await page.goto(eventUrl);
+        await page.getByText('+ Neue Mitfahrt einstellen').first().click();
+        await page.getByTestId('ride-name').waitFor();
+
+        await page.getByTestId('ride-name').fill('Admin Tester');
+        await page.getByTestId('ride-email').fill('admin-ride@example.com');
+        await page.getByTestId('ride-address').fill('Hamburg');
+        await page.locator('[data-testid="ride-suggestions"]').waitFor();
+        await page.locator('[data-testid="ride-suggestions"] li').first().click();
+        await page.locator('input[type="time"]').first().fill('09:00');
+
+        await expect(page.getByTestId('ride-submit')).toBeEnabled({ timeout: 5000 });
+        await page.getByTestId('ride-submit').click();
+
+        await expect(page.getByText(/Musterstraße/)).toBeVisible({ timeout: 8000 });
+        await expect(page.getByText('Bitte bestätige deine Mitfahrt')).not.toBeVisible();
+    });
+
     test('Mitfahrt-Formular: Datum/Uhrzeit sind mit Veranstaltungsdaten vorbefüllt', async ({ page }) => {
         await page.goto(eventUrl);
         await page.getByText('+ Neue Mitfahrt einstellen').first().click();

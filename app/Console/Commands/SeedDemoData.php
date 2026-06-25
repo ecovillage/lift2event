@@ -96,6 +96,7 @@ class SeedDemoData extends Command
             'name'           => 'Klaus Werner',
             'email'          => 'klaus@example.com',
             'contact_methods' => $this->randomContactMethods(),
+            'confirmed_at'   => now(),
         ]);
 
         $this->info("Veranstaltung Beetzendorf mit 1 Mitfahrt angelegt.");
@@ -185,6 +186,7 @@ class SeedDemoData extends Command
                 'name'            => $names[$i % count($names)],
                 'email'           => 'user' . ($i + 1) . '@example.com',
                 'contact_methods' => $this->randomContactMethods(),
+                'confirmed_at'    => now(),
             ]);
         }
     }

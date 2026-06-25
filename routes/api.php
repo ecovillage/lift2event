@@ -24,6 +24,7 @@ Route::prefix('e')->group(function () {
     Route::post('{slug}/rides', [PublicRideController::class, 'store']);
     Route::put('{slug}/rides/{ride}', [PublicRideController::class, 'update']);
     Route::delete('{slug}/rides/{ride}', [PublicRideController::class, 'destroy']);
+    Route::post('{slug}/rides/{ride}/confirm', [PublicRideController::class, 'confirm']);
 });
 
 Route::middleware('auth:sanctum')->group(function () {

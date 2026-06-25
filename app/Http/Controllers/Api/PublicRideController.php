@@ -20,11 +20,13 @@ class PublicRideController extends Controller
     {
         $event = Event::where('slug', $slug)->firstOrFail();
         $data  = $request->validate($this->rideRules($request));
+        $user  = $request->user('sanctum');
 
         $location = Location::create($data['location']);
 
         $ride = Ride::create([
             'event_id'        => $event->id,
+            'user_id'         => $user?->id,
             'location_id'     => $location->id,
             'type'            => $data['type'],
             'direction'       => $data['direction'],
@@ -37,6 +39,9 @@ class PublicRideController extends Controller
             'contact_methods' => $data['contact_methods'],
             'info'            => $data['info'] ?? null,
             'edit_token'      => bin2hex(random_bytes(32)),
+            // Logged-in creators are trusted and go live immediately; guests
+            // must confirm via the link in the confirmation email first.
+            'confirmed_at'    => $user ? now() : null,
         ]);
 
         Mail::to($ride->email)->send(new RideConfirmation($ride, $event));
@@ -68,5 +73,20 @@ class PublicRideController extends Controller
         $ride->delete();
 
         return response()->json(null, 204);
+    }
+
+    public function confirm(Request $request, string $slug, Ride $ride): JsonResponse
+    {
+        abort_unless($ride->event->slug === $slug, 404);
+
+        if (! $ride->edit_token || ! hash_equals($ride->edit_token, $request->input('edit_token', ''))) {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
+
+        if (! $ride->confirmed_at) {
+            $ride->update(['confirmed_at' => now()]);
+        }
+
+        return response()->json($ride->fresh()->load('location'));
     }
 }

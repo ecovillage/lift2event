@@ -11,6 +11,17 @@
             </div>
         </div>
 
+        <!-- Pending email confirmation notice -->
+        <div
+            v-if="pendingConfirmation"
+            class="bg-amber-50 border-b border-amber-200 px-4 py-2 flex-shrink-0 flex items-center gap-3 text-sm text-amber-800"
+        >
+            <span class="flex-1">{{ t('ride.confirmation_pending') }}</span>
+            <button class="font-medium underline hover:text-amber-900" @click="pendingConfirmation = false">
+                {{ t('ride.confirmation_pending_dismiss') }}
+            </button>
+        </div>
+
         <!-- Filter bar -->
         <div class="bg-white border-b px-4 py-2 flex-shrink-0 flex items-center gap-2 flex-wrap">
             <!-- Type filter -->
@@ -144,6 +155,7 @@ const mapBounds    = ref(null);
 const activeFilter = ref('all');
 const dateFilter   = ref('');
 const footerLinks  = ref([]);
+const pendingConfirmation = ref(false);
 
 const githubUrl = 'https://github.com/ecovillage/lift2event';
 
@@ -326,6 +338,7 @@ function onRideCreated(ride) {
     const { edit_token, ...display } = ride;
     rides.value.unshift(display);
     showForm.value = false;
+    pendingConfirmation.value = !ride.confirmed_at;
     if (map) {
         drawRides();
         fitMap();

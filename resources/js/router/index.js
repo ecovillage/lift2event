@@ -19,6 +19,11 @@ const routes = [
         component: () => import('@/views/public/RideDelete.vue'),
     },
     {
+        path: '/e/:slug/ride/:id/confirm',
+        name: 'ride.confirm',
+        component: () => import('@/views/public/RideConfirm.vue'),
+    },
+    {
         path: '/impressum',
         name: 'imprint',
         component: () => import('@/views/public/Imprint.vue'),

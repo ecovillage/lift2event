@@ -14,6 +14,7 @@ class RideConfirmation extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public readonly string $confirmUrl;
     public readonly string $editUrl;
     public readonly string $deleteUrl;
 
@@ -26,8 +27,9 @@ class RideConfirmation extends Mailable
         $id   = $ride->id;
         $tok  = $ride->edit_token;
 
-        $this->editUrl   = "{$base}/e/{$slug}/ride/{$id}/edit?token={$tok}";
-        $this->deleteUrl = "{$base}/e/{$slug}/ride/{$id}/delete?token={$tok}";
+        $this->confirmUrl = "{$base}/e/{$slug}/ride/{$id}/confirm?token={$tok}";
+        $this->editUrl    = "{$base}/e/{$slug}/ride/{$id}/edit?token={$tok}";
+        $this->deleteUrl  = "{$base}/e/{$slug}/ride/{$id}/delete?token={$tok}";
     }
 
     public function envelope(): Envelope
