@@ -371,9 +371,13 @@ async function submit() {
         emit('submitted', data);
     } catch (e) {
         const resp = e.response?.data;
-        errors.value = resp?.errors
-            ? Object.values(resp.errors).flat()
-            : [resp?.message ?? t('event.save_error')];
+        if (e.response?.status === 503) {
+            errors.value = [t('ride.mail_send_failed')];
+        } else {
+            errors.value = resp?.errors
+                ? Object.values(resp.errors).flat()
+                : [resp?.message ?? t('event.save_error')];
+        }
     } finally {
         saving.value = false;
     }

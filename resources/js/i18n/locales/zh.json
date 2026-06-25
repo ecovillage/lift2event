@@ -93,7 +93,8 @@
         "warning_date": "注意：非标准日期",
         "none": "添加第一个拼车信息！",
         "confirmation_pending": "请通过确认邮件中的链接确认你的拼车信息，这样其他访客才能看到它。",
-        "confirmation_pending_dismiss": "关闭"
+        "confirmation_pending_dismiss": "关闭",
+        "mail_send_failed": "确认邮件发送失败，请稍后再试。"
     },
     "settings": {
         "map_default": "用户创建活动时将看到以下地图视图。可通过缩放和拖动来调整。",

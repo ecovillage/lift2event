@@ -95,7 +95,8 @@
         "warning_date": "Achtung: abweichendes Datum",
         "none": "Noch keine Mitfahrten – trag die erste ein!",
         "confirmation_pending": "Bitte bestätige deine Mitfahrt über den Link in der Bestätigungsmail, damit sie für andere Besucher sichtbar wird.",
-        "confirmation_pending_dismiss": "Schließen"
+        "confirmation_pending_dismiss": "Schließen",
+        "mail_send_failed": "Die Bestätigungsmail konnte nicht versendet werden. Bitte versuche es später noch einmal."
     },
     "settings": {
         "map_default": "Folgenden Kartenausschnitt sehen Nutzer beim Anlegen einer Veranstaltung. Verändern mit Zoom und Ziehen mit der Maus.",

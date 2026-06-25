@@ -233,6 +233,38 @@ class PublicRideTest extends TestCase
         });
     }
 
+    public function test_guest_ride_is_not_kept_when_confirmation_email_fails(): void
+    {
+        Mail::shouldReceive('to')->andReturnSelf();
+        Mail::shouldReceive('send')->andThrow(new \RuntimeException('Connection could not be established with host "smtp.example.com:587"'));
+
+        $event = Event::factory()->create();
+
+        $response = $this->postJson("/api/e/{$event->slug}/rides", $this->payload(['email' => 'max@example.com']))
+            ->assertStatus(503);
+
+        $this->assertSame(
+            'Die Bestätigungsmail konnte nicht versendet werden. Bitte versuche es später noch einmal.',
+            $response->json('message')
+        );
+        $this->assertDatabaseMissing('rides', ['email' => 'max@example.com']);
+    }
+
+    public function test_logged_in_ride_is_kept_when_confirmation_email_fails(): void
+    {
+        Mail::shouldReceive('to')->andReturnSelf();
+        Mail::shouldReceive('send')->andThrow(new \RuntimeException('Connection could not be established with host "smtp.example.com:587"'));
+
+        [$user, $headers] = $this->auth();
+        $event = Event::factory()->create();
+
+        $response = $this->withHeaders($headers)
+            ->postJson("/api/e/{$event->slug}/rides", $this->payload())
+            ->assertCreated();
+
+        $this->assertDatabaseHas('rides', ['id' => $response->json('id'), 'user_id' => $user->id]);
+    }
+
     public function test_guest_created_ride_is_unconfirmed(): void
     {
         $event = Event::factory()->create();

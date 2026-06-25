@@ -119,6 +119,31 @@ test.describe('Öffentliche Mitfahrbörse', () => {
         await expect(page.getByText('Bitte bestätige deine Mitfahrt')).not.toBeVisible();
     });
 
+    test('Fehlschlag beim Mailversand zeigt übersetzte Fehlermeldung', async ({ page }) => {
+        await mockGeocode(page);
+        await page.route('**/api/e/*/rides', route =>
+            route.request().method() === 'POST'
+                ? route.fulfill({ status: 503, json: { message: 'Connection could not be established with host "smtp.example.com:587"' } })
+                : route.continue()
+        );
+        await page.goto(eventUrl);
+        await page.getByText('+ Neue Mitfahrt einstellen').first().click();
+        await page.getByTestId('ride-name').waitFor();
+
+        await page.getByTestId('ride-name').fill('Gast Tester');
+        await page.getByTestId('ride-email').fill('gast@example.com');
+        await page.getByTestId('ride-address').fill('Hamburg');
+        await page.locator('[data-testid="ride-suggestions"]').waitFor();
+        await page.locator('[data-testid="ride-suggestions"] li').first().click();
+        await page.locator('input[type="time"]').first().fill('09:00');
+
+        await expect(page.getByTestId('ride-submit')).toBeEnabled({ timeout: 5000 });
+        await page.getByTestId('ride-submit').click();
+
+        await expect(page.getByText('Die Bestätigungsmail konnte nicht versendet werden. Bitte versuche es später noch einmal.')).toBeVisible({ timeout: 8000 });
+        await expect(page.getByText(/getaddrinfo|smtp\.example\.com/)).not.toBeVisible();
+    });
+
     test('Neue Mitfahrt als eingeloggter Nutzer zeigt keinen Bestätigungs-Hinweis', async ({ page }) => {
         await loginAs(page, ADMIN_EMAIL);
         await mockGeocode(page);

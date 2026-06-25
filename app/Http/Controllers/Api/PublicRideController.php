@@ -44,7 +44,23 @@ class PublicRideController extends Controller
             'confirmed_at'    => $user ? now() : null,
         ]);
 
-        Mail::to($ride->email)->send(new RideConfirmation($ride, $event));
+        try {
+            Mail::to($ride->email)->send(new RideConfirmation($ride, $event));
+        } catch (\Throwable $e) {
+            report($e);
+
+            // Guests have no other way to ever confirm this ride, so an entry
+            // they can't confirm shouldn't be kept around. Logged-in creators'
+            // rides are already confirmed and stay valid without the email.
+            if (! $user) {
+                $ride->delete();
+                $location->delete();
+
+                return response()->json([
+                    'message' => 'Die Bestätigungsmail konnte nicht versendet werden. Bitte versuche es später noch einmal.',
+                ], 503);
+            }
+        }
 
         return response()->json($ride->load('location'), 201);
     }
