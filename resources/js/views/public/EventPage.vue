@@ -281,8 +281,11 @@ function initMap() {
     mapBounds.value = map.getBounds();
 }
 
+let drawGeneration = 0;
+
 function drawRides() {
     if (!rideLayer) return;
+    const generation = ++drawGeneration;
     rideLayer.clearLayers();
 
     const evLoc = event.value?.location;
@@ -296,8 +299,9 @@ function drawRides() {
         const color = ride.type === 'offer' ? offerColor : requestColor;
 
         if (evLat !== null) {
-            L.polyline([[lat, lng], [evLat, evLng]], { color, weight: 2, opacity: 0.6 })
+            const polyline = L.polyline([[lat, lng], [evLat, evLng]], { color, weight: 2, opacity: 0.6 })
                 .addTo(rideLayer);
+            fetchRoute(ride, generation, polyline);
         }
 
         L.circleMarker([lat, lng], {
@@ -307,6 +311,18 @@ function drawRides() {
             .on('click', () => { selectedRide.value = ride; })
             .addTo(rideLayer);
     });
+}
+
+// Upgrades the straight line to the real driving route once it's loaded;
+// the straight line stays as a fallback if the route can't be fetched.
+async function fetchRoute(ride, generation, polyline) {
+    try {
+        const { data } = await axios.get(`/api/e/${route.params.slug}/rides/${ride.id}/route`);
+        if (generation !== drawGeneration || !data.geometry) return;
+        polyline.setLatLngs(data.geometry.map(([lng, lat]) => [lat, lng]));
+    } catch {
+        // Keep the straight line.
+    }
 }
 
 function fitMap() {

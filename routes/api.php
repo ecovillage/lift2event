@@ -25,6 +25,7 @@ Route::prefix('e')->group(function () {
     Route::put('{slug}/rides/{ride}', [PublicRideController::class, 'update']);
     Route::delete('{slug}/rides/{ride}', [PublicRideController::class, 'destroy']);
     Route::post('{slug}/rides/{ride}/confirm', [PublicRideController::class, 'confirm']);
+    Route::get('{slug}/rides/{ride}/route', [PublicRideController::class, 'route']);
 });
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -39,6 +40,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('events/{event}', [EventController::class, 'destroy']);
     Route::put('events/{event}/rides/{ride}', [RideController::class, 'update']);
     Route::delete('events/{event}/rides/{ride}', [RideController::class, 'destroy']);
+    Route::get('events/{event}/rides/{ride}/route', [RideController::class, 'route']);
 
     // Admin-only
     Route::get('users', [UserController::class, 'index']);

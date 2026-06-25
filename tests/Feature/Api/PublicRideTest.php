@@ -8,6 +8,7 @@ use App\Models\Location;
 use App\Models\Ride;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
@@ -473,5 +474,53 @@ class PublicRideTest extends TestCase
             "/api/e/wrongslug/rides/{$ride->id}",
             ['edit_token' => 'tok']
         )->assertNotFound();
+    }
+
+    // -------------------------------------------------------------------------
+    // GET /api/e/{slug}/rides/{id}/route
+    // -------------------------------------------------------------------------
+
+    public function test_route_returns_geometry_for_confirmed_ride(): void
+    {
+        Http::fake(['*' => Http::response([
+            'features' => [['geometry' => ['coordinates' => [[13.4, 52.5], [11.6, 48.1]]]]],
+        ])]);
+
+        $event = Event::factory()->create();
+        $ride  = Ride::factory()->create(['event_id' => $event->id]);
+
+        $response = $this->getJson("/api/e/{$event->slug}/rides/{$ride->id}/route")->assertOk();
+
+        $this->assertSame([[13.4, 52.5], [11.6, 48.1]], $response->json('geometry'));
+    }
+
+    public function test_route_returns_404_for_unconfirmed_guest_ride_without_token(): void
+    {
+        $event = Event::factory()->create();
+        $ride  = $this->rideWithToken($event, 'tok');
+        $ride->update(['confirmed_at' => null]);
+
+        $this->getJson("/api/e/{$event->slug}/rides/{$ride->id}/route")->assertNotFound();
+    }
+
+    public function test_route_with_correct_token_succeeds_for_unconfirmed_ride(): void
+    {
+        Http::fake(['*' => Http::response([
+            'features' => [['geometry' => ['coordinates' => [[1, 1]]]]],
+        ])]);
+
+        $event = Event::factory()->create();
+        $ride  = $this->rideWithToken($event, 'tok');
+        $ride->update(['confirmed_at' => null]);
+
+        $this->getJson("/api/e/{$event->slug}/rides/{$ride->id}/route?edit_token=tok")->assertOk();
+    }
+
+    public function test_route_with_wrong_slug_returns_404(): void
+    {
+        $event = Event::factory()->create();
+        $ride  = $this->rideWithToken($event, 'tok');
+
+        $this->getJson("/api/e/wrongslug/rides/{$ride->id}/route")->assertNotFound();
     }
 }

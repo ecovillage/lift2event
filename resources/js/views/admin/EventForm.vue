@@ -192,9 +192,12 @@ function setMarker(lat, lng) {
     marker = L.marker([lat, lng], { icon: starIcon() }).addTo(map);
 }
 
+let drawGeneration = 0;
+
 // Draw a route (line + pin) for every ride, green for offers, orange for requests
 function drawRides() {
     if (!rideLayer || !form.location) return;
+    const generation = ++drawGeneration;
     rideLayer.clearLayers();
 
     const evLat = form.location.latitude;
@@ -206,8 +209,9 @@ function drawRides() {
         const lng   = parseFloat(ride.location.longitude);
         const color = ride.type === 'offer' ? offerColor : requestColor;
 
-        L.polyline([[lat, lng], [evLat, evLng]], { color, weight: 2, opacity: 0.6 })
+        const polyline = L.polyline([[lat, lng], [evLat, evLng]], { color, weight: 2, opacity: 0.6 })
             .addTo(rideLayer);
+        fetchRoute(ride, generation, polyline);
 
         L.circleMarker([lat, lng], {
             radius: 7, color: 'white', weight: 2,
@@ -216,6 +220,18 @@ function drawRides() {
             .on('click', () => { selectedRide.value = ride; })
             .addTo(rideLayer);
     });
+}
+
+// Upgrades the straight line to the real driving route between the saved
+// event/ride locations; the straight line stays as a fallback otherwise.
+async function fetchRoute(ride, generation, polyline) {
+    try {
+        const { data } = await api.get(`/events/${eventId.value}/rides/${ride.id}/route`);
+        if (generation !== drawGeneration || !data.geometry) return;
+        polyline.setLatLngs(data.geometry.map(([lng, lat]) => [lat, lng]));
+    } catch {
+        // Keep the straight line.
+    }
 }
 
 function fitMapToRides() {

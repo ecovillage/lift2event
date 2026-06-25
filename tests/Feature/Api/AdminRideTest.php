@@ -6,6 +6,7 @@ use App\Models\Event;
 use App\Models\Ride;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class AdminRideTest extends TestCase
@@ -196,5 +197,56 @@ class AdminRideTest extends TestCase
             ->assertNotFound();
 
         $this->assertDatabaseHas('rides', ['id' => $ride->id]);
+    }
+
+    // -------------------------------------------------------------------------
+    // GET /api/events/{event}/rides/{ride}/route
+    // -------------------------------------------------------------------------
+
+    public function test_creator_can_fetch_route(): void
+    {
+        Http::fake(['*' => Http::response([
+            'features' => [['geometry' => ['coordinates' => [[13.4, 52.5], [11.6, 48.1]]]]],
+        ])]);
+
+        [$user, $headers] = $this->auth();
+        $event = Event::factory()->create(['created_by_id' => $user->id]);
+        $ride  = Ride::factory()->create(['event_id' => $event->id]);
+
+        $response = $this->getJson("/api/events/{$event->id}/rides/{$ride->id}/route", $headers)->assertOk();
+
+        $this->assertSame([[13.4, 52.5], [11.6, 48.1]], $response->json('geometry'));
+    }
+
+    public function test_admin_can_fetch_route_for_any_event(): void
+    {
+        Http::fake(['*' => Http::response([
+            'features' => [['geometry' => ['coordinates' => [[1, 1]]]]],
+        ])]);
+
+        [, $headers] = $this->auth(['is_admin' => true]);
+        $event = Event::factory()->create();
+        $ride  = Ride::factory()->create(['event_id' => $event->id]);
+
+        $this->getJson("/api/events/{$event->id}/rides/{$ride->id}/route", $headers)->assertOk();
+    }
+
+    public function test_non_creator_non_admin_cannot_fetch_route(): void
+    {
+        [, $headers] = $this->auth();
+        $event = Event::factory()->create();
+        $ride  = Ride::factory()->create(['event_id' => $event->id]);
+
+        $this->getJson("/api/events/{$event->id}/rides/{$ride->id}/route", $headers)
+            ->assertForbidden();
+    }
+
+    public function test_route_requires_authentication(): void
+    {
+        $event = Event::factory()->create();
+        $ride  = Ride::factory()->create(['event_id' => $event->id]);
+
+        $this->getJson("/api/events/{$event->id}/rides/{$ride->id}/route")
+            ->assertUnauthorized();
     }
 }

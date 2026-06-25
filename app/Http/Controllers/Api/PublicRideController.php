@@ -8,6 +8,7 @@ use App\Mail\RideConfirmation;
 use App\Models\Event;
 use App\Models\Location;
 use App\Models\Ride;
+use App\Services\RoutingService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -104,5 +105,20 @@ class PublicRideController extends Controller
         }
 
         return response()->json($ride->fresh()->load('location'));
+    }
+
+    public function route(Request $request, string $slug, Ride $ride, RoutingService $routingService): JsonResponse
+    {
+        abort_unless($ride->event->slug === $slug, 404);
+
+        $token = $request->query('edit_token', '');
+
+        // Same visibility rule as PublicEventController::show: unconfirmed
+        // guest rides aren't shown to other visitors.
+        if (! $ride->confirmed_at && ! ($token !== '' && hash_equals($ride->edit_token ?? '', $token))) {
+            abort(404);
+        }
+
+        return response()->json($routingService->routeFor($ride->location, $ride->event->location));
     }
 }

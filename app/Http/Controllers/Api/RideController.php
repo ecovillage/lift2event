@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\Concerns\InteractsWithRides;
 use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\Ride;
+use App\Services\RoutingService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -34,6 +35,15 @@ class RideController extends Controller
         $ride->delete();
 
         return response()->json(null, 204);
+    }
+
+    public function route(Request $request, Event $event, Ride $ride, RoutingService $routingService): JsonResponse
+    {
+        if (! $this->canManage($request, $event, $ride)) {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
+
+        return response()->json($routingService->routeFor($ride->location, $event->location));
     }
 
     private function canManage(Request $request, Event $event, Ride $ride): bool
