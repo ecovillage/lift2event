@@ -1,61 +1,126 @@
 ---
+# Deploy auf einem typischen LAMP-Webspace mit SSH-Zugang (z. B. Ionos und
+# Konsorten): kein root/sudo, kein systemd, kein eigener vhost. Einmalige,
+# manuelle Vorbereitung siehe ansible/README.md.
 - name: Deploy Lift2Event
   hosts: webserver
   vars_files:
     - vars/main.yml
 
   tasks:
-    - name: Pull latest code from master
-      git:
-        repo: "{{ lookup('env', 'GIT_REPO') | default('') }}"
+    - name: Pruefen, ob .env auf dem Server existiert
+      ansible.builtin.stat:
+        path: "{{ deploy_path }}/.env"
+      register: env_file
+
+    - name: Abbrechen, falls .env fehlt
+      ansible.builtin.fail:
+        msg: >-
+          {{ deploy_path }}/.env fehlt. Einmalig manuell anlegen
+          (.env.example kopieren und DB-/SMTP-Zugangsdaten eintragen).
+          APP_KEY kann leer bleiben, wird unten automatisch erzeugt.
+      when: not env_file.stat.exists
+
+    - name: Code auschecken/aktualisieren
+      ansible.builtin.git:
+        repo: "{{ git_repo }}"
         dest: "{{ deploy_path }}"
         version: "{{ deploy_branch }}"
-        update: yes
-      when: lookup('env', 'GIT_REPO') != ''
 
-    - name: Pull latest code (local git on server)
-      command: git pull origin {{ deploy_branch }}
-      args:
-        chdir: "{{ deploy_path }}"
-      when: lookup('env', 'GIT_REPO') == ''
-
-    - name: Install PHP dependencies (no dev)
-      command: composer install --no-dev --optimize-autoloader
+    - name: PHP-Abhaengigkeiten installieren
+      ansible.builtin.command: "{{ composer_bin }} install --no-dev --optimize-autoloader --no-interaction"
       args:
         chdir: "{{ deploy_path }}"
 
-    - name: Install and build frontend assets
-      command: npm ci --omit=dev
+    # Vite, Tailwind & Co. stehen absichtlich in devDependencies und werden
+    # nur zum Bauen benoetigt - daher hier bewusst kein --omit=dev.
+    - name: Frontend-Abhaengigkeiten installieren
+      ansible.builtin.command: "{{ npm_bin }} ci"
       args:
         chdir: "{{ deploy_path }}"
 
-    - name: Build frontend for production
-      command: npm run build
+    - name: Frontend fuer Produktion bauen
+      ansible.builtin.command: "{{ npm_bin }} run build"
       args:
         chdir: "{{ deploy_path }}"
 
-    - name: Run database migrations
-      command: "{{ php_bin }} artisan migrate --force"
+    - name: Storage-Verzeichnisstruktur sicherstellen
+      ansible.builtin.file:
+        path: "{{ deploy_path }}/{{ item }}"
+        state: directory
+        mode: "0775"
+      loop:
+        - storage/app/public
+        - storage/framework/cache/data
+        - storage/framework/sessions
+        - storage/framework/testing
+        - storage/framework/views
+        - storage/logs
+        - bootstrap/cache
+
+    - name: Pruefen, ob APP_KEY bereits gesetzt ist
+      ansible.builtin.command: grep -q '^APP_KEY=.\+' .env
       args:
         chdir: "{{ deploy_path }}"
+      register: app_key_present
+      changed_when: false
+      failed_when: false
 
-    - name: Clear and cache config
-      command: "{{ php_bin }} artisan config:cache"
+    - name: APP_KEY erzeugen, falls noch leer
+      ansible.builtin.command: "{{ php_bin }} artisan key:generate --force"
       args:
         chdir: "{{ deploy_path }}"
+      when: app_key_present.rc != 0
 
-    - name: Clear and cache routes
-      command: "{{ php_bin }} artisan route:cache"
+    - name: Symlink fuer oeffentliche Storage-Dateien anlegen
+      ansible.builtin.command: "{{ php_bin }} artisan storage:link"
       args:
         chdir: "{{ deploy_path }}"
+      register: storage_link
+      changed_when: "'already exists' not in storage_link.stdout"
 
-    - name: Clear and cache views
-      command: "{{ php_bin }} artisan view:cache"
-      args:
-        chdir: "{{ deploy_path }}"
+    - name: Wartungsmodus, Migration und Caches
+      block:
+        - name: Wartungsmodus aktivieren
+          ansible.builtin.command: "{{ php_bin }} artisan down"
+          args:
+            chdir: "{{ deploy_path }}"
 
-    - name: Set storage permissions
-      file:
-        path: "{{ deploy_path }}/storage"
+        - name: Alte Caches verwerfen
+          ansible.builtin.command: "{{ php_bin }} artisan optimize:clear"
+          args:
+            chdir: "{{ deploy_path }}"
+
+        - name: Datenbankmigrationen ausfuehren
+          ansible.builtin.command: "{{ php_bin }} artisan migrate --force"
+          args:
+            chdir: "{{ deploy_path }}"
+
+        - name: Config cachen
+          ansible.builtin.command: "{{ php_bin }} artisan config:cache"
+          args:
+            chdir: "{{ deploy_path }}"
+
+        - name: Routen cachen
+          ansible.builtin.command: "{{ php_bin }} artisan route:cache"
+          args:
+            chdir: "{{ deploy_path }}"
+
+        - name: Views cachen
+          ansible.builtin.command: "{{ php_bin }} artisan view:cache"
+          args:
+            chdir: "{{ deploy_path }}"
+      always:
+        - name: Wartungsmodus deaktivieren
+          ansible.builtin.command: "{{ php_bin }} artisan up"
+          args:
+            chdir: "{{ deploy_path }}"
+
+    - name: Schreibrechte fuer Storage und Cache setzen
+      ansible.builtin.file:
+        path: "{{ deploy_path }}/{{ item }}"
         mode: "0775"
         recurse: yes
+      loop:
+        - storage
+        - bootstrap/cache

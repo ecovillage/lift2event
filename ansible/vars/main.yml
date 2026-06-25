@@ -1,8 +1,15 @@
 # Pfad zur Lift2Event-Installation auf dem Server
 deploy_path: /var/www/lift2event
 
+# Git-Remote-URL des Repositories. Muss vom Server aus erreichbar sein,
+# z. B. über einen SSH-Deploykey, der dort bereits hinterlegt ist.
+git_repo: git@github.com:ecovillage/lift2event.git
+
 # Git-Branch, der deployed wird
 deploy_branch: master
 
-# PHP-Binary auf dem Server (ggf. anpassen)
+# Binaries auf dem Server (bei Bedarf anpassen, z. B. wenn mehrere
+# PHP-Versionen parallel installiert sind oder Node per nvm verwaltet wird)
 php_bin: php8.3
+composer_bin: composer
+npm_bin: npm
