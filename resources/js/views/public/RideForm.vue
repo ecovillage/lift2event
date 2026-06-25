@@ -179,6 +179,7 @@
 import { ref, reactive, computed, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import api from '@/api/axios';
+import { useEscapeKey } from '@/composables/useEscapeKey';
 
 const props = defineProps({
     event:     { type: Object, required: true },
@@ -190,6 +191,8 @@ const props = defineProps({
 const emit = defineEmits(['submitted', 'cancelled']);
 const { t } = useI18n();
 const isEdit = computed(() => !!props.ride);
+
+useEscapeKey(() => emit('cancelled'));
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 

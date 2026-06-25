@@ -46,6 +46,14 @@ test.describe('Öffentliche Mitfahrbörse', () => {
         await expect(page.getByText('Kontakt')).not.toBeVisible();
     });
 
+    test('Popup schließt mit Escape-Taste', async ({ page }) => {
+        await page.goto(eventUrl);
+        await page.locator('.cursor-pointer').first().click();
+        await expect(page.getByText('Kontakt')).toBeVisible();
+        await page.keyboard.press('Escape');
+        await expect(page.getByText('Kontakt')).not.toBeVisible();
+    });
+
     test('Filter "Angebote" zeigt nur Angebote', async ({ page }) => {
         await page.goto(eventUrl);
         await page.getByText('Angebote').click();
@@ -95,6 +103,14 @@ test.describe('Öffentliche Mitfahrbörse', () => {
         await expect(
             page.getByText('Erika Muster').or(page.getByText(/Musterstraße/))
         ).toBeVisible({ timeout: 8000 });
+    });
+
+    test('Mitfahrt-Formular schließt mit Escape-Taste', async ({ page }) => {
+        await page.goto(eventUrl);
+        await page.getByText('+ Neue Mitfahrt einstellen').first().click();
+        await page.getByTestId('ride-name').waitFor();
+        await page.keyboard.press('Escape');
+        await expect(page.getByTestId('ride-name')).not.toBeVisible();
     });
 
     test('Neue Mitfahrt als Gast zeigt Hinweis auf ausstehende Bestätigung', async ({ page }) => {

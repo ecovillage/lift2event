@@ -150,6 +150,7 @@ import 'leaflet/dist/leaflet.css';
 import RideCard from './RideCard.vue';
 import RideForm from './RideForm.vue';
 import RidePopup from './RidePopup.vue';
+import { useEscapeKey } from '@/composables/useEscapeKey';
 
 const { t, locale } = useI18n();
 const route = useRoute();
@@ -166,6 +167,8 @@ const activeFilter = ref('all');
 const dateFilter   = ref('');
 const footerLinks  = ref([]);
 const pendingConfirmation = ref(false);
+
+useEscapeKey(() => { if (pendingConfirmation.value) pendingConfirmation.value = false; });
 
 const githubUrl = 'https://github.com/ecovillage/lift2event';
 

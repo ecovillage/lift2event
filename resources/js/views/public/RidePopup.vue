@@ -102,6 +102,7 @@
 <script setup>
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useEscapeKey } from '@/composables/useEscapeKey';
 
 const props = defineProps({
     ride:  { type: Object, required: true },
@@ -110,6 +111,8 @@ const props = defineProps({
 
 const emit = defineEmits(['close']);
 const { t, locale } = useI18n();
+
+useEscapeKey(() => emit('close'));
 
 const editToken   = computed(() => localStorage.getItem(`ride_token_${props.ride.id}`));
 const hasOutbound = computed(() => ['both-ways', 'outbound-only'].includes(props.ride.direction));
