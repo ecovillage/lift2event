@@ -100,7 +100,7 @@
                         >{{ s.display_name }}</li>
                     </ul>
                     <p v-if="!form.location && addressInput" class="mt-1 text-xs text-red-400">
-                        {{ t('event.location_required') }}
+                        {{ t('ride.location_required') }}
                     </p>
                 </div>
 
@@ -342,7 +342,7 @@ function selectSuggestion(s) {
 
 async function submit() {
     errors.value = [];
-    if (!form.location)                   { errors.value = [t('event.location_required')]; return; }
+    if (!form.location)                   { errors.value = [t('ride.location_required')]; return; }
     if (form.contact_methods.length === 0) { errors.value = [t('error.contact_required')]; return; }
 
     // Combine date + time; use event end time as default for return if time is empty

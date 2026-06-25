@@ -68,6 +68,7 @@
         "contact_sms": "SMS",
         "contact_call": "Anruf",
         "route_heading": "Deine Route",
+        "location_required": "Bitte wähle einen Ort aus.",
         "departure": "Dein Abfahrtsort",
         "destination": "Dein Zielort nach der Veranstaltung",
         "outbound_label": "Hinfahrt:",

@@ -68,6 +68,7 @@
         "contact_sms": "SMS",
         "contact_call": "Appel téléphonique",
         "route_heading": "Votre trajet",
+        "location_required": "Veuillez sélectionner un lieu.",
         "departure": "Votre lieu de départ",
         "destination": "Votre destination après l'événement",
         "outbound_label": "Aller :",

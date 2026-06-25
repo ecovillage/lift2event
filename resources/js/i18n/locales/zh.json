@@ -68,6 +68,7 @@
         "contact_sms": "短信",
         "contact_call": "电话",
         "route_heading": "您的路线",
+        "location_required": "请选择一个地点。",
         "departure": "您的出发地",
         "destination": "活动结束后的目的地",
         "outbound_label": "去程：",

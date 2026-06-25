@@ -68,6 +68,7 @@
         "contact_sms": "SMS",
         "contact_call": "Phone call",
         "route_heading": "Your route",
+        "location_required": "Please select a location.",
         "departure": "Your departure location",
         "destination": "Your destination after the event",
         "outbound_label": "Outbound:",
