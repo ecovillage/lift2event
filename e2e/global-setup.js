@@ -18,7 +18,7 @@ async function waitForApp(maxMs = 30_000) {
     const deadline = Date.now() + maxMs;
     while (Date.now() < deadline) {
         try {
-            const res = await fetch('http://localhost:8080');
+            const res = await fetch('http://localhost:8082');
             if (res.status < 500) return;
         } catch {}
         await new Promise(r => setTimeout(r, 500));
@@ -35,12 +35,12 @@ export default async function globalSetup() {
     );
 
     execSync(
-        'docker compose -f docker-compose.yml -f docker-compose.e2e.yml up -d app',
+        'docker compose -f docker-compose.yml -f docker-compose.e2e.yml up -d app_e2e',
         { cwd: PROJECT, stdio: 'inherit' }
     );
 
     execSync(
-        'docker compose exec -T app php artisan migrate --force',
+        'docker compose -f docker-compose.yml -f docker-compose.e2e.yml exec -T app_e2e php artisan migrate --force',
         { cwd: PROJECT, stdio: 'pipe', timeout: 60_000 }
     );
 

@@ -5,7 +5,7 @@ export default defineConfig({
     globalSetup:    './e2e/global-setup.js',
     globalTeardown: './e2e/global-teardown.js',
     use: {
-        baseURL:  'http://localhost:8080',
+        baseURL:  'http://localhost:8082',
         headless: true,
         trace:    'on-first-retry',
         video:    'on-first-retry',

@@ -1,5 +1,16 @@
 services:
-  app:
+  app_e2e:
+    build: docker/php
+    volumes:
+      - .:/var/www/html
+    ports:
+      - "8082:80"
+    depends_on:
+      db:
+        condition: service_healthy
     environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+      APP_URL: http://localhost:8082
       DB_DATABASE: lift2event_e2e
       MAIL_MAILER: log

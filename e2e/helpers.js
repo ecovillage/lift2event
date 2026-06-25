@@ -7,7 +7,7 @@ const PROJECT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 export function resetDb() {
     execSync(
-        'docker compose exec -T app bash -c "php artisan migrate:fresh && php artisan db:seed --class=E2eSeeder"',
+        'docker compose -f docker-compose.yml -f docker-compose.e2e.yml exec -T app_e2e bash -c "php artisan migrate:fresh && php artisan db:seed --class=E2eSeeder"',
         { cwd: PROJECT, stdio: 'pipe', timeout: 90_000 }
     );
 }
