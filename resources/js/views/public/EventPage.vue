@@ -11,17 +11,6 @@
             </div>
         </div>
 
-        <!-- Pending email confirmation notice -->
-        <div
-            v-if="pendingConfirmation"
-            class="bg-amber-50 border-b border-amber-200 px-4 py-2 flex-shrink-0 flex items-center gap-3 text-sm text-amber-800"
-        >
-            <span class="flex-1">{{ t('ride.confirmation_pending') }}</span>
-            <button class="font-medium underline hover:text-amber-900" @click="pendingConfirmation = false">
-                {{ t('ride.confirmation_pending_dismiss') }}
-            </button>
-        </div>
-
         <!-- Filter bar -->
         <div class="bg-white border-b px-4 py-2 flex-shrink-0 flex items-center gap-2 flex-wrap">
             <!-- Type filter -->
@@ -109,6 +98,27 @@
                 :event="event"
                 @close="selectedRide = null"
             />
+        </Teleport>
+
+        <!-- Pending email confirmation popup -->
+        <Teleport to="body">
+            <div
+                v-if="pendingConfirmation"
+                class="fixed inset-0 z-[2100] bg-black/50 flex items-end md:items-center justify-center"
+            >
+                <div class="bg-white rounded-t-2xl md:rounded-xl w-full md:max-w-sm p-5 space-y-4">
+                    <div class="flex gap-3 items-start">
+                        <span class="text-xl text-amber-500 leading-none">⚠</span>
+                        <p class="text-sm text-gray-700">{{ t('ride.confirmation_pending') }}</p>
+                    </div>
+                    <div class="flex justify-end">
+                        <button
+                            class="px-4 py-1.5 rounded text-sm font-medium text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] transition-colors"
+                            @click="pendingConfirmation = false"
+                        >{{ t('ride.confirmation_pending_dismiss') }}</button>
+                    </div>
+                </div>
+            </div>
         </Teleport>
 
         <!-- Ride create form (modal) -->
