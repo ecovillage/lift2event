@@ -4,7 +4,7 @@
             {{ isEdit ? 'Eintrag bearbeiten' : t('ride.new_entry') }}
         </h2>
 
-        <form class="space-y-4" @submit.prevent="submit">
+        <form class="space-y-4" novalidate @submit.prevent="submit">
 
             <!-- Type -->
             <fieldset>
@@ -31,13 +31,21 @@
             <!-- Name -->
             <div>
                 <label for="ride-name" class="field-label">{{ t('ride.name') }}</label>
-                <input id="ride-name" v-model="form.name" type="text" required class="field-input" data-testid="ride-name" />
+                <input
+                    id="ride-name" v-model="form.name" type="text" required class="field-input" data-testid="ride-name"
+                    @focus="onFocus('name')" @blur="onBlur('name')"
+                />
+                <p v-if="fieldErrors.name" class="mt-1 text-xs text-red-400">{{ fieldErrors.name }}</p>
             </div>
 
             <!-- Email -->
             <div>
                 <label for="ride-email" class="field-label">{{ t('ride.email') }}</label>
-                <input id="ride-email" v-model="form.email" type="email" required class="field-input" data-testid="ride-email" />
+                <input
+                    id="ride-email" v-model="form.email" type="email" required class="field-input" data-testid="ride-email"
+                    @focus="onFocus('email')" @blur="onBlur('email')"
+                />
+                <p v-if="fieldErrors.email" class="mt-1 text-xs text-red-400">{{ fieldErrors.email }}</p>
             </div>
 
             <!-- Phone -->
@@ -85,7 +93,8 @@
                         class="field-input"
                         data-testid="ride-address"
                         @input="onAddressInput"
-                        @blur="closeSuggestions"
+                        @focus="onFocus('address')"
+                        @blur="onAddressBlur"
                     />
                     <ul
                         v-if="suggestions.length"
@@ -99,8 +108,8 @@
                             @mousedown.prevent="selectSuggestion(s)"
                         >{{ s.display_name }}</li>
                     </ul>
-                    <p v-if="!form.location && addressInput" class="mt-1 text-xs text-red-400">
-                        {{ t('ride.location_required') }}
+                    <p v-if="fieldErrors.address" class="mt-1 text-xs text-red-400">
+                        {{ fieldErrors.address }}
                     </p>
                 </div>
 
@@ -108,9 +117,17 @@
                 <div v-if="hasOutbound" class="mb-3">
                     <label class="field-label">{{ t('ride.outbound_label') }}</label>
                     <div class="flex items-center gap-2">
-                        <input v-model="outboundDate" type="date" class="field-input flex-1" :required="hasOutbound" />
-                        <input v-model="outboundTime" type="time" placeholder="--:--" class="field-input w-28" :required="hasOutbound" />
+                        <input
+                            v-model="outboundDate" type="date" class="field-input flex-1" :required="hasOutbound"
+                            @focus="onFocus('outboundDate')" @blur="onBlur('outboundDate')"
+                        />
+                        <input
+                            v-model="outboundTime" type="time" placeholder="--:--" class="field-input w-28" :required="hasOutbound"
+                            @focus="onFocus('outboundTime')" @blur="onBlur('outboundTime')"
+                        />
                     </div>
+                    <p v-if="fieldErrors.outboundDate" class="mt-1 text-xs text-red-400">{{ fieldErrors.outboundDate }}</p>
+                    <p v-if="fieldErrors.outboundTime" class="mt-1 text-xs text-red-400">{{ fieldErrors.outboundTime }}</p>
                     <div class="flex items-center gap-2 mt-1.5">
                         <button type="button" class="day-btn" @click="shiftDay('outbound', -1)">← {{ t('ride.day_back') }}</button>
                         <span class="text-xs text-gray-400 flex-1 text-center">{{ outboundLabel }}</span>
@@ -122,9 +139,13 @@
                 <div v-if="hasReturn">
                     <label class="field-label">{{ t('ride.return_label') }}</label>
                     <div class="flex items-center gap-2">
-                        <input v-model="returnDate" type="date" class="field-input flex-1" :required="hasReturn" />
+                        <input
+                            v-model="returnDate" type="date" class="field-input flex-1" :required="hasReturn"
+                            @focus="onFocus('returnDate')" @blur="onBlur('returnDate')"
+                        />
                         <input v-model="returnTime" type="time" :placeholder="eventEndTime" class="field-input w-28" />
                     </div>
+                    <p v-if="fieldErrors.returnDate" class="mt-1 text-xs text-red-400">{{ fieldErrors.returnDate }}</p>
                     <div class="flex items-center gap-2 mt-1.5">
                         <button type="button" class="day-btn" @click="shiftDay('return', -1)">← {{ t('ride.day_back') }}</button>
                         <span class="text-xs text-gray-400 flex-1 text-center">{{ returnLabel }}</span>
@@ -240,6 +261,39 @@ let   searchTimer  = null;
 const hasOutbound = computed(() => ['both-ways', 'outbound-only'].includes(form.direction));
 const hasReturn   = computed(() => ['both-ways', 'return-only'].includes(form.direction));
 
+// ── Field validation (validate on blur, re-validate earlier fields on focus) ───
+
+const fieldOrder = ['name', 'email', 'address', 'outboundDate', 'outboundTime', 'returnDate'];
+const touched    = reactive(Object.fromEntries(fieldOrder.map(k => [k, false])));
+
+function onFocus(key) {
+    fieldOrder.slice(0, fieldOrder.indexOf(key)).forEach(k => { touched[k] = true; });
+}
+function onBlur(key) {
+    touched[key] = true;
+}
+
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function validateField(key) {
+    switch (key) {
+        case 'name':         return form.name.trim() ? null : t('error.name_required');
+        case 'email': {
+            if (!form.email.trim()) return t('error.email_required');
+            return emailPattern.test(form.email) ? null : t('error.email_invalid');
+        }
+        case 'address':       return form.location ? null : t('ride.location_required');
+        case 'outboundDate':  return hasOutbound.value && !outboundDate.value ? t('error.outbound_date_required') : null;
+        case 'outboundTime':  return hasOutbound.value && !outboundTime.value ? t('error.outbound_time_required') : null;
+        case 'returnDate':    return hasReturn.value && !returnDate.value ? t('error.return_date_required') : null;
+        default:              return null;
+    }
+}
+
+const fieldErrors = computed(() => Object.fromEntries(
+    fieldOrder.map(k => [k, touched[k] ? validateField(k) : null])
+));
+
 // Clear dates when direction changes
 watch(() => form.direction, (d) => {
     if (!['both-ways', 'outbound-only'].includes(d)) { outboundDate.value = ''; outboundTime.value = ''; }
@@ -333,6 +387,7 @@ function onAddressInput() {
 }
 
 function closeSuggestions() { setTimeout(() => { suggestions.value = []; }, 150); }
+function onAddressBlur() { closeSuggestions(); onBlur('address'); }
 
 function selectSuggestion(s) {
     const cc = (s.address?.country_code ?? '').toUpperCase().slice(0, 2) || null;
@@ -345,7 +400,8 @@ function selectSuggestion(s) {
 
 async function submit() {
     errors.value = [];
-    if (!form.location)                   { errors.value = [t('ride.location_required')]; return; }
+    fieldOrder.forEach(k => { touched[k] = true; });
+    if (fieldOrder.some(k => fieldErrors.value[k])) return;
     if (form.contact_methods.length === 0) { errors.value = [t('error.contact_required')]; return; }
 
     // Combine date + time; use event end time as default for return if time is empty

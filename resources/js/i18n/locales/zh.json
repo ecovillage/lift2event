@@ -129,6 +129,12 @@
     },
     "error": {
         "phone_country": "如果您的出发地与活动地点不在同一个国家，您的电话号码必须以 + 开头。",
-        "contact_required": "请提供至少一个电子邮箱或电话号码。"
+        "contact_required": "请提供至少一个电子邮箱或电话号码。",
+        "name_required": "请输入您的姓名。",
+        "email_required": "请输入您的电子邮箱。",
+        "email_invalid": "请输入有效的电子邮箱地址。",
+        "outbound_date_required": "请填写去程日期。",
+        "outbound_time_required": "请填写去程时间。",
+        "return_date_required": "请填写返程日期。"
     }
 }

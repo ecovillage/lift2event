@@ -131,6 +131,12 @@
     },
     "error": {
         "phone_country": "Wenn dein Heimatort in einem anderen Land liegt als die Veranstaltung, muss deine Telefonnummer mit + beginnen.",
-        "contact_required": "Bitte gib mindestens eine Emailadresse oder Telefonnummer an."
+        "contact_required": "Bitte gib mindestens eine Emailadresse oder Telefonnummer an.",
+        "name_required": "Bitte gib deinen Namen ein.",
+        "email_required": "Bitte gib deine E-Mail-Adresse ein.",
+        "email_invalid": "Bitte gib eine gültige E-Mail-Adresse ein.",
+        "outbound_date_required": "Bitte gib das Datum der Hinfahrt an.",
+        "outbound_time_required": "Bitte gib die Uhrzeit der Hinfahrt an.",
+        "return_date_required": "Bitte gib das Datum der Rückfahrt an."
     }
 }

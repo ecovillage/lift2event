@@ -129,6 +129,12 @@
     },
     "error": {
         "phone_country": "If your home location is in a different country than the event, your phone number must start with +.",
-        "contact_required": "Please provide at least an email address or phone number."
+        "contact_required": "Please provide at least an email address or phone number.",
+        "name_required": "Please enter your name.",
+        "email_required": "Please enter your email address.",
+        "email_invalid": "Please enter a valid email address.",
+        "outbound_date_required": "Please enter the outbound date.",
+        "outbound_time_required": "Please enter the outbound time.",
+        "return_date_required": "Please enter the return date."
     }
 }
