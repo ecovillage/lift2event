@@ -40,7 +40,10 @@
         "location_placeholder": "Adresse suchen…",
         "location_required": "Bitte wähle einen Veranstaltungsort aus.",
         "copy": "Kopieren",
-        "save_error": "Speichern fehlgeschlagen."
+        "save_error": "Speichern fehlgeschlagen.",
+        "created_title": "Veranstaltung angelegt",
+        "created_link_hint": "Dieser Link ist auch auf der Bearbeiten-Seite der Veranstaltung zu sehen und kann an Teilnehmer weitergegeben werden.",
+        "created_close": "Schließen"
     },
     "ride": {
         "offer": "Angebot",

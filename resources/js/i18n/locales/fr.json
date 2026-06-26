@@ -40,7 +40,10 @@
         "location_placeholder": "Rechercher une adresse…",
         "location_required": "Veuillez sélectionner un lieu.",
         "copy": "Copier",
-        "save_error": "Échec de l'enregistrement."
+        "save_error": "Échec de l'enregistrement.",
+        "created_title": "Événement créé",
+        "created_link_hint": "Ce lien est également visible sur la page de modification de l'événement et peut être partagé avec les participants.",
+        "created_close": "Fermer"
     },
     "ride": {
         "offer": "Offre",

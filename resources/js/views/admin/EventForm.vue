@@ -161,6 +161,61 @@
                 </div>
             </div>
         </Teleport>
+
+        <!-- Created event popup (shown after new event is saved) -->
+        <Teleport to="body">
+            <div
+                v-if="createdEvent"
+                class="fixed inset-0 z-[2000] bg-black/50 flex items-center justify-center p-4"
+            >
+                <div class="bg-white rounded-xl w-full max-w-md p-6 shadow-xl">
+                    <h2 class="text-lg font-semibold mb-4">{{ t('event.created_title') }}</h2>
+
+                    <div class="mb-4">
+                        <label class="field-label">{{ t('event.public_link') }}</label>
+                        <div class="flex items-start gap-2">
+                            <a
+                                :href="createdEventPublicLink"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="text-sm text-[var(--color-primary)] hover:underline break-all flex-1 min-w-0"
+                            >{{ createdEventPublicLink }}</a>
+                            <a
+                                :href="createdEventPublicLink"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="text-gray-400 hover:text-gray-600 shrink-0 mt-0.5"
+                            >
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                                </svg>
+                            </a>
+                        </div>
+                        <button
+                            type="button"
+                            class="mt-2 flex items-center gap-1.5 px-3 py-1.5 border border-gray-300 rounded text-sm hover:bg-gray-50 text-gray-600"
+                            @click="copyCreatedLink"
+                        >
+                            <svg v-if="!copiedCreated" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                            </svg>
+                            <svg v-else class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                            </svg>
+                            {{ t('event.copy') }}
+                        </button>
+                    </div>
+
+                    <p class="text-sm text-gray-500 mb-5">{{ t('event.created_link_hint') }}</p>
+
+                    <button
+                        type="button"
+                        class="w-full py-2 bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white rounded text-sm font-medium transition-colors"
+                        @click="closeCreatedModal"
+                    >{{ t('event.created_close') }}</button>
+                </div>
+            </div>
+        </Teleport>
     </div>
 </template>
 
@@ -190,6 +245,13 @@ const editingRide  = ref(null);
 const saving  = ref(false);
 const errors  = ref([]);
 const copied  = ref(false);
+
+const createdEvent       = ref(null);
+const copiedCreated      = ref(false);
+
+const createdEventPublicLink = computed(() =>
+    createdEvent.value ? `${window.location.origin}/e/${createdEvent.value.slug}` : ''
+);
 
 const addressInput = ref('');
 const suggestions  = ref([]);
@@ -378,6 +440,17 @@ async function copyLink() {
     setTimeout(() => { copied.value = false; }, 2000);
 }
 
+async function copyCreatedLink() {
+    await navigator.clipboard.writeText(createdEventPublicLink.value);
+    copiedCreated.value = true;
+    setTimeout(() => { copiedCreated.value = false; }, 2000);
+}
+
+function closeCreatedModal() {
+    createdEvent.value = null;
+    router.push({ name: 'admin.events' });
+}
+
 async function submit() {
     errors.value = [];
     if (!form.location) { errors.value = [t('event.location_required')]; return; }
@@ -385,10 +458,11 @@ async function submit() {
     try {
         if (isEdit.value) {
             await api.put(`/events/${eventId.value}`, form);
+            router.push({ name: 'admin.events' });
         } else {
-            await api.post('/events', form);
+            const { data } = await api.post('/events', form);
+            createdEvent.value = data;
         }
-        router.push({ name: 'admin.events' });
     } catch (e) {
         const resp   = e.response?.data;
         errors.value = resp?.errors

@@ -40,7 +40,10 @@
         "location_placeholder": "Search address…",
         "location_required": "Please select a venue.",
         "copy": "Copy",
-        "save_error": "Failed to save."
+        "save_error": "Failed to save.",
+        "created_title": "Event created",
+        "created_link_hint": "This link is also shown on the event edit page and can be shared with participants.",
+        "created_close": "Close"
     },
     "ride": {
         "offer": "Offer",

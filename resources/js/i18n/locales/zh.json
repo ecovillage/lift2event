@@ -40,7 +40,10 @@
         "location_placeholder": "搜索地址…",
         "location_required": "请选择活动地点。",
         "copy": "复制",
-        "save_error": "保存失败。"
+        "save_error": "保存失败。",
+        "created_title": "活动已创建",
+        "created_link_hint": "此链接也显示在活动编辑页面上，可以分享给参与者。",
+        "created_close": "关闭"
     },
     "ride": {
         "offer": "提供搭车",
