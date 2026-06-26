@@ -64,11 +64,26 @@
                     <!-- Public link (edit mode only) -->
                     <div v-if="isEdit && event">
                         <label class="field-label">{{ t('event.public_link') }}</label>
-                        <div class="flex gap-1">
-                            <input :value="publicLink" readonly class="field-input flex-1 text-xs bg-gray-50 cursor-default" />
+                        <div class="flex items-center gap-2">
+                            <a
+                                :href="publicLink"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="text-xs text-[var(--color-primary)] hover:underline truncate flex-1 min-w-0"
+                            >{{ publicLink }}</a>
+                            <a
+                                :href="publicLink"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="text-gray-400 hover:text-gray-600 shrink-0"
+                            >
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                                </svg>
+                            </a>
                             <button
                                 type="button"
-                                class="px-2 border border-gray-300 rounded text-xs hover:bg-gray-50 shrink-0"
+                                class="px-2 py-1 border border-gray-300 rounded text-xs hover:bg-gray-50 shrink-0"
                                 @click="copyLink"
                             >{{ copied ? '✓' : t('event.copy') }}</button>
                         </div>
