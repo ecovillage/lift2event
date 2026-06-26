@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Location;
 use App\Models\LocationRoute;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class RoutingService
 {
@@ -20,6 +21,8 @@ class RoutingService
 
         $baseUrl = rtrim(env('OPENROUTESERVICE_URL', 'https://api.openrouteservice.org'), '/');
 
+        $requestHeaders = ['Authorization' => '[redacted]'];
+
         try {
             $response = Http::withHeaders(['Authorization' => env('OPENROUTESERVICE_API_KEY')])
                 ->timeout(5)
@@ -28,10 +31,19 @@ class RoutingService
                     'end'   => "{$to->longitude},{$to->latitude}",
                 ]);
         } catch (\Throwable $e) {
-            report($e);
+            Log::warning('ORS request failed', [
+                'request_headers'  => $requestHeaders,
+                'exception'        => $e->getMessage(),
+            ]);
 
             return ['geometry' => null];
         }
+
+        Log::info('ORS response', [
+            'status'           => $response->status(),
+            'request_headers'  => $requestHeaders,
+            'response_headers' => $response->headers(),
+        ]);
 
         if (! $response->successful()) {
             return ['geometry' => null];
