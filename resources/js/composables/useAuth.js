@@ -21,12 +21,14 @@ export function useAuth() {
         try {
             const { data } = await api.get('/user');
             state.user = data;
-            i18n.global.locale.value = data.preferred_language;
         } catch {
             localStorage.removeItem('auth_token');
             state.user = null;
         } finally {
             state.ready = true;
+        }
+        if (state.user?.preferred_language) {
+            i18n.global.locale.value = state.user.preferred_language;
         }
     }
 
