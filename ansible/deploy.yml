@@ -27,22 +27,70 @@
         dest: "{{ deploy_path }}"
         version: "{{ deploy_branch }}"
 
-    - name: PHP-Abhaengigkeiten installieren
-      ansible.builtin.command: "{{ composer_bin }} install --no-dev --optimize-autoloader --no-interaction"
-      args:
-        chdir: "{{ deploy_path }}"
+    # Composer und npm sind auf vielen Webspace-Paketen nicht installiert,
+    # PHP dagegen schon. Vendor- und Frontend-Build entstehen deshalb lokal
+    # auf dem Ansible-Steuerrechner (wo composer_bin/npm_bin existieren) und
+    # werden anschliessend per rsync auf den Server uebertragen.
+    - name: PHP- und Frontend-Abhaengigkeiten lokal bauen und uebertragen
+      block:
+        - name: Temporaeres Build-Verzeichnis anlegen
+          ansible.builtin.tempfile:
+            state: directory
+            prefix: lift2event-build-
+          register: build_dir
+          delegate_to: localhost
+          become: false
 
-    # Vite, Tailwind & Co. stehen absichtlich in devDependencies und werden
-    # nur zum Bauen benoetigt - daher hier bewusst kein --omit=dev.
-    - name: Frontend-Abhaengigkeiten installieren
-      ansible.builtin.command: "{{ npm_bin }} ci"
-      args:
-        chdir: "{{ deploy_path }}"
+        - name: Code fuer den Build auschecken
+          ansible.builtin.git:
+            repo: "{{ git_repo }}"
+            dest: "{{ build_dir.path }}"
+            version: "{{ deploy_branch }}"
+          delegate_to: localhost
+          become: false
 
-    - name: Frontend fuer Produktion bauen
-      ansible.builtin.command: "{{ npm_bin }} run build"
-      args:
-        chdir: "{{ deploy_path }}"
+        - name: PHP-Abhaengigkeiten lokal installieren
+          ansible.builtin.command: "{{ composer_bin }} install --no-dev --optimize-autoloader --no-interaction"
+          args:
+            chdir: "{{ build_dir.path }}"
+          delegate_to: localhost
+          become: false
+
+        # Vite, Tailwind & Co. stehen absichtlich in devDependencies und
+        # werden nur zum Bauen benoetigt - daher hier bewusst kein --omit=dev.
+        - name: Frontend-Abhaengigkeiten lokal installieren
+          ansible.builtin.command: "{{ npm_bin }} ci"
+          args:
+            chdir: "{{ build_dir.path }}"
+          delegate_to: localhost
+          become: false
+
+        - name: Frontend lokal fuer Produktion bauen
+          ansible.builtin.command: "{{ npm_bin }} run build"
+          args:
+            chdir: "{{ build_dir.path }}"
+          delegate_to: localhost
+          become: false
+
+        - name: vendor/-Verzeichnis auf den Server uebertragen
+          ansible.posix.synchronize:
+            src: "{{ build_dir.path }}/vendor/"
+            dest: "{{ deploy_path }}/vendor/"
+            delete: yes
+
+        - name: Gebaute Frontend-Assets auf den Server uebertragen
+          ansible.posix.synchronize:
+            src: "{{ build_dir.path }}/public/build/"
+            dest: "{{ deploy_path }}/public/build/"
+            delete: yes
+      always:
+        - name: Lokales Build-Verzeichnis aufraeumen
+          ansible.builtin.file:
+            path: "{{ build_dir.path }}"
+            state: absent
+          delegate_to: localhost
+          become: false
+          when: build_dir is defined and build_dir.path is defined
 
     - name: Storage-Verzeichnisstruktur sicherstellen
       ansible.builtin.file:

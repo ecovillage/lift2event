@@ -1,9 +1,12 @@
 # Deploy auf einem LAMP-Webspace
 
 Für typische Webspace-Pakete (Ionos und Konsorten) mit SSH-Zugang, aber ohne
-root/sudo, eigenen vhost oder systemd. `deploy.yml` aktualisiert den Code,
-installiert Abhängigkeiten, baut das Frontend, migriert die Datenbank und
-cacht Config/Routen/Views.
+root/sudo, eigenen vhost oder systemd. Solche Pakete haben meist PHP, aber
+kein Composer und kein npm/Node. `deploy.yml` aktualisiert den Code auf dem
+Server per Git, baut `vendor/` und die Frontend-Assets deshalb lokal auf dem
+Rechner, von dem aus `ansible-playbook` läuft (dort müssen Composer und npm
+installiert sein), überträgt beides per rsync auf den Server, migriert die
+Datenbank und cacht Config/Routen/Views.
 
 ## Einmalige manuelle Vorbereitung
 
@@ -26,9 +29,14 @@ erledigt werden müssen, bevor der erste `ansible-playbook`-Lauf funktioniert:
 5. **PHP-Erweiterungen prüfen** – `pdo_mysql`, `zip`, `bcmath`, `intl` müssen
    aktiviert sein (bei den meisten Hostern Standard, ggf. im Panel
    einschalten).
-6. **Composer/Node verfügbar?** – das Playbook führt `composer`, `npm` und
-   `git` auf dem Server aus. Vorab per SSH prüfen, dass alle drei verfügbar
-   sind (`composer_bin`/`npm_bin`/`php_bin` in `vars/main.yml` ggf. anpassen).
+6. **git und rsync auf dem Server verfügbar?** – das Playbook führt `git`
+   auf dem Server aus und überträgt `vendor/` sowie die Frontend-Assets per
+   rsync (beides bei SSH-Webspace-Paketen i. d. R. vorhanden). `composer`
+   und `npm` werden dagegen *nicht* auf dem Server benötigt.
+7. **Composer/Node lokal verfügbar?** – `composer`, `npm` und `rsync`
+   müssen auf dem Rechner installiert sein, von dem aus `ansible-playbook`
+   gestartet wird (`composer_bin`/`npm_bin` in `vars/main.yml` ggf.
+   anpassen).
 
 ## Verwendung
 
@@ -37,6 +45,7 @@ cp ansible/inventory.example ansible/inventory
 # Server, Benutzer ggf. Port/Key in ansible/inventory eintragen
 # deploy_path, git_repo, php_bin etc. in ansible/vars/main.yml anpassen
 
+ansible-galaxy collection install -r ansible/requirements.yml
 ansible-playbook -i ansible/inventory ansible/deploy.yml
 ```
 

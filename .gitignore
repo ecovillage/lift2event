@@ -1,4 +1,4 @@
-*.log
+
 *.sqlite
 *.sqlite-shm
 *.sqlite-wal
@@ -29,3 +29,4 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 test-results
+/ansible
