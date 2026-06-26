@@ -41,6 +41,7 @@
                             autocomplete="off"
                             class="field-input"
                             @input="onAddressInput"
+                            @keydown="onAddressKeydown"
                             @blur="closeSuggestions"
                         />
                         <ul
@@ -48,9 +49,9 @@
                             class="absolute z-50 left-0 right-0 bg-white border border-gray-200 rounded shadow-lg max-h-48 overflow-y-auto text-sm"
                         >
                             <li
-                                v-for="s in suggestions"
+                                v-for="(s, i) in suggestions"
                                 :key="s.place_id"
-                                class="px-3 py-2 hover:bg-gray-100 cursor-pointer leading-snug"
+                                :class="['px-3 py-2 cursor-pointer leading-snug', i === highlightedIndex ? 'bg-gray-100' : 'hover:bg-gray-100']"
                                 @mousedown.prevent="selectSuggestion(s)"
                             >
                                 {{ s.display_name }}
@@ -253,9 +254,10 @@ const createdEventPublicLink = computed(() =>
     createdEvent.value ? `${window.location.origin}/e/${createdEvent.value.slug}` : ''
 );
 
-const addressInput = ref('');
-const suggestions  = ref([]);
-let searchTimer    = null;
+const addressInput     = ref('');
+const suggestions      = ref([]);
+const highlightedIndex = ref(-1);
+let searchTimer        = null;
 
 const publicLink = computed(() =>
     event.value ? `${window.location.origin}/e/${event.value.slug}` : ''
@@ -407,12 +409,14 @@ onUnmounted(() => {
 // Nominatim autocomplete (proxied through our API)
 function onAddressInput() {
     clearTimeout(searchTimer);
+    highlightedIndex.value = -1;
     const q = addressInput.value.trim();
     if (q.length < 3) { suggestions.value = []; return; }
     searchTimer = setTimeout(async () => {
         try {
             const { data } = await api.get('/geocode/search', { params: { q } });
-            suggestions.value = data;
+            suggestions.value      = data;
+            highlightedIndex.value = -1;
         } catch { suggestions.value = []; }
     }, 350);
 }
@@ -420,6 +424,20 @@ function onAddressInput() {
 function closeSuggestions() {
     // Small delay so mousedown on suggestion fires before blur clears the list
     setTimeout(() => { suggestions.value = []; }, 150);
+}
+
+function onAddressKeydown(e) {
+    if (!suggestions.value.length) return;
+    if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        highlightedIndex.value = highlightedIndex.value < suggestions.value.length - 1 ? highlightedIndex.value + 1 : 0;
+    } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        highlightedIndex.value = highlightedIndex.value > 0 ? highlightedIndex.value - 1 : suggestions.value.length - 1;
+    } else if (e.key === 'Enter' && highlightedIndex.value >= 0) {
+        e.preventDefault();
+        selectSuggestion(suggestions.value[highlightedIndex.value]);
+    }
 }
 
 function selectSuggestion(s) {
