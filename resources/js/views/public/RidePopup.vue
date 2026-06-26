@@ -2,7 +2,7 @@
     <div class="fixed inset-0 z-[1500] bg-black/50 flex items-end md:items-center justify-center" @click.self="emit('close')">
         <div class="bg-white rounded-t-2xl md:rounded-xl w-full md:max-w-md max-h-[90vh] overflow-y-auto">
 
-            <!-- Close button -->
+            <!-- Header: close button -->
             <div class="flex justify-end p-3 pb-0">
                 <button class="text-gray-400 hover:text-gray-600 text-xl leading-none" @click="emit('close')">&#215;</button>
             </div>
@@ -94,6 +94,25 @@
                         class="hover:text-red-500 underline"
                     >Löschen</RouterLink>
                 </div>
+
+                <!-- Manage icons for admin / event creator -->
+                <div v-if="manageable" class="border-t pt-3 flex justify-end gap-3 text-gray-400">
+                    <button
+                        type="button"
+                        class="hover:text-gray-700 text-base leading-none"
+                        :title="t('ride.edit')"
+                        :aria-label="t('ride.edit')"
+                        @click="emit('edit')"
+                    >✎</button>
+                    <button
+                        type="button"
+                        class="hover:text-red-500 text-base leading-none"
+                        :title="t('ride.delete')"
+                        :aria-label="t('ride.delete')"
+                        @click="emit('delete')"
+                    >🗑</button>
+                </div>
+
             </div>
         </div>
     </div>
@@ -105,11 +124,12 @@ import { useI18n } from 'vue-i18n';
 import { useEscapeKey } from '@/composables/useEscapeKey';
 
 const props = defineProps({
-    ride:  { type: Object, required: true },
-    event: { type: Object, required: true },
+    ride:       { type: Object, required: true },
+    event:      { type: Object, required: true },
+    manageable: { type: Boolean, default: false },
 });
 
-const emit = defineEmits(['close']);
+const emit = defineEmits(['close', 'edit', 'delete']);
 const { t, locale } = useI18n();
 
 useEscapeKey(() => emit('close'));

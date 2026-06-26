@@ -136,7 +136,10 @@
                 v-if="selectedRide"
                 :ride="selectedRide"
                 :event="event"
+                manageable
                 @close="selectedRide = null"
+                @edit="onPopupEdit"
+                @delete="onPopupDelete"
             />
         </Teleport>
 
@@ -266,6 +269,17 @@ function fitMapToRides() {
     });
     if (points.length > 1) map.fitBounds(points, { padding: [40, 40] });
     else map.setView(points[0], 10);
+}
+
+function onPopupEdit() {
+    editingRide.value  = selectedRide.value;
+    selectedRide.value = null;
+}
+
+function onPopupDelete() {
+    const ride         = selectedRide.value;
+    selectedRide.value = null;
+    deleteRide(ride);
 }
 
 function onRideUpdated(ride) {
