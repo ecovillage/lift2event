@@ -290,6 +290,7 @@ function initMap() {
 }
 
 let drawGeneration = 0;
+const routeCache = new Map();
 
 function drawRides() {
     if (!rideLayer) return;
@@ -325,9 +326,16 @@ function drawRides() {
 // the straight line stays as a fallback if the route can't be fetched.
 async function fetchRoute(ride, generation, polyline) {
     try {
-        const { data } = await axios.get(`/api/e/${route.params.slug}/rides/${ride.id}/route`);
-        if (generation !== drawGeneration || !data.geometry) return;
-        polyline.setLatLngs(data.geometry.map(([lng, lat]) => [lat, lng]));
+        let geometry;
+        if (routeCache.has(ride.id)) {
+            geometry = routeCache.get(ride.id);
+        } else {
+            const { data } = await axios.get(`/api/e/${route.params.slug}/rides/${ride.id}/route`);
+            geometry = data.geometry ?? null;
+            routeCache.set(ride.id, geometry);
+        }
+        if (generation !== drawGeneration || !geometry) return;
+        polyline.setLatLngs(geometry.map(([lng, lat]) => [lat, lng]));
     } catch {
         // Keep the straight line.
     }
