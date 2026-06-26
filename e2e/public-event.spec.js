@@ -256,6 +256,20 @@ test.describe('Öffentliche Mitfahrbörse', () => {
         await expect(page.getByRole('link', { name: 'Datenschutz' })).toBeVisible();
     });
 
+    test('Admin-Bereich-Button nicht sichtbar wenn nicht eingeloggt', async ({ page }) => {
+        await page.goto(eventUrl);
+        await expect(page.getByRole('link', { name: 'Admin-Bereich' })).not.toBeVisible();
+    });
+
+    test('Admin-Bereich-Button sichtbar wenn eingeloggt und leitet zum Admin-Bereich weiter', async ({ page }) => {
+        await loginAs(page, ADMIN_EMAIL);
+        await page.goto(eventUrl);
+        const adminLink = page.getByRole('link', { name: 'Admin-Bereich' });
+        await expect(adminLink).toBeVisible();
+        await adminLink.click();
+        await expect(page).toHaveURL(/\/admin/);
+    });
+
     test('Veranstaltung ohne Mitfahrten zeigt Hinweistext statt Kacheln', async ({ page }) => {
         await page.goto(`/e/${USER_EVENT_SLUG}`);
         await expect(page.getByText('Noch keine Mitfahrten – trag die erste ein!')).toBeVisible();

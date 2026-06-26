@@ -8,7 +8,8 @@
         "my_events": "Meine Veranstaltungen",
         "settings": "Einstellungen",
         "profile": "Mein Profil",
-        "logout": "Abmelden"
+        "logout": "Abmelden",
+        "admin": "Admin-Bereich"
     },
     "auth": {
         "email": "Emailadresse",

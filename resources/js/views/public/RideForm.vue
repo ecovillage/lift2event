@@ -51,7 +51,10 @@
             <!-- Phone -->
             <div>
                 <label for="ride-phone" class="field-label">{{ t('ride.phone') }}</label>
-                <input id="ride-phone" v-model="form.phone" type="tel" class="field-input" data-testid="ride-phone" />
+                <input
+                    id="ride-phone" v-model="form.phone" type="tel" class="field-input" data-testid="ride-phone"
+                    @focus="onFocus('phone')" @blur="onBlur('phone')"
+                />
                 <p v-if="countryWarning" class="mt-1 text-xs text-amber-600">{{ t('error.phone_country') }}</p>
             </div>
 
@@ -70,6 +73,7 @@
                             :value="m"
                             :disabled="phoneRequired(m)"
                             class="accent-[var(--color-primary)]"
+                            @focus="onFocus('contactMethods')" @blur="onBlur('contactMethods')"
                         />
                         {{ t('ride.contact_' + m) }}
                     </label>
@@ -271,7 +275,7 @@ const hasReturn   = computed(() => ['both-ways', 'return-only'].includes(form.di
 
 // ── Field validation (validate on blur, re-validate earlier fields on focus) ───
 
-const fieldOrder = ['name', 'email', 'address', 'outboundDate', 'outboundTime', 'returnDate'];
+const fieldOrder = ['name', 'email', 'phone', 'contactMethods', 'address', 'outboundDate', 'outboundTime', 'returnDate'];
 const touched    = reactive(Object.fromEntries(fieldOrder.map(k => [k, false])));
 
 function onFocus(key) {

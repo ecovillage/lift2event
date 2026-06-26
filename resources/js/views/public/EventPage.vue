@@ -2,13 +2,20 @@
     <div class="h-screen flex flex-col overflow-hidden">
 
         <!-- Header -->
-        <div class="bg-white border-b px-4 py-4 flex-shrink-0">
-            <p class="text-xs text-gray-400 uppercase tracking-wide">{{ t('event.rideshare_for') }}</p>
-            <h1 class="text-xl font-bold text-gray-900 leading-tight">{{ event?.name ?? '…' }}</h1>
-            <div v-if="event" class="mt-0.5 text-sm text-gray-500 flex flex-wrap gap-x-3">
-                <span>{{ fmtLong(event.start_at) }} – {{ fmtLong(event.end_at) }}</span>
-                <span v-if="event.location" class="truncate">{{ event.location.address }}</span>
+        <div class="bg-white border-b px-4 py-4 flex-shrink-0 flex items-start justify-between gap-4">
+            <div>
+                <p class="text-xs text-gray-400 uppercase tracking-wide">{{ t('event.rideshare_for') }}</p>
+                <h1 class="text-xl font-bold text-gray-900 leading-tight">{{ event?.name ?? '…' }}</h1>
+                <div v-if="event" class="mt-0.5 text-sm text-gray-500 flex flex-wrap gap-x-3">
+                    <span>{{ fmtLong(event.start_at) }} – {{ fmtLong(event.end_at) }}</span>
+                    <span v-if="event.location" class="truncate">{{ event.location.address }}</span>
+                </div>
             </div>
+            <router-link
+                v-if="isAuthenticated"
+                :to="{ name: 'admin.home' }"
+                class="flex-shrink-0 px-3 py-1.5 rounded text-xs font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 transition-colors"
+            >{{ t('nav.admin') }}</router-link>
         </div>
 
         <!-- Filter bar -->
@@ -156,9 +163,11 @@ import RideCard from './RideCard.vue';
 import RideForm from './RideForm.vue';
 import RidePopup from './RidePopup.vue';
 import { useEscapeKey } from '@/composables/useEscapeKey';
+import { useAuth } from '@/composables/useAuth';
 
 const { t, locale } = useI18n();
 const route = useRoute();
+const { isAuthenticated } = useAuth();
 
 // Data
 const event        = ref(null);
