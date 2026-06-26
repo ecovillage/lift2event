@@ -8,24 +8,16 @@
     - vars/main.yml
 
   tasks:
-    - name: Pruefen, ob .env auf dem Server existiert
-      ansible.builtin.stat:
-        path: "{{ deploy_path }}/.env"
-      register: env_file
-
-    - name: Abbrechen, falls .env fehlt
-      ansible.builtin.fail:
-        msg: >-
-          {{ deploy_path }}/.env fehlt. Einmalig manuell anlegen
-          (.env.example kopieren und DB-/SMTP-Zugangsdaten eintragen).
-          APP_KEY kann leer bleiben, wird unten automatisch erzeugt.
-      when: not env_file.stat.exists
-
     - name: Code auschecken/aktualisieren
       ansible.builtin.git:
         repo: "{{ git_repo }}"
         dest: "{{ deploy_path }}"
         version: "{{ deploy_branch }}"
+
+    - name: Copy .env to remote
+      ansible.builtin.copy:
+        src: templates/.env
+        dest: "{{ deploy_path }}"
 
     # Composer und npm sind auf vielen Webspace-Paketen nicht installiert,
     # PHP dagegen schon. Vendor- und Frontend-Build entstehen deshalb lokal
