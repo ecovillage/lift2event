@@ -89,8 +89,7 @@ class EventCrudTest extends TestCase
 
         $slug = $response->json('slug');
         $this->assertNotEmpty($slug);
-        $this->assertSame(16, strlen($slug));
-        $this->assertMatchesRegularExpression('/^[0-9a-f]{16}$/', $slug);
+        $this->assertMatchesRegularExpression('/^[a-z]+-[a-z]+$/', $slug);
     }
 
     public function test_create_sets_creator_to_authenticated_user(): void
