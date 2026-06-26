@@ -267,7 +267,7 @@ let map       = null;
 let marker    = null;
 let rideLayer = null;
 
-const offerColor   = '#4a9f6e';
+const offerColor   = '#7c3aed';
 const requestColor = '#e07b30';
 
 const starIcon = () => L.divIcon({
@@ -298,7 +298,7 @@ function drawRides() {
         const lng   = parseFloat(ride.location.longitude);
         const color = ride.type === 'offer' ? offerColor : requestColor;
 
-        const polyline = L.polyline([[lat, lng], [evLat, evLng]], { color, weight: 2, opacity: 0.6 })
+        const polyline = L.polyline([[lat, lng], [evLat, evLng]], { color, weight: 4, opacity: 0.85 })
             .addTo(rideLayer);
         fetchRoute(ride, generation, polyline);
 

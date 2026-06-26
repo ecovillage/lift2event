@@ -256,7 +256,7 @@ function fmtDay(ymd)  { return dayFmt.value.format(new Date(ymd + 'T12:00')); }
 
 // ── Map ───────────────────────────────────────────────────────────────────────
 
-const offerColor   = '#4a9f6e';
+const offerColor   = '#7c3aed';
 const requestColor = '#e07b30';
 
 function starIcon() {
@@ -308,7 +308,7 @@ function drawRides() {
         const color = ride.type === 'offer' ? offerColor : requestColor;
 
         if (evLat !== null) {
-            const polyline = L.polyline([[lat, lng], [evLat, evLng]], { color, weight: 2, opacity: 0.6 })
+            const polyline = L.polyline([[lat, lng], [evLat, evLng]], { color, weight: 4, opacity: 0.85 })
                 .addTo(rideLayer);
             fetchRoute(ride, generation, polyline);
         }
