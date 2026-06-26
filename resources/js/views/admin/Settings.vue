@@ -5,7 +5,9 @@
         <!-- Map section -->
         <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
             <p class="text-sm text-gray-600 mb-3">{{ t('settings.map_default') }}</p>
-            <div ref="mapEl" class="h-64 rounded overflow-hidden mb-4" data-testid="settings-map"></div>
+            <div class="px-[calc(var(--event-form-col-width)/2)] mb-4">
+                <div ref="mapEl" class="aspect-[3/2] rounded overflow-hidden" data-testid="settings-map"></div>
+            </div>
             <div class="flex items-center gap-3">
                 <button
                     class="px-4 py-2 bg-[var(--color-primary)] text-white rounded text-sm font-medium hover:bg-[var(--color-primary-dark)] disabled:opacity-60"

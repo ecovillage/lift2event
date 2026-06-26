@@ -7,7 +7,7 @@
         <form @submit.prevent="submit">
             <!-- Two-column layout: form left (20%), map right (80%)       -->
             <!-- Mobile order: map first (order-1), form second (order-2)  -->
-            <div class="flex flex-col md:flex-row gap-4" style="min-height: 400px">
+            <div class="flex flex-col md:flex-row gap-4 min-h-96">
 
                 <!-- Map: top on mobile, right column on desktop -->
                 <div class="order-1 md:order-2 h-64 md:h-auto md:flex-1 rounded overflow-hidden relative">
@@ -15,7 +15,7 @@
                 </div>
 
                 <!-- Form: bottom on mobile, left column on desktop -->
-                <div class="order-2 md:order-1 md:w-1/5 md:min-w-[200px] space-y-4 flex flex-col">
+                <div class="order-2 md:order-1 md:w-[var(--event-form-col-width)] md:min-w-[200px] space-y-4 flex flex-col">
                     <div>
                         <label class="field-label">{{ t('event.name') }}</label>
                         <input v-model="form.name" type="text" required class="field-input" />

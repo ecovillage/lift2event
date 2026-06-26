@@ -13,3 +13,7 @@
     --color-primary: #4a9f6e;
     --color-primary-dark: #3a7f58;
 }
+
+:root {
+    --event-form-col-width: 20%;
+}
