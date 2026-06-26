@@ -230,17 +230,9 @@ test.describe('Öffentliche Mitfahrbörse', () => {
         await expect(page.getByText(/E-Mail|email/i).first()).toBeVisible();
     });
 
-    test('Footer zeigt Impressum- und GitHub-Link', async ({ page }) => {
+    test('Footer zeigt GitHub-Link', async ({ page }) => {
         await page.goto(eventUrl);
-        await expect(page.getByRole('link', { name: 'Impressum' })).toBeVisible();
         await expect(page.getByRole('link', { name: 'GitHub' })).toBeVisible();
-    });
-
-    test('Klick auf Impressum öffnet die Impressum-Seite', async ({ page }) => {
-        await page.goto(eventUrl);
-        await page.getByRole('link', { name: 'Impressum' }).click();
-        await expect(page).toHaveURL(/\/impressum$/);
-        await expect(page.getByRole('heading', { name: 'Impressum' })).toBeVisible();
     });
 
     test('Footer zeigt benutzerdefinierte Links aus den Einstellungen', async ({ page }) => {

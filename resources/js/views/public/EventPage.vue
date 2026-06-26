@@ -90,7 +90,6 @@
 
         <!-- Footer -->
         <footer class="bg-white border-t px-4 py-2 flex-shrink-0 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-500">
-            <router-link :to="{ name: 'imprint' }" class="hover:text-gray-700 hover:underline">{{ t('footer.imprint') }}</router-link>
             <a :href="githubUrl" target="_blank" rel="noopener" class="hover:text-gray-700 hover:underline">{{ t('footer.github') }}</a>
             <a
                 v-for="(link, i) in footerLinks"

@@ -23,12 +23,6 @@ const routes = [
         name: 'ride.confirm',
         component: () => import('@/views/public/RideConfirm.vue'),
     },
-    {
-        path: '/impressum',
-        name: 'imprint',
-        component: () => import('@/views/public/Imprint.vue'),
-    },
-
     // Auth
     {
         path: '/login',
