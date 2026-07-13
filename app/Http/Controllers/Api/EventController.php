@@ -7,6 +7,7 @@ use App\Models\Event;
 use App\Models\Location;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class EventController extends Controller
 {
@@ -98,7 +99,15 @@ class EventController extends Controller
             return response()->json(['message' => 'Forbidden'], 403);
         }
 
-        $event->delete();
+        DB::transaction(function () use ($event) {
+            $locationIds = $event->rides()->pluck('location_id')
+                ->push($event->location_id)
+                ->unique();
+
+            $event->delete();
+
+            Location::whereIn('id', $locationIds)->delete();
+        });
 
         return response()->json(null, 204);
     }

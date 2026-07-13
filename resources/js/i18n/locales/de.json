@@ -43,7 +43,9 @@
         "save_error": "Speichern fehlgeschlagen.",
         "created_title": "Veranstaltung angelegt",
         "created_link_hint": "Dieser Link ist auch auf der Bearbeiten-Seite der Veranstaltung zu sehen und kann an Teilnehmer weitergegeben werden.",
-        "created_close": "Schließen"
+        "created_close": "Schließen",
+        "delete": "Löschen",
+        "delete_confirm": "Veranstaltung „{name}“ wirklich löschen? Alle zugehörigen Mitfahrt-Einträge werden ebenfalls gelöscht."
     },
     "ride": {
         "offer": "Angebot",

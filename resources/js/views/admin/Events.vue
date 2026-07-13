@@ -25,6 +25,7 @@
                         <th class="px-4 py-3 hidden lg:table-cell">{{ t('event.location') }}</th>
                         <th class="px-4 py-3 text-right">{{ t('ride.filter_offers') }}</th>
                         <th class="px-4 py-3 text-right">{{ t('ride.filter_requests') }}</th>
+                        <th class="px-4 py-3 w-16"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -32,6 +33,7 @@
                         v-for="event in events"
                         :key="event.id"
                         class="border-b border-gray-100 last:border-0 hover:bg-gray-50 cursor-pointer"
+                        :data-testid="`event-row-${event.id}`"
                         @click="router.push({ name: 'admin.events.edit', params: { id: event.id } })"
                     >
                         <td class="px-4 py-3 font-medium">{{ event.name }}</td>
@@ -40,6 +42,13 @@
                         <td class="px-4 py-3 hidden lg:table-cell text-gray-600">{{ event.location?.address ?? '–' }}</td>
                         <td class="px-4 py-3 text-right text-gray-600">{{ event.offers_count }}</td>
                         <td class="px-4 py-3 text-right text-gray-600">{{ event.requests_count }}</td>
+                        <td class="px-4 py-3 text-right">
+                            <button
+                                class="text-xs text-red-500 hover:text-red-700 px-2 py-1 rounded hover:bg-red-50"
+                                :data-testid="`delete-btn-${event.id}`"
+                                @click.stop="confirmDelete(event)"
+                            >{{ t('event.delete') }}</button>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -77,4 +86,10 @@ onMounted(async () => {
         loading.value = false;
     }
 });
+
+async function confirmDelete(event) {
+    if (! window.confirm(t('event.delete_confirm', { name: event.name }))) return;
+    await api.delete(`/events/${event.id}`);
+    events.value = events.value.filter(e => e.id !== event.id);
+}
 </script>

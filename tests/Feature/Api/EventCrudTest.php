@@ -4,6 +4,7 @@ namespace Tests\Feature\Api;
 
 use App\Models\Event;
 use App\Models\Location;
+use App\Models\LocationRoute;
 use App\Models\Ride;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -317,6 +318,38 @@ class EventCrudTest extends TestCase
         $this->deleteJson("/api/events/{$event->id}", [], $headers)->assertNoContent();
 
         $this->assertDatabaseCount('rides', 0);
+    }
+
+    public function test_delete_removes_event_location_and_its_routes(): void
+    {
+        [$user, $headers] = $this->auth();
+        $event = Event::factory()->create(['created_by_id' => $user->id]);
+        $locationId = $event->location_id;
+        $other = Location::factory()->create();
+        $route = LocationRoute::create([
+            'from_location_id' => $locationId,
+            'to_location_id'   => $other->id,
+            'geometry'         => ['type' => 'LineString', 'coordinates' => []],
+        ]);
+
+        $this->deleteJson("/api/events/{$event->id}", [], $headers)->assertNoContent();
+
+        $this->assertDatabaseMissing('locations', ['id' => $locationId]);
+        $this->assertDatabaseMissing('location_routes', ['id' => $route->id]);
+    }
+
+    public function test_delete_removes_ride_locations(): void
+    {
+        [$user, $headers] = $this->auth();
+        $event = Event::factory()->create(['created_by_id' => $user->id]);
+        $rides = Ride::factory()->count(2)->create(['event_id' => $event->id]);
+        $rideLocationIds = $rides->pluck('location_id');
+
+        $this->deleteJson("/api/events/{$event->id}", [], $headers)->assertNoContent();
+
+        foreach ($rideLocationIds as $id) {
+            $this->assertDatabaseMissing('locations', ['id' => $id]);
+        }
     }
 
     public function test_admin_can_delete_any_event(): void
