@@ -88,7 +88,9 @@ onMounted(async () => {
 });
 
 async function confirmDelete(event) {
-    if (! window.confirm(t('event.delete_confirm', { name: event.name }))) return;
+    const location = event.location?.address ?? '–';
+    const count = (event.offers_count ?? 0) + (event.requests_count ?? 0);
+    if (! window.confirm(t('event.delete_confirm', { name: event.name, location, count }))) return;
     await api.delete(`/events/${event.id}`);
     events.value = events.value.filter(e => e.id !== event.id);
 }
