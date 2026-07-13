@@ -44,8 +44,10 @@ test.describe('Admin – Veranstaltungen', () => {
         await page.waitForSelector('ul li');
         await page.locator('ul li').first().click();
 
-        // Submit
+        // Submit – a modal appears with the public link, close it to reach the list
         await page.getByRole('button', { name: 'Speichern' }).click();
+        await expect(page.getByRole('heading', { name: /Veranstaltung angelegt/i })).toBeVisible();
+        await page.getByRole('button', { name: /Schlie/i }).click();
         await expect(page).toHaveURL(/\/admin\/events$/);
         await expect(page.getByText('E2E-Test-Event')).toBeVisible();
     });
@@ -107,8 +109,8 @@ test.describe('Admin – Veranstaltungen', () => {
         await page.getByText('Testveranstaltung Berlin').click();
         await expect(page).toHaveURL(/\/admin\/events\/\d+\/edit/);
 
-        // Pre-seeded offer ride renders as a green pin (circle marker) on the map
-        const pin = page.locator('path.leaflet-interactive[fill="#4a9f6e"]');
+        // Pre-seeded offer ride renders as a violet pin (circle marker) on the map
+        const pin = page.locator('path.leaflet-interactive[fill="#7c3aed"]');
         await expect(pin).toHaveCount(1);
 
         // Clicking the pin opens the same detail popup as the ride tile
