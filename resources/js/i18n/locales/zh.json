@@ -120,6 +120,7 @@
         "delete": "删除"
     },
     "profile": {
+        "my_data": "我的资料",
         "current_password": "当前密码",
         "new_password": "新密码",
         "change_password": "修改密码",

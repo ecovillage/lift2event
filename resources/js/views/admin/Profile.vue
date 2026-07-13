@@ -2,10 +2,11 @@
     <div>
         <h1 class="text-xl font-semibold mb-6">{{ t('nav.profile') }}</h1>
 
-        <div class="bg-white rounded-lg shadow-sm p-6 max-w-md space-y-8">
+        <div class="flex flex-wrap gap-6 items-start">
 
-            <!-- Name, Email, Language -->
-            <section>
+            <!-- Meine Daten -->
+            <section class="bg-white rounded-lg shadow-sm p-6 w-full max-w-sm">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ t('profile.my_data') }}</h2>
                 <label for="profile-name" class="field-label">{{ t('auth.name') }}</label>
                 <input
                     id="profile-name"
@@ -20,7 +21,7 @@
                 <select
                     id="profile-lang"
                     v-model="form.preferred_language"
-                    class="field-input mb-3"
+                    class="field-input mb-4"
                     data-testid="profile-language"
                 >
                     <option value="de">Deutsch</option>
@@ -37,9 +38,9 @@
                 <Feedback :msg="msg.profile" />
             </section>
 
-            <!-- Password -->
-            <section>
-                <h2 class="text-lg font-semibold text-gray-900 mb-3">{{ t('profile.change_password') }}</h2>
+            <!-- Passwort ändern -->
+            <section class="bg-white rounded-lg shadow-sm p-6 w-full max-w-sm">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ t('profile.change_password') }}</h2>
                 <label for="profile-cpw" class="field-label">{{ t('profile.current_password') }}</label>
                 <input id="profile-cpw" v-model="form.current_password" type="password" class="field-input mb-3" data-testid="profile-current-password" />
                 <label for="profile-npw" class="field-label">{{ t('profile.new_password') }}</label>
@@ -49,7 +50,7 @@
                     id="profile-cpwc"
                     v-model="form.password_confirmation"
                     type="password"
-                    class="field-input mb-3"
+                    class="field-input mb-4"
                     data-testid="profile-password-confirm"
                 />
                 <button

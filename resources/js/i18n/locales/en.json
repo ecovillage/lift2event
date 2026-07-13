@@ -120,6 +120,7 @@
         "delete": "Delete"
     },
     "profile": {
+        "my_data": "My data",
         "current_password": "Current password",
         "new_password": "New password",
         "change_password": "Change password",

@@ -122,6 +122,7 @@
         "delete": "Löschen"
     },
     "profile": {
+        "my_data": "Meine Daten",
         "current_password": "Aktuelles Passwort",
         "new_password": "Neues Passwort",
         "change_password": "Passwort ändern",
