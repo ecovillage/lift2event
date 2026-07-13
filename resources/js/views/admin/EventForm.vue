@@ -23,12 +23,18 @@
 
                     <div>
                         <label class="field-label">{{ t('event.start') }}</label>
-                        <input v-model="form.start_at" type="datetime-local" required class="field-input" />
+                        <div class="flex gap-2">
+                            <input v-model="startDate" type="date" class="field-input flex-1" />
+                            <input v-model="startTime" type="time" class="field-input w-28" />
+                        </div>
                     </div>
 
                     <div>
                         <label class="field-label">{{ t('event.end') }}</label>
-                        <input v-model="form.end_at" type="datetime-local" required class="field-input" />
+                        <div class="flex gap-2">
+                            <input v-model="endDate" type="date" class="field-input flex-1" />
+                            <input v-model="endTime" type="time" class="field-input w-28" />
+                        </div>
                     </div>
 
                     <!-- Address with Nominatim autocomplete -->
@@ -69,7 +75,7 @@
                             <input
                                 :value="publicLink"
                                 readonly
-                                class="field-input flex-1 min-w-0 text-xs text-gray-600 bg-gray-50 cursor-text"
+                                class="field-input flex-1 min-w-0 text-xs text-gray-600 !bg-gray-50 cursor-text"
                             />
                             <a
                                 :href="publicLink"
@@ -236,7 +242,11 @@ const route  = useRoute();
 const isEdit  = computed(() => !!route.params.id);
 const eventId = computed(() => route.params.id);
 
-const form    = reactive({ name: '', start_at: '', end_at: '', location: null });
+const form    = reactive({ name: '', location: null });
+const startDate = ref('');
+const startTime = ref('');
+const endDate    = ref('');
+const endTime    = ref('');
 const event   = ref(null);
 const rides   = ref([]);
 const selectedRide = ref(null);
@@ -390,9 +400,9 @@ onMounted(async () => {
         const { data } = await api.get(`/events/${eventId.value}`);
         event.value   = data;
         rides.value   = data.rides ?? [];
-        form.name     = data.name;
-        form.start_at = toLocalInput(data.start_at);
-        form.end_at   = toLocalInput(data.end_at);
+        form.name = data.name;
+        [startDate.value, startTime.value] = toLocalInput(data.start_at).split('T');
+        [endDate.value, endTime.value]     = toLocalInput(data.end_at).split('T');
         if (data.location) {
             form.location      = {
                 address:      data.location.address,
@@ -477,14 +487,27 @@ function closeCreatedModal() {
 
 async function submit() {
     errors.value = [];
-    if (!form.location) { errors.value = [t('event.location_required')]; return; }
+    if (!startDate.value) errors.value.push(t('event.start_date_required'));
+    if (!startTime.value) errors.value.push(t('event.start_time_required'));
+    if (!endDate.value) errors.value.push(t('event.end_date_required'));
+    if (!endTime.value) errors.value.push(t('event.end_time_required'));
+    if (!form.location) errors.value.push(t('event.location_required'));
+    if (errors.value.length) return;
+
+    const payload = {
+        name:     form.name,
+        start_at: `${startDate.value}T${startTime.value}`,
+        end_at:   `${endDate.value}T${endTime.value}`,
+        location: form.location,
+    };
+
     saving.value = true;
     try {
         if (isEdit.value) {
-            await api.put(`/events/${eventId.value}`, form);
+            await api.put(`/events/${eventId.value}`, payload);
             router.push({ name: 'admin.events' });
         } else {
-            const { data } = await api.post('/events', form);
+            const { data } = await api.post('/events', payload);
             createdEvent.value = data;
         }
     } catch (e) {
@@ -501,5 +524,5 @@ async function submit() {
 <style scoped>
 @reference "tailwindcss";
 .field-label { @apply block text-sm font-medium text-gray-700 mb-1; }
-.field-input { @apply w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20; }
+.field-input { @apply w-full px-3 py-2 bg-white border border-gray-300 rounded text-sm focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20; }
 </style>

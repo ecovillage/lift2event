@@ -39,11 +39,17 @@
         "none": "Aucun événement.",
         "location_placeholder": "Rechercher une adresse…",
         "location_required": "Veuillez sélectionner un lieu.",
+        "start_date_required": "Veuillez indiquer la date de début.",
+        "start_time_required": "Veuillez indiquer l'heure de début.",
+        "end_date_required": "Veuillez indiquer la date de fin.",
+        "end_time_required": "Veuillez indiquer l'heure de fin.",
         "copy": "Copier",
         "save_error": "Échec de l'enregistrement.",
         "created_title": "Événement créé",
         "created_link_hint": "Ce lien est également visible sur la page de modification de l'événement et peut être partagé avec les participants.",
-        "created_close": "Fermer"
+        "created_close": "Fermer",
+        "delete": "Supprimer",
+        "delete_confirm": "Voulez-vous vraiment supprimer l'événement « {name} » à {location} ? Il compte actuellement {count} trajets (offres et demandes confondues), qui seront également supprimés."
     },
     "ride": {
         "offer": "Offre",

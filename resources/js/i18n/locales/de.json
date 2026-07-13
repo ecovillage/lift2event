@@ -39,13 +39,17 @@
         "public_link": "Öffentlicher Link",
         "location_placeholder": "Adresse suchen…",
         "location_required": "Bitte wähle einen Veranstaltungsort aus.",
+        "start_date_required": "Bitte das Startdatum vollständig angeben.",
+        "start_time_required": "Bitte die Startuhrzeit vollständig angeben.",
+        "end_date_required": "Bitte das Enddatum vollständig angeben.",
+        "end_time_required": "Bitte die Enduhrzeit vollständig angeben.",
         "copy": "Kopieren",
         "save_error": "Speichern fehlgeschlagen.",
         "created_title": "Veranstaltung angelegt",
         "created_link_hint": "Dieser Link ist auch auf der Bearbeiten-Seite der Veranstaltung zu sehen und kann an Teilnehmer weitergegeben werden.",
         "created_close": "Schließen",
         "delete": "Löschen",
-        "delete_confirm": "Veranstaltung „{name}“ wirklich löschen? Alle zugehörigen Mitfahrt-Einträge werden ebenfalls gelöscht."
+        "delete_confirm": "Veranstaltung „{name}“ in {location} wirklich löschen? Es sind aktuell {count} Mitfahrt-Einträge (Angebote und Gesuche zusammen) eingetragen, die dabei ebenfalls gelöscht werden."
     },
     "ride": {
         "offer": "Angebot",

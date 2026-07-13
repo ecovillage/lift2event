@@ -39,13 +39,17 @@
         "none": "No events yet.",
         "location_placeholder": "Search address…",
         "location_required": "Please select a venue.",
+        "start_date_required": "Please enter the start date.",
+        "start_time_required": "Please enter the start time.",
+        "end_date_required": "Please enter the end date.",
+        "end_time_required": "Please enter the end time.",
         "copy": "Copy",
         "save_error": "Failed to save.",
         "created_title": "Event created",
         "created_link_hint": "This link is also shown on the event edit page and can be shared with participants.",
         "created_close": "Close",
         "delete": "Delete",
-        "delete_confirm": "Really delete event \"{name}\"? All associated ride entries will also be deleted."
+        "delete_confirm": "Really delete event \"{name}\" in {location}? It currently has {count} ride entries (offers and requests combined) — all of these will also be deleted."
     },
     "ride": {
         "offer": "Offer",

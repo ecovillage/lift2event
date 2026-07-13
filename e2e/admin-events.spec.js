@@ -35,8 +35,10 @@ test.describe('Admin – Veranstaltungen', () => {
 
         // Fill the form
         await page.locator('input[type="text"]').first().fill('E2E-Test-Event');
-        await page.locator('input[type="datetime-local"]').first().fill('2026-10-01T10:00');
-        await page.locator('input[type="datetime-local"]').last().fill('2026-10-03T18:00');
+        await page.locator('input[type="date"]').first().fill('2026-10-01');
+        await page.locator('input[type="time"]').first().fill('10:00');
+        await page.locator('input[type="date"]').last().fill('2026-10-03');
+        await page.locator('input[type="time"]').last().fill('18:00');
 
         // Trigger address search and select suggestion
         const addressInput = page.locator('input[placeholder*="Adresse"]');
