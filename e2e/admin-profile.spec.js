@@ -23,7 +23,7 @@ test.describe('Admin – Profil', () => {
 
         await page.getByTestId('profile-name').clear();
         await page.getByTestId('profile-name').fill('Geänderter Name');
-        await page.getByTestId('save-name-btn').click();
+        await page.getByTestId('save-profile-btn').click();
 
         await expect(page.getByTestId('profile-feedback')).toContainText('Gespeichert');
     });
@@ -33,7 +33,7 @@ test.describe('Admin – Profil', () => {
         await page.goto('/admin/profile');
 
         await page.getByTestId('profile-language').selectOption('en');
-        await page.getByTestId('save-language-btn').click();
+        await page.getByTestId('save-profile-btn').click();
 
         // Feedback shows in the new language (English)
         await expect(page.getByTestId('profile-feedback')).toContainText(/Saved|Gespeichert/);
@@ -65,14 +65,13 @@ test.describe('Admin – Profil', () => {
         await expect(page.getByTestId('profile-feedback')).toContainText(/falsch|Passwort/i);
     });
 
-    test('E-Mail kann mit korrektem Passwort geändert werden', async ({ page }) => {
+    test('E-Mail kann geändert werden', async ({ page }) => {
         await loginAs(page, ADMIN_EMAIL);
         await page.goto('/admin/profile');
 
         await page.getByTestId('profile-email').clear();
         await page.getByTestId('profile-email').fill('admin-neu@lift2event.test');
-        await page.getByTestId('profile-cpw-email').fill(PASSWORD);
-        await page.getByTestId('save-email-btn').click();
+        await page.getByTestId('save-profile-btn').click();
 
         await expect(page.getByTestId('profile-feedback')).toContainText('Gespeichert');
     });

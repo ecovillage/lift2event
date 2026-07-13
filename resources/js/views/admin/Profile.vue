@@ -4,99 +4,61 @@
 
         <div class="bg-white rounded-lg shadow-sm p-6 max-w-md space-y-8">
 
-            <!-- Name -->
+            <!-- Name, Email, Language -->
             <section>
                 <label for="profile-name" class="field-label">{{ t('auth.name') }}</label>
-                <div class="flex gap-2">
-                    <input
-                        id="profile-name"
-                        v-model="form.name"
-                        type="text"
-                        class="field-input flex-1"
-                        data-testid="profile-name"
-                    />
-                    <button
-                        class="px-3 py-2 bg-[var(--color-primary)] text-white rounded text-sm font-medium hover:bg-[var(--color-primary-dark)] disabled:opacity-60"
-                        :disabled="saving.name"
-                        data-testid="save-name-btn"
-                        @click="save('name')"
-                    >{{ saving.name ? '…' : t('settings.save') }}</button>
-                </div>
-                <Feedback :msg="msg.name" />
-            </section>
-
-            <!-- Email -->
-            <section>
+                <input
+                    id="profile-name"
+                    v-model="form.name"
+                    type="text"
+                    class="field-input mb-3"
+                    data-testid="profile-name"
+                />
                 <label for="profile-email" class="field-label">{{ t('auth.email') }}</label>
                 <input id="profile-email" v-model="form.email" type="email" class="field-input mb-3" data-testid="profile-email" />
-                <label for="profile-cpw-email" class="field-label">{{ t('profile.current_password') }}</label>
-                <div class="flex gap-2">
-                    <input
-                        id="profile-cpw-email"
-                        v-model="form.current_password_email"
-                        type="password"
-                        class="field-input flex-1"
-                        data-testid="profile-cpw-email"
-                    />
-                    <button
-                        class="px-3 py-2 bg-[var(--color-primary)] text-white rounded text-sm font-medium hover:bg-[var(--color-primary-dark)] disabled:opacity-60"
-                        :disabled="saving.email"
-                        data-testid="save-email-btn"
-                        @click="save('email')"
-                    >{{ saving.email ? '…' : t('settings.save') }}</button>
-                </div>
-                <Feedback :msg="msg.email" />
+                <label for="profile-lang" class="field-label">{{ t('profile.language') }}</label>
+                <select
+                    id="profile-lang"
+                    v-model="form.preferred_language"
+                    class="field-input mb-3"
+                    data-testid="profile-language"
+                >
+                    <option value="de">Deutsch</option>
+                    <option value="en">English</option>
+                    <option value="fr">Français</option>
+                    <option value="zh">中文</option>
+                </select>
+                <button
+                    class="px-3 py-2 bg-[var(--color-primary)] text-white rounded text-sm font-medium hover:bg-[var(--color-primary-dark)] disabled:opacity-60"
+                    :disabled="saving.profile"
+                    data-testid="save-profile-btn"
+                    @click="save('profile')"
+                >{{ saving.profile ? '…' : t('settings.save') }}</button>
+                <Feedback :msg="msg.profile" />
             </section>
 
             <!-- Password -->
             <section>
-                <p class="font-medium text-sm text-gray-700 mb-3">{{ t('profile.change_password') }}</p>
+                <h2 class="text-lg font-semibold text-gray-900 mb-3">{{ t('profile.change_password') }}</h2>
                 <label for="profile-cpw" class="field-label">{{ t('profile.current_password') }}</label>
                 <input id="profile-cpw" v-model="form.current_password" type="password" class="field-input mb-3" data-testid="profile-current-password" />
                 <label for="profile-npw" class="field-label">{{ t('profile.new_password') }}</label>
                 <input id="profile-npw" v-model="form.password" type="password" class="field-input mb-3" data-testid="profile-new-password" />
                 <label for="profile-cpwc" class="field-label">{{ t('auth.confirm_password') }}</label>
-                <div class="flex gap-2">
-                    <input
-                        id="profile-cpwc"
-                        v-model="form.password_confirmation"
-                        type="password"
-                        class="field-input flex-1"
-                        data-testid="profile-password-confirm"
-                    />
-                    <button
-                        class="px-3 py-2 bg-[var(--color-primary)] text-white rounded text-sm font-medium hover:bg-[var(--color-primary-dark)] disabled:opacity-60"
-                        :disabled="saving.password"
-                        data-testid="save-password-btn"
-                        @click="save('password')"
-                    >{{ saving.password ? '…' : t('settings.save') }}</button>
-                </div>
+                <input
+                    id="profile-cpwc"
+                    v-model="form.password_confirmation"
+                    type="password"
+                    class="field-input mb-3"
+                    data-testid="profile-password-confirm"
+                />
+                <button
+                    class="px-3 py-2 bg-[var(--color-primary)] text-white rounded text-sm font-medium hover:bg-[var(--color-primary-dark)] disabled:opacity-60"
+                    :disabled="saving.password"
+                    data-testid="save-password-btn"
+                    @click="save('password')"
+                >{{ saving.password ? '…' : t('settings.save') }}</button>
                 <Feedback :msg="msg.password" />
-            </section>
-
-            <!-- Language -->
-            <section>
-                <label for="profile-lang" class="field-label">{{ t('profile.language') }}</label>
-                <div class="flex gap-2">
-                    <select
-                        id="profile-lang"
-                        v-model="form.preferred_language"
-                        class="field-input flex-1"
-                        data-testid="profile-language"
-                    >
-                        <option value="de">Deutsch</option>
-                        <option value="en">English</option>
-                        <option value="fr">Français</option>
-                        <option value="zh">中文</option>
-                    </select>
-                    <button
-                        class="px-3 py-2 bg-[var(--color-primary)] text-white rounded text-sm font-medium hover:bg-[var(--color-primary-dark)] disabled:opacity-60"
-                        :disabled="saving.language"
-                        data-testid="save-language-btn"
-                        @click="save('language')"
-                    >{{ saving.language ? '…' : t('settings.save') }}</button>
-                </div>
-                <Feedback :msg="msg.language" />
             </section>
         </div>
     </div>
@@ -114,15 +76,14 @@ const { state } = useAuth();
 const form = reactive({
     name:                   '',
     email:                  '',
-    current_password_email: '',
     current_password:       '',
     password:               '',
     password_confirmation:  '',
     preferred_language:     'de',
 });
 
-const saving = reactive({ name: false, email: false, password: false, language: false });
-const msg    = reactive({ name: null, email: null, password: null, language: null });
+const saving = reactive({ profile: false, password: false });
+const msg    = reactive({ profile: null, password: null });
 
 onMounted(() => {
     if (state.user) {
@@ -138,29 +99,26 @@ async function save(section) {
 
     let payload = {};
 
-    if (section === 'name') {
-        payload = { name: form.name };
-    } else if (section === 'email') {
-        payload = { email: form.email, current_password: form.current_password_email };
+    if (section === 'profile') {
+        payload = {
+            name:               form.name,
+            email:              form.email,
+            preferred_language: form.preferred_language,
+        };
     } else if (section === 'password') {
         payload = {
             current_password:      form.current_password,
             password:              form.password,
             password_confirmation: form.password_confirmation,
         };
-    } else if (section === 'language') {
-        payload = { preferred_language: form.preferred_language };
     }
 
     try {
         const { data } = await api.put('/user/profile', payload);
         state.user = data;
 
-        if (section === 'language') {
+        if (section === 'profile') {
             locale.value = data.preferred_language;
-        }
-        if (section === 'email') {
-            form.current_password_email = '';
         }
         if (section === 'password') {
             form.current_password = '';

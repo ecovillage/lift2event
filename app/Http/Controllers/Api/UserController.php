@@ -51,7 +51,6 @@ class UserController extends Controller
     {
         $user = $request->user();
 
-        $changingEmail    = $request->has('email') && $request->input('email') !== $user->email;
         $changingPassword = $request->filled('password');
 
         $rules = [
@@ -61,7 +60,7 @@ class UserController extends Controller
             'password'           => ['sometimes', 'nullable', 'string', 'min:8', 'confirmed'],
         ];
 
-        if ($changingEmail || $changingPassword) {
+        if ($changingPassword) {
             $rules['current_password'] = ['required', 'string'];
         }
 
