@@ -92,6 +92,7 @@
                                 <button
                                     type="button"
                                     class="flex items-center gap-1 px-2 py-1 border border-gray-300 rounded text-xs hover:bg-gray-50 text-gray-500 hover:text-gray-700"
+                                    :aria-label="t('event.copy')"
                                     @click="copyLink"
                                 >
                                     <svg v-if="!copied" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -100,7 +101,6 @@
                                     <svg v-else class="w-3.5 h-3.5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                                     </svg>
-                                    {{ t('event.copy') }}
                                 </button>
                             </span>
                         </div>
