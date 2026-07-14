@@ -4,7 +4,7 @@
             {{ isEdit ? t('event.edit') : t('event.new') }}
         </h1>
 
-        <form @submit.prevent="submit">
+        <form novalidate @submit.prevent="submit">
             <!-- Two-column layout: form left (20%), map right (80%)       -->
             <!-- Mobile order: map first (order-1), form second (order-2)  -->
             <div class="flex flex-col md:flex-row gap-4 min-h-96">
@@ -18,23 +18,43 @@
                 <div class="order-2 md:order-1 md:w-[var(--event-form-col-width)] md:min-w-[200px] space-y-4 flex flex-col">
                     <div>
                         <label class="field-label">{{ t('event.name') }}</label>
-                        <input v-model="form.name" type="text" required class="field-input" />
+                        <input
+                            v-model="form.name" type="text" required class="field-input"
+                            @focus="onFocus('name')" @blur="onBlur('name')"
+                        />
+                        <p v-if="fieldErrors.name" class="mt-1 text-xs text-red-400">{{ fieldErrors.name }}</p>
                     </div>
 
                     <div>
                         <label class="field-label">{{ t('event.start') }}</label>
                         <div class="flex gap-2">
-                            <input v-model="startDate" type="date" class="field-input flex-1" />
-                            <input v-model="startTime" type="time" class="field-input w-28" />
+                            <input
+                                v-model="startDate" type="date" class="field-input flex-1"
+                                @focus="onFocus('startDate')" @blur="onBlur('startDate')"
+                            />
+                            <input
+                                v-model="startTime" type="time" class="field-input w-28"
+                                @focus="onFocus('startTime')" @blur="onBlur('startTime')"
+                            />
                         </div>
+                        <p v-if="fieldErrors.startDate" class="mt-1 text-xs text-red-400">{{ fieldErrors.startDate }}</p>
+                        <p v-if="fieldErrors.startTime" class="mt-1 text-xs text-red-400">{{ fieldErrors.startTime }}</p>
                     </div>
 
                     <div>
                         <label class="field-label">{{ t('event.end') }}</label>
                         <div class="flex gap-2">
-                            <input v-model="endDate" type="date" class="field-input flex-1" />
-                            <input v-model="endTime" type="time" class="field-input w-28" />
+                            <input
+                                v-model="endDate" type="date" class="field-input flex-1"
+                                @focus="onFocus('endDate')" @blur="onBlur('endDate')"
+                            />
+                            <input
+                                v-model="endTime" type="time" class="field-input w-28"
+                                @focus="onFocus('endTime')" @blur="onBlur('endTime')"
+                            />
                         </div>
+                        <p v-if="fieldErrors.endDate" class="mt-1 text-xs text-red-400">{{ fieldErrors.endDate }}</p>
+                        <p v-if="fieldErrors.endTime" class="mt-1 text-xs text-red-400">{{ fieldErrors.endTime }}</p>
                     </div>
 
                     <!-- Address with Nominatim autocomplete -->
@@ -48,7 +68,8 @@
                             class="field-input"
                             @input="onAddressInput"
                             @keydown="onAddressKeydown"
-                            @blur="closeSuggestions"
+                            @focus="onFocus('address')"
+                            @blur="onAddressBlur"
                         />
                         <ul
                             v-if="suggestions.length"
@@ -66,6 +87,7 @@
                         <p v-if="form.location" class="mt-1 text-xs text-gray-400 truncate">
                             {{ form.location.latitude.toFixed(4) }}, {{ form.location.longitude.toFixed(4) }}
                         </p>
+                        <p v-else-if="fieldErrors.address" class="mt-1 text-xs text-red-400">{{ fieldErrors.address }}</p>
                     </div>
 
                     <!-- Public link (edit mode only) -->
@@ -106,7 +128,7 @@
                         </div>
                     </div>
 
-                    <p v-for="e in errors" :key="e" class="text-red-600 text-sm">{{ e }}</p>
+                    <p v-for="e in errors" :key="e" class="text-sm text-red-500">{{ e }}</p>
 
                     <div class="flex gap-2 pt-2 mt-auto">
                         <button
@@ -273,6 +295,34 @@ let searchTimer        = null;
 const publicLink = computed(() =>
     event.value ? `${window.location.origin}/e/${event.value.slug}` : ''
 );
+
+// ── Field validation (validate on blur, re-validate earlier fields on focus) ───
+
+const fieldOrder = ['name', 'startDate', 'startTime', 'endDate', 'endTime', 'address'];
+const touched    = reactive(Object.fromEntries(fieldOrder.map(k => [k, false])));
+
+function onFocus(key) {
+    fieldOrder.slice(0, fieldOrder.indexOf(key)).forEach(k => { touched[k] = true; });
+}
+function onBlur(key) {
+    touched[key] = true;
+}
+
+function validateField(key) {
+    switch (key) {
+        case 'name':      return form.name.trim() ? null : t('error.name_required');
+        case 'startDate': return startDate.value ? null : t('event.start_date_required');
+        case 'startTime': return startTime.value ? null : t('event.start_time_required');
+        case 'endDate':   return endDate.value ? null : t('event.end_date_required');
+        case 'endTime':   return endTime.value ? null : t('event.end_time_required');
+        case 'address':   return form.location ? null : t('event.location_required');
+        default:          return null;
+    }
+}
+
+const fieldErrors = computed(() => Object.fromEntries(
+    fieldOrder.map(k => [k, touched[k] ? validateField(k) : null])
+));
 
 // Map
 const mapEl = ref(null);
@@ -445,6 +495,11 @@ function closeSuggestions() {
     setTimeout(() => { suggestions.value = []; }, 150);
 }
 
+function onAddressBlur() {
+    closeSuggestions();
+    onBlur('address');
+}
+
 function onAddressKeydown(e) {
     if (!suggestions.value.length) return;
     if (e.key === 'ArrowDown') {
@@ -490,12 +545,8 @@ function closeCreatedModal() {
 
 async function submit() {
     errors.value = [];
-    if (!startDate.value) errors.value.push(t('event.start_date_required'));
-    if (!startTime.value) errors.value.push(t('event.start_time_required'));
-    if (!endDate.value) errors.value.push(t('event.end_date_required'));
-    if (!endTime.value) errors.value.push(t('event.end_time_required'));
-    if (!form.location) errors.value.push(t('event.location_required'));
-    if (errors.value.length) return;
+    fieldOrder.forEach(k => { touched[k] = true; });
+    if (fieldOrder.some(k => fieldErrors.value[k])) return;
 
     const payload = {
         name:     form.name,
