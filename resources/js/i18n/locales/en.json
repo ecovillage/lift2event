@@ -49,7 +49,7 @@
         "created_link_hint": "This link is also shown on the event edit page and can be shared with participants.",
         "created_close": "Close",
         "delete": "Delete",
-        "delete_confirm": "Really delete event \"{name}\" in {location}? It currently has {count} ride entries (offers and requests combined) — all of these will also be deleted."
+        "delete_confirm": "Really delete \"{name}\" in {location}?\n\n{count} ride entries will also be deleted."
     },
     "ride": {
         "offer": "Offer",

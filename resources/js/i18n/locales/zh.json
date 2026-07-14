@@ -49,7 +49,7 @@
         "created_link_hint": "此链接也显示在活动编辑页面上，可以分享给参与者。",
         "created_close": "关闭",
         "delete": "删除",
-        "delete_confirm": "确定要删除活动“{name}”（地点：{location}）吗？当前已登记 {count} 条拼车信息（提供+寻找合计），删除后将一并删除。"
+        "delete_confirm": "确定要删除”{name}”（{location}）吗？\n\n{count} 条拼车信息将一并删除。"
     },
     "ride": {
         "offer": "提供搭车",

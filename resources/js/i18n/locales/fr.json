@@ -49,7 +49,7 @@
         "created_link_hint": "Ce lien est également visible sur la page de modification de l'événement et peut être partagé avec les participants.",
         "created_close": "Fermer",
         "delete": "Supprimer",
-        "delete_confirm": "Voulez-vous vraiment supprimer l'événement « {name} » à {location} ? Il compte actuellement {count} trajets (offres et demandes confondues), qui seront également supprimés."
+        "delete_confirm": "Voulez-vous vraiment supprimer « {name} » à {location} ?\n\n{count} trajets seront également supprimés."
     },
     "ride": {
         "offer": "Offre",
