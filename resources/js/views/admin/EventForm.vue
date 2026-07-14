@@ -71,35 +71,38 @@
                     <!-- Public link (edit mode only) -->
                     <div v-if="isEdit && event">
                         <label class="field-label">{{ t('event.public_link') }}</label>
-                        <div class="flex items-center gap-2">
-                            <input
-                                :value="publicLink"
-                                readonly
-                                class="field-input flex-1 min-w-0 text-xs text-gray-600 !bg-gray-50 cursor-text"
-                            />
+                        <div class="flex items-start gap-2">
                             <a
                                 :href="publicLink"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                class="shrink-0 text-gray-400 hover:text-gray-600"
-                            >
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-                                </svg>
-                            </a>
-                            <button
-                                type="button"
-                                class="shrink-0 flex items-center gap-1 px-2 py-1 border border-gray-300 rounded text-xs hover:bg-gray-50 text-gray-600"
-                                @click="copyLink"
-                            >
-                                <svg v-if="!copied" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-                                </svg>
-                                <svg v-else class="w-3.5 h-3.5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                                </svg>
-                                {{ t('event.copy') }}
-                            </button>
+                                class="text-xs text-[var(--color-primary)] hover:underline break-all flex-1 min-w-0"
+                            >{{ publicLink }}</a>
+                            <span class="flex items-center gap-1 shrink-0 mt-0.5">
+                                <a
+                                    :href="publicLink"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="text-gray-400 hover:text-gray-600"
+                                >
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                                    </svg>
+                                </a>
+                                <button
+                                    type="button"
+                                    class="flex items-center gap-1 px-2 py-1 border border-gray-300 rounded text-xs hover:bg-gray-50 text-gray-500 hover:text-gray-700"
+                                    @click="copyLink"
+                                >
+                                    <svg v-if="!copied" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                                    </svg>
+                                    <svg v-else class="w-3.5 h-3.5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                    {{ t('event.copy') }}
+                                </button>
+                            </span>
                         </div>
                     </div>
 

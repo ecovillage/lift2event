@@ -82,9 +82,9 @@ test.describe('Admin – Veranstaltungen', () => {
         await loginAs(page, ADMIN_EMAIL);
         await page.goto('/admin/events');
         await page.getByText(/Testveranstaltung Berlin/).click();
-        // Public link is in a readonly input (not visible text) – check its value
-        const linkInput = page.locator('input[readonly]');
-        await expect(linkInput).toHaveValue(/\/e\//, { timeout: 10000 });
+        // Public link is shown as a clickable link
+        const publicLink = page.locator('a[href*="/e/"]').first();
+        await expect(publicLink).toBeVisible({ timeout: 10000 });
         await expect(page.getByRole('button', { name: 'Kopieren' })).toBeVisible();
     });
 
