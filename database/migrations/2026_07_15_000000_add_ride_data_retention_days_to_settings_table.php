@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('settings', function (Blueprint $table) {
-            $table->unsignedSmallInteger('ride_data_retention_days')->default(90)->after('footer_links');
+            $table->unsignedSmallInteger('ride_data_retention_days')->default(7)->after('footer_links');
         });
     }
 
