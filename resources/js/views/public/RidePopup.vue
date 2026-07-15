@@ -180,6 +180,7 @@ const contactButtons = computed(() => {
     const email = props.ride.email ?? '';
     const buttons = [];
     if (m.includes('email'))    buttons.push({ method: 'email',    href: `mailto:${email}`,                     label: t('ride.contact_email') });
+    if (!phone) return buttons;
     if (m.includes('call'))     buttons.push({ method: 'call',     href: `tel:${phone}`,                        label: t('ride.contact_call') });
     if (m.includes('sms'))      buttons.push({ method: 'sms',      href: `sms:${phone}`,                        label: t('ride.contact_sms') });
     if (m.includes('whatsapp')) buttons.push({ method: 'whatsapp', href: `https://wa.me/${phone.replace(/\D/g,'')}`, label: t('ride.contact_whatsapp') });
