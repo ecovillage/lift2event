@@ -120,7 +120,8 @@
         "add_link": "Link hinzufügen",
         "save": "Speichern",
         "saved": "Gespeichert!",
-        "retention_days": "Löschfrist für Mitfahrt-Daten (Tage nach Veranstaltungsende)"
+        "retention_days": "Löschfrist für Mitfahrt-Daten (Tage nach Veranstaltungsende)",
+        "organisation_name": "Name der Organisation"
     },
     "users": {
         "name": "Name",

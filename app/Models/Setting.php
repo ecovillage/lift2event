@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Setting extends Model
 {
-    protected $fillable = ['map_center_lat', 'map_center_lng', 'map_zoom', 'footer_links', 'ride_data_retention_days'];
+    protected $fillable = ['map_center_lat', 'map_center_lng', 'map_zoom', 'footer_links', 'ride_data_retention_days', 'organisation_name'];
 
     protected function casts(): array
     {

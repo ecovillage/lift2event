@@ -4,6 +4,7 @@ namespace App\Mail;
 
 use App\Models\Event;
 use App\Models\Ride;
+use App\Models\Setting;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
@@ -34,8 +35,12 @@ class RideConfirmation extends Mailable
 
     public function envelope(): Envelope
     {
+        $orgName = Setting::instance()->organisation_name ?? 'Lift2Event';
+        $subjectKey = $this->ride->type === 'offer' ? 'mail.subject_offer' : 'mail.subject_request';
+
         return new Envelope(
-            subject: 'Deine Mitfahrt bei ' . $this->event->name,
+            from: new \Illuminate\Mail\Mailables\Address(config('mail.from.address'), $orgName),
+            subject: __($subjectKey, ['event' => $this->event->name]),
         );
     }
 

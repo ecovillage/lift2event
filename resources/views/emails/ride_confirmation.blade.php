@@ -1,5 +1,5 @@
 @component('mail::message')
-# Deine Mitfahrt wurde eingetragen
+# {{ $ride->type === 'offer' ? __('mail.heading_offer') : __('mail.heading_request') }}
 
 Hallo {{ $ride->name }},
 
@@ -9,7 +9,7 @@ dein Eintrag für die Veranstaltung **{{ $event->name }}** wurde erfolgreich ges
 Damit er für andere Besucher sichtbar wird, bestätige ihn bitte über diesen Link:
 
 @component('mail::button', ['url' => $confirmUrl, 'color' => 'success'])
-Mitfahrt bestätigen
+{{ $ride->type === 'offer' ? __('mail.confirm_offer') : __('mail.confirm_request') }}
 @endcomponent
 
 **Bestätigen:** {{ $confirmUrl }}
@@ -32,5 +32,5 @@ Oder verwende diese Links direkt:
 **Löschen:** {{ $deleteUrl }}
 
 Viele Grüße,
-{{ config('app.name') }}
+{{ \App\Models\Setting::instance()->organisation_name ?? 'Lift2Event' }}
 @endcomponent

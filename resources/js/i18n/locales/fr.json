@@ -118,7 +118,8 @@
         "add_link": "Ajouter un lien",
         "save": "Enregistrer",
         "saved": "Enregistré !",
-        "retention_days": "Durée de conservation des données (jours après la fin de l'événement)"
+        "retention_days": "Durée de conservation des données (jours après la fin de l'événement)",
+        "organisation_name": "Nom de l'organisation"
     },
     "users": {
         "name": "Nom",

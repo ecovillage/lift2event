@@ -28,6 +28,7 @@ class SettingController extends Controller
             'footer_links.*.label' => ['required_with:footer_links.*', 'string', 'max:255'],
             'footer_links.*.url'           => ['required_with:footer_links.*', 'url', 'max:500'],
             'ride_data_retention_days'     => ['sometimes', 'integer', 'min:1', 'max:3650'],
+            'organisation_name'            => ['sometimes', 'nullable', 'string', 'max:255'],
         ]);
 
         $settings = Setting::instance();

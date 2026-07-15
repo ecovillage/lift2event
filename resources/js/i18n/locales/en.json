@@ -118,7 +118,8 @@
         "add_link": "Add link",
         "save": "Save",
         "saved": "Saved!",
-        "retention_days": "Data retention period (days after event end)"
+        "retention_days": "Data retention period (days after event end)",
+        "organisation_name": "Organisation name"
     },
     "users": {
         "name": "Name",

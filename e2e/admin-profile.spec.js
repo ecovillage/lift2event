@@ -39,6 +39,11 @@ test.describe('Admin – Profil', () => {
         await expect(page.getByTestId('profile-feedback')).toContainText(/Saved|Gespeichert/);
         // Nav switches to English
         await expect(page.getByRole('link', { name: 'My Events' })).toBeVisible({ timeout: 5000 });
+
+        // Reset language back to German so later tests using this account are unaffected
+        await page.getByTestId('profile-language').selectOption('de');
+        await page.getByTestId('save-profile-btn').click();
+        await expect(page.getByTestId('profile-feedback')).toContainText(/Saved|Gespeichert/);
     });
 
     test('Passwort kann mit korrektem alten Passwort geändert werden', async ({ page }) => {

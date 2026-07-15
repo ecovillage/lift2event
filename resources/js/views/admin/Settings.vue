@@ -2,6 +2,28 @@
     <div>
         <h1 class="text-xl font-semibold mb-6">{{ t('nav.settings') }}</h1>
 
+        <!-- Organisation name section -->
+        <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+            <h2 class="font-semibold text-gray-800 mb-4">{{ t('settings.organisation_name') }}</h2>
+            <div class="flex items-center gap-3">
+                <input
+                    v-model="organisationName"
+                    type="text"
+                    maxlength="255"
+                    class="flex-1 max-w-sm px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-[var(--color-primary)]"
+                    data-testid="organisation-name-input"
+                />
+                <button
+                    class="px-4 py-2 bg-[var(--color-primary)] text-white rounded text-sm font-medium hover:bg-[var(--color-primary-dark)] disabled:opacity-60"
+                    :disabled="saving.orgName"
+                    data-testid="save-organisation-name-btn"
+                    @click="saveOrgName"
+                >{{ saving.orgName ? '…' : t('settings.save') }}</button>
+                <span v-if="saved.orgName" class="text-sm text-green-600">✓ {{ t('settings.saved') }}</span>
+                <span v-if="errors.orgName" class="text-sm text-red-500">{{ errors.orgName }}</span>
+            </div>
+        </div>
+
         <!-- Map section -->
         <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
             <p class="text-sm text-gray-600 mb-3">{{ t('settings.map_default') }}</p>
@@ -98,20 +120,22 @@ import api from '@/api/axios';
 
 const { t } = useI18n();
 
-const mapEl       = ref(null);
-const footerLinks  = ref([]);
-const retentionDays = ref(90);
-const saving      = reactive({ map: false, footer: false, retention: false });
-const saved       = reactive({ map: false, footer: false, retention: false });
-const errors      = reactive({ map: '', footer: '', retention: '' });
+const mapEl          = ref(null);
+const footerLinks    = ref([]);
+const retentionDays  = ref(90);
+const organisationName = ref('');
+const saving         = reactive({ map: false, footer: false, retention: false, orgName: false });
+const saved          = reactive({ map: false, footer: false, retention: false, orgName: false });
+const errors         = reactive({ map: '', footer: '', retention: '', orgName: '' });
 
 let map = null;
 
 onMounted(async () => {
     const { data: settings } = await api.get('/settings');
 
-    footerLinks.value   = settings.footer_links ? JSON.parse(JSON.stringify(settings.footer_links)) : [];
-    retentionDays.value = settings.ride_data_retention_days ?? 90;
+    footerLinks.value    = settings.footer_links ? JSON.parse(JSON.stringify(settings.footer_links)) : [];
+    retentionDays.value  = settings.ride_data_retention_days ?? 90;
+    organisationName.value = settings.organisation_name ?? 'Lift2Event';
 
     map = L.map(mapEl.value, { zoomControl: true }).setView(
         [settings.map_center_lat, settings.map_center_lng],
@@ -159,6 +183,21 @@ async function saveRetention() {
         errors.retention = t('event.save_error');
     } finally {
         saving.retention = false;
+    }
+}
+
+async function saveOrgName() {
+    saving.orgName = true;
+    errors.orgName = '';
+    saved.orgName  = false;
+    try {
+        await api.put('/settings', { organisation_name: organisationName.value });
+        saved.orgName = true;
+        setTimeout(() => { saved.orgName = false; }, 3000);
+    } catch {
+        errors.orgName = t('event.save_error');
+    } finally {
+        saving.orgName = false;
     }
 }
 
