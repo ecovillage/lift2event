@@ -356,6 +356,8 @@ function drawRides() {
     const evLat = form.location.latitude;
     const evLng = form.location.longitude;
 
+    const offerPolylines = [];
+
     rides.value.forEach(ride => {
         if (!ride.location) return;
         const lat   = parseFloat(ride.location.latitude);
@@ -364,6 +366,7 @@ function drawRides() {
 
         const polyline = L.polyline([[lat, lng], [evLat, evLng]], { color, weight: 4, opacity: 0.85 })
             .addTo(rideLayer);
+        if (ride.type === 'offer') offerPolylines.push(polyline);
         fetchRoute(ride, generation, polyline);
 
         L.circleMarker([lat, lng], {
@@ -373,6 +376,10 @@ function drawRides() {
             .on('click', () => { selectedRide.value = ride; })
             .addTo(rideLayer);
     });
+
+    // Purple (offer) routes must stay visible above orange (request) routes,
+    // even where both follow the exact same path.
+    offerPolylines.forEach(p => p.bringToFront());
 }
 
 // Upgrades the straight line to the real driving route between the saved
