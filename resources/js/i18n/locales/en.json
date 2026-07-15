@@ -60,6 +60,8 @@
         "delete": "Delete",
         "delete_confirm": "Really delete this entry?",
         "new_entry": "+ Add a new ride",
+        "new_entry_heading": "Add a new ride",
+        "privacy_notice": "Here you can share your contact details to form carpools. The link to this rideshare board and your contact information will only be shared with participants of {eventName} and cannot be found by search engines. Your data will be deleted {n} days after the event ends.",
         "type_label": "What would you like to post?",
         "type_offer": "I'm offering a ride.",
         "type_request": "I'm looking for a ride.",
@@ -115,7 +117,8 @@
         "footer_links": "Custom footer links",
         "add_link": "Add link",
         "save": "Save",
-        "saved": "Saved!"
+        "saved": "Saved!",
+        "retention_days": "Data retention period (days after event end)"
     },
     "users": {
         "name": "Name",

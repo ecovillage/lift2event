@@ -60,6 +60,8 @@
         "delete": "Supprimer",
         "delete_confirm": "Voulez-vous vraiment supprimer cette annonce ?",
         "new_entry": "+ Ajouter une annonce",
+        "new_entry_heading": "Ajouter une annonce",
+        "privacy_notice": "Vous pouvez indiquer vos coordonnées pour organiser du covoiturage. Le lien vers cette bourse de covoiturage et vos coordonnées ne seront communiqués qu'aux participants de {eventName} et ne peuvent pas être trouvés par les moteurs de recherche. Vos données seront supprimées {n} jours après la fin de l'événement.",
         "type_label": "Que souhaitez-vous publier ?",
         "type_offer": "Je propose un covoiturage.",
         "type_request": "Je cherche un covoiturage.",
@@ -115,7 +117,8 @@
         "footer_links": "Liens personnalisés dans le pied de page",
         "add_link": "Ajouter un lien",
         "save": "Enregistrer",
-        "saved": "Enregistré !"
+        "saved": "Enregistré !",
+        "retention_days": "Durée de conservation des données (jours après la fin de l'événement)"
     },
     "users": {
         "name": "Nom",

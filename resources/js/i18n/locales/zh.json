@@ -60,6 +60,8 @@
         "delete": "删除",
         "delete_confirm": "确定要删除此信息吗？",
         "new_entry": "+ 添加信息",
+        "new_entry_heading": "添加信息",
+        "privacy_notice": "您可以在此提供联系方式以组织拼车。此拼车平台的链接及您的联系方式仅会告知 {eventName} 的参与者，不会被搜索引擎收录。您的数据将在活动结束后 {n} 天删除。",
         "type_label": "您要发布什么？",
         "type_offer": "我提供搭车服务。",
         "type_request": "我寻找搭车服务。",
@@ -115,7 +117,8 @@
         "footer_links": "自定义页脚链接",
         "add_link": "添加链接",
         "save": "保存",
-        "saved": "已保存！"
+        "saved": "已保存！",
+        "retention_days": "数据保留期限（活动结束后天数）"
     },
     "users": {
         "name": "姓名",

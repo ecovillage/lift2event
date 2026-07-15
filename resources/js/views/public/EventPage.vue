@@ -142,6 +142,7 @@
                 <div class="bg-white rounded-t-2xl md:rounded-xl w-full md:max-w-lg max-h-[90vh] overflow-y-auto">
                     <RideForm
                         :event="event"
+                        :retention-days="retentionDays"
                         @submitted="onRideCreated"
                         @cancelled="showForm = false"
                     />
@@ -178,7 +179,8 @@ const selectedRide = ref(null);
 const mapBounds    = ref(null);
 const activeFilter = ref('all');
 const dateFilter   = ref('');
-const footerLinks  = ref([]);
+const footerLinks     = ref([]);
+const retentionDays   = ref(90);
 const pendingConfirmation = ref(false);
 
 useEscapeKey(() => { if (pendingConfirmation.value) pendingConfirmation.value = false; });
@@ -378,10 +380,11 @@ async function load() {
     }
 }
 
-async function loadFooterLinks() {
+async function loadSettings() {
     try {
         const { data } = await axios.get('/api/settings');
-        footerLinks.value = data.footer_links ?? [];
+        footerLinks.value   = data.footer_links ?? [];
+        retentionDays.value = data.ride_data_retention_days ?? 90;
     } catch {
         footerLinks.value = [];
     }
@@ -402,7 +405,7 @@ function onRideCreated(ride) {
 }
 
 onMounted(async () => {
-    loadFooterLinks();
+    loadSettings();
     await load();
     if (!fetchError.value && mapEl.value) {
         initMap();

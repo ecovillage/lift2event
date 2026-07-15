@@ -60,6 +60,8 @@
         "delete": "Löschen",
         "delete_confirm": "Diesen Eintrag wirklich löschen?",
         "new_entry": "+ Neue Mitfahrt einstellen",
+        "new_entry_heading": "Neue Mitfahrt einstellen",
+        "privacy_notice": "Hier kannst du deine Kontaktdaten angeben, um Fahrgemeinschaften zu bilden. Der Link zu dieser Mitfahrbörse und damit zu deinen Kontaktangaben wird nur den Teilnehmern von {eventName} mitgeteilt und kann nicht von Suchmaschinen gefunden werden. Deine Daten werden {n} Tage nach Veranstaltungsende gelöscht.",
         "type_label": "Was möchtest du eintragen?",
         "type_offer": "Ich biete eine Mitfahrgelegenheit.",
         "type_request": "Ich suche eine Mitfahrgelegenheit.",
@@ -117,7 +119,8 @@
         "footer_links": "Benutzerdefinierte Footer-Links",
         "add_link": "Link hinzufügen",
         "save": "Speichern",
-        "saved": "Gespeichert!"
+        "saved": "Gespeichert!",
+        "retention_days": "Löschfrist für Mitfahrt-Daten (Tage nach Veranstaltungsende)"
     },
     "users": {
         "name": "Name",

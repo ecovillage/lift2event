@@ -26,7 +26,8 @@ class SettingController extends Controller
             'map_zoom'             => ['sometimes', 'integer', 'between:1,20'],
             'footer_links'         => ['sometimes', 'nullable', 'array'],
             'footer_links.*.label' => ['required_with:footer_links.*', 'string', 'max:255'],
-            'footer_links.*.url'   => ['required_with:footer_links.*', 'url', 'max:500'],
+            'footer_links.*.url'           => ['required_with:footer_links.*', 'url', 'max:500'],
+            'ride_data_retention_days'     => ['sometimes', 'integer', 'min:1', 'max:3650'],
         ]);
 
         $settings = Setting::instance();

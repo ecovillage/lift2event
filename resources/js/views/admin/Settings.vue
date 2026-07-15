@@ -20,6 +20,29 @@
             </div>
         </div>
 
+        <!-- Retention days section -->
+        <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+            <h2 class="font-semibold text-gray-800 mb-4">{{ t('settings.retention_days') }}</h2>
+            <div class="flex items-center gap-3">
+                <input
+                    v-model.number="retentionDays"
+                    type="number"
+                    min="1"
+                    max="3650"
+                    class="w-28 px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-[var(--color-primary)]"
+                    data-testid="retention-days-input"
+                />
+                <button
+                    class="px-4 py-2 bg-[var(--color-primary)] text-white rounded text-sm font-medium hover:bg-[var(--color-primary-dark)] disabled:opacity-60"
+                    :disabled="saving.retention"
+                    data-testid="save-retention-btn"
+                    @click="saveRetention"
+                >{{ saving.retention ? '…' : t('settings.save') }}</button>
+                <span v-if="saved.retention" class="text-sm text-green-600">✓ {{ t('settings.saved') }}</span>
+                <span v-if="errors.retention" class="text-sm text-red-500">{{ errors.retention }}</span>
+            </div>
+        </div>
+
         <!-- Footer links section -->
         <div class="bg-white rounded-lg shadow-sm p-6">
             <h2 class="font-semibold text-gray-800 mb-4">{{ t('settings.footer_links') }}</h2>
@@ -75,18 +98,20 @@ import api from '@/api/axios';
 
 const { t } = useI18n();
 
-const mapEl      = ref(null);
-const footerLinks = ref([]);
-const saving     = reactive({ map: false, footer: false });
-const saved      = reactive({ map: false, footer: false });
-const errors     = reactive({ map: '', footer: '' });
+const mapEl       = ref(null);
+const footerLinks  = ref([]);
+const retentionDays = ref(90);
+const saving      = reactive({ map: false, footer: false, retention: false });
+const saved       = reactive({ map: false, footer: false, retention: false });
+const errors      = reactive({ map: '', footer: '', retention: '' });
 
 let map = null;
 
 onMounted(async () => {
     const { data: settings } = await api.get('/settings');
 
-    footerLinks.value = settings.footer_links ? JSON.parse(JSON.stringify(settings.footer_links)) : [];
+    footerLinks.value   = settings.footer_links ? JSON.parse(JSON.stringify(settings.footer_links)) : [];
+    retentionDays.value = settings.ride_data_retention_days ?? 90;
 
     map = L.map(mapEl.value, { zoomControl: true }).setView(
         [settings.map_center_lat, settings.map_center_lng],
@@ -119,6 +144,21 @@ async function saveMap() {
         errors.map = t('event.save_error');
     } finally {
         saving.map = false;
+    }
+}
+
+async function saveRetention() {
+    saving.retention = true;
+    errors.retention = '';
+    saved.retention  = false;
+    try {
+        await api.put('/settings', { ride_data_retention_days: retentionDays.value });
+        saved.retention = true;
+        setTimeout(() => { saved.retention = false; }, 3000);
+    } catch {
+        errors.retention = t('event.save_error');
+    } finally {
+        saving.retention = false;
     }
 }
 
