@@ -13,7 +13,7 @@ class Ride extends Model
     protected $fillable = [
         'event_id', 'user_id', 'location_id', 'type', 'direction',
         'outbound_at', 'return_at', 'seats', 'name', 'email', 'phone',
-        'contact_methods', 'info', 'edit_token', 'confirmed_at',
+        'contact_methods', 'info', 'edit_token', 'locale', 'confirmed_at',
     ];
 
     protected function casts(): array

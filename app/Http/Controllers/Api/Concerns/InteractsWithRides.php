@@ -35,6 +35,7 @@ trait InteractsWithRides
             'location.latitude'     => ['required', 'numeric', 'between:-90,90'],
             'location.longitude'    => ['required', 'numeric', 'between:-180,180'],
             'location.country_code' => ['nullable', 'string', 'size:2'],
+            'locale'                => ['sometimes', 'nullable', Rule::in(['de', 'en', 'fr', 'zh'])],
         ];
     }
 

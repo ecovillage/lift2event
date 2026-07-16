@@ -1,5 +1,5 @@
 <x-mail::layout>
-    @php $orgName = \App\Models\Setting::instance()->organisation_name ?? 'Lift2Event'; @endphp
+    @php $orgName = \App\Models\Setting::organisationName(); @endphp
     {{-- Header --}}
     <x-slot:header>
         <x-mail::header :url="config('app.url')">
@@ -22,7 +22,7 @@
     {{-- Footer --}}
     <x-slot:footer>
         <x-mail::footer>
-            {{ __('mail.footer') }}
+            {{ __('mail.footer_text') }}
         </x-mail::footer>
     </x-slot:footer>
 </x-mail::layout>

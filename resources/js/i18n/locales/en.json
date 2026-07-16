@@ -119,7 +119,7 @@
         "save": "Save",
         "saved": "Saved!",
         "retention_days": "Data retention period (days after event end)",
-        "organisation_name": "Organisation name"
+        "organisation_name": "Organiser name"
     },
     "users": {
         "name": "Name",

@@ -7,6 +7,7 @@ use App\Models\Ride;
 use App\Models\Setting;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
@@ -18,6 +19,7 @@ class RideConfirmation extends Mailable
     public readonly string $confirmUrl;
     public readonly string $editUrl;
     public readonly string $deleteUrl;
+    public readonly string $organisationName;
 
     public function __construct(
         public readonly Ride $ride,
@@ -28,18 +30,20 @@ class RideConfirmation extends Mailable
         $id   = $ride->id;
         $tok  = $ride->edit_token;
 
-        $this->confirmUrl = "{$base}/e/{$slug}/ride/{$id}/confirm?token={$tok}";
-        $this->editUrl    = "{$base}/e/{$slug}/ride/{$id}/edit?token={$tok}";
-        $this->deleteUrl  = "{$base}/e/{$slug}/ride/{$id}/delete?token={$tok}";
+        $this->confirmUrl      = "{$base}/e/{$slug}/ride/{$id}/confirm?token={$tok}";
+        $this->editUrl         = "{$base}/e/{$slug}/ride/{$id}/edit?token={$tok}";
+        $this->deleteUrl       = "{$base}/e/{$slug}/ride/{$id}/delete?token={$tok}";
+        $this->organisationName = Setting::organisationName();
+
+        $this->locale($ride->locale ?? 'de');
     }
 
     public function envelope(): Envelope
     {
-        $orgName = Setting::instance()->organisation_name ?? 'Lift2Event';
         $subjectKey = $this->ride->type === 'offer' ? 'mail.subject_offer' : 'mail.subject_request';
 
         return new Envelope(
-            from: new \Illuminate\Mail\Mailables\Address(config('mail.from.address'), $orgName),
+            from: new Address(config('mail.from.address'), $this->organisationName),
             subject: __($subjectKey, ['event' => $this->event->name]),
         );
     }

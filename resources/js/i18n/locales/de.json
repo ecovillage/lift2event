@@ -121,7 +121,7 @@
         "save": "Speichern",
         "saved": "Gespeichert!",
         "retention_days": "Löschfrist für Mitfahrt-Daten (Tage nach Veranstaltungsende)",
-        "organisation_name": "Name der Organisation"
+        "organisation_name": "Name des Veranstalters"
     },
     "users": {
         "name": "Name",

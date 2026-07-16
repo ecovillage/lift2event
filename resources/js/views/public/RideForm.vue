@@ -227,7 +227,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['submitted', 'cancelled']);
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const isEdit = computed(() => !!props.ride);
 
 useEscapeKey(() => emit('cancelled'));
@@ -464,7 +464,7 @@ async function submit() {
 
     saving.value = true;
     try {
-        const payload = { ...form, outbound_at, return_at };
+        const payload = { ...form, outbound_at, return_at, locale: locale.value };
         if (isEdit.value && props.editToken) payload.edit_token = props.editToken;
 
         const url = isEdit.value

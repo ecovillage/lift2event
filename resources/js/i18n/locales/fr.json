@@ -119,7 +119,7 @@
         "save": "Enregistrer",
         "saved": "Enregistré !",
         "retention_days": "Durée de conservation des données (jours après la fin de l'événement)",
-        "organisation_name": "Nom de l'organisation"
+        "organisation_name": "Nom de l'organisateur"
     },
     "users": {
         "name": "Nom",

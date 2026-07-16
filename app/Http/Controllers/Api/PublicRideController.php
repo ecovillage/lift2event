@@ -40,6 +40,7 @@ class PublicRideController extends Controller
             'contact_methods' => $data['contact_methods'],
             'info'            => $data['info'] ?? null,
             'edit_token'      => bin2hex(random_bytes(32)),
+            'locale'          => $data['locale'] ?? 'de',
             // Logged-in creators are trusted and go live immediately; guests
             // must confirm via the link in the confirmation email first.
             'confirmed_at'    => $user ? now() : null,

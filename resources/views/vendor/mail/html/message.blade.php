@@ -1,5 +1,5 @@
 <x-mail::layout>
-@php $orgName = \App\Models\Setting::instance()->organisation_name ?? 'Lift2Event'; @endphp
+@php $orgName = \App\Models\Setting::organisationName(); @endphp
 {{-- Header --}}
 <x-slot:header>
 <x-mail::header :url="config('app.url')">

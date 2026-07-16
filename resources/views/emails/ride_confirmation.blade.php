@@ -1,36 +1,36 @@
 @component('mail::message')
 # {{ $ride->type === 'offer' ? __('mail.heading_offer') : __('mail.heading_request') }}
 
-Hallo {{ $ride->name }},
+{{ __('mail.greeting', ['name' => $ride->name]) }}
 
-dein Eintrag für die Veranstaltung **{{ $event->name }}** wurde erfolgreich gespeichert.
+{{ __('mail.saved', ['event' => $event->name]) }}
 
 @if (! $ride->confirmed_at)
-Damit er für andere Besucher sichtbar wird, bestätige ihn bitte über diesen Link:
+{{ __('mail.confirm_prompt') }}
 
 @component('mail::button', ['url' => $confirmUrl, 'color' => 'success'])
 {{ $ride->type === 'offer' ? __('mail.confirm_offer') : __('mail.confirm_request') }}
 @endcomponent
 
-**Bestätigen:** {{ $confirmUrl }}
+{{ __('mail.confirm_direct', ['url' => $confirmUrl]) }}
 @endif
 
-Über die folgenden Links kannst du deinen Eintrag jederzeit bearbeiten oder löschen:
+{{ __('mail.manage_prompt') }}
 
 @component('mail::button', ['url' => $editUrl, 'color' => 'success'])
-Eintrag bearbeiten
+{{ __('mail.edit_button') }}
 @endcomponent
 
 @component('mail::button', ['url' => $deleteUrl, 'color' => 'error'])
-Eintrag löschen
+{{ __('mail.delete_button') }}
 @endcomponent
 
-Oder verwende diese Links direkt:
+{{ __('mail.direct_links') }}
 
-**Bearbeiten:** {{ $editUrl }}
+{{ __('mail.edit_direct', ['url' => $editUrl]) }}
 
-**Löschen:** {{ $deleteUrl }}
+{{ __('mail.delete_direct', ['url' => $deleteUrl]) }}
 
-Viele Grüße,
-{{ \App\Models\Setting::instance()->organisation_name ?? 'Lift2Event' }}
+{{ __('mail.signoff') }},
+{{ $organisationName }}
 @endcomponent

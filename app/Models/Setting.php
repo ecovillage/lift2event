@@ -27,4 +27,19 @@ class Setting extends Model
             'map_zoom'       => 6,
         ]);
     }
+
+    public static function organisationName(): string
+    {
+        $stored = static::instance()->organisation_name;
+        if ($stored !== null && $stored !== '') {
+            return $stored;
+        }
+
+        $host = (string) (parse_url(config('app.url'), PHP_URL_HOST) ?? '');
+        $host = (string) preg_replace('/^www\./i', '', $host);
+        $name = (string) preg_replace('/\.[^.]+$/', '', $host);
+        $name = ucwords(str_replace('-', ' ', $name));
+
+        return $name !== '' ? $name : 'Lift2Event';
+    }
 }
