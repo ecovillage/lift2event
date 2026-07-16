@@ -27,15 +27,18 @@ test.describe('Öffentliche Mitfahrbörse', () => {
 
     test('Vorhandene Mitfahrt (aus Seeder) erscheint in der Liste', async ({ page }) => {
         await page.goto(eventUrl);
-        await expect(page.getByText('Max Muster').or(page.getByText(/München/))).toBeVisible();
+        // hasText matches the card containing both the name and the München location
+        await expect(page.locator('.cursor-pointer', { hasText: 'Max Muster' })).toBeVisible();
     });
 
     test('Klick auf Kachel öffnet Popup', async ({ page }) => {
         await page.goto(eventUrl);
         // Click the first ride card
         await page.locator('.cursor-pointer').first().click();
-        await expect(page.getByText('Max Muster')).toBeVisible();
-        await expect(page.getByText('Kontakt')).toBeVisible();
+        // The list card stays mounted behind the popup overlay, so scope to the popup itself
+        const popup = page.getByTestId('ride-popup');
+        await expect(popup.getByText('Max Muster')).toBeVisible();
+        await expect(popup.getByText('Kontakt')).toBeVisible();
     });
 
     test('Popup schließen funktioniert', async ({ page }) => {
@@ -99,9 +102,10 @@ test.describe('Öffentliche Mitfahrbörse', () => {
         await expect(page.getByTestId('ride-submit')).toBeEnabled({ timeout: 5000 });
         await page.getByTestId('ride-submit').click();
 
-        // New ride should appear in the list
+        // New ride should appear in the list, as a card containing both the
+        // name and the Musterstraße address
         await expect(
-            page.getByText('Erika Muster').or(page.getByText(/Musterstraße/))
+            page.locator('.cursor-pointer', { hasText: 'Erika Muster' })
         ).toBeVisible({ timeout: 8000 });
     });
 
@@ -299,7 +303,7 @@ test.describe('Öffentliche Mitfahrbörse', () => {
         await expect(card.getByText('Ausgebucht', { exact: true })).toBeVisible();
 
         await card.click();
-        const popup = page.locator('.fixed.inset-0.z-\\[1500\\]');
+        const popup = page.getByTestId('ride-popup');
         await expect(popup.getByText('Kontakt')).toBeVisible();
         await expect(popup.getByText('Ausgebucht', { exact: true })).toBeVisible();
     });

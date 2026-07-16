@@ -99,9 +99,10 @@ test.describe('Admin – Veranstaltungen', () => {
         await expect(page.getByText('Hauptbahnhof, 80335 München')).toBeVisible();
         await expect(page.getByText('Angebot')).toBeVisible();
 
-        // Clicking the tile opens the detail popup with contact info
+        // Clicking the tile opens the detail popup with contact info.
+        // The tile stays mounted behind the popup overlay, so scope to the popup itself.
         await page.getByText('Hauptbahnhof, 80335 München').click();
-        await expect(page.getByText('Max Muster')).toBeVisible();
+        await expect(page.getByTestId('ride-popup').getByText('Max Muster')).toBeVisible();
     });
 
     test('Bearbeiten-Karte zeichnet die Route der Mitfahrt', async ({ page }) => {
@@ -117,7 +118,7 @@ test.describe('Admin – Veranstaltungen', () => {
 
         // Clicking the pin opens the same detail popup as the ride tile
         await pin.click();
-        await expect(page.getByText('Max Muster')).toBeVisible();
+        await expect(page.getByTestId('ride-popup').getByText('Max Muster')).toBeVisible();
     });
 
     test('Neu-Anlegen-Seite zeigt keine Mitfahrten-Kacheln', async ({ page }) => {
