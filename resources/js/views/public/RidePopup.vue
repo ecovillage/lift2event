@@ -138,10 +138,7 @@ const editToken   = computed(() => localStorage.getItem(`ride_token_${props.ride
 const hasOutbound = computed(() => ['both-ways', 'outbound-only'].includes(props.ride.direction));
 const hasReturn   = computed(() => ['both-ways', 'return-only'].includes(props.ride.direction));
 const showEmail   = computed(() => props.ride.contact_methods?.includes('email'));
-const showPhone   = computed(() => {
-    const pm = ['signal', 'telegram', 'whatsapp', 'sms', 'call'];
-    return props.ride.phone && props.ride.contact_methods?.some(m => pm.includes(m));
-});
+const showPhone   = computed(() => !!props.ride.phone);
 
 const directionLabel = computed(() => ({
     'both-ways':     t('ride.direction_both'),
