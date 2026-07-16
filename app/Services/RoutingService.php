@@ -19,12 +19,12 @@ class RoutingService
             return ['geometry' => $cached->geometry];
         }
 
-        $baseUrl = rtrim(env('OPENROUTESERVICE_URL', 'https://api.openrouteservice.org'), '/');
+        $baseUrl = rtrim(config('services.openrouteservice.url'), '/');
 
         $requestHeaders = ['Authorization' => '[redacted]'];
 
         try {
-            $response = Http::withHeaders(['Authorization' => env('OPENROUTESERVICE_API_KEY')])
+            $response = Http::withHeaders(['Authorization' => config('services.openrouteservice.key')])
                 ->timeout(5)
                 ->get("$baseUrl/v2/directions/driving-car", [
                     'start' => "{$from->longitude},{$from->latitude}",
@@ -39,13 +39,14 @@ class RoutingService
             return ['geometry' => null];
         }
 
-        Log::info('ORS response', [
-            'status'           => $response->status(),
-            'request_headers'  => $requestHeaders,
-            'response_headers' => $response->headers(),
-        ]);
-
         if (! $response->successful()) {
+            Log::warning('ORS request unsuccessful', [
+                'status'           => $response->status(),
+                'request_headers'  => $requestHeaders,
+                'response_headers' => $response->headers(),
+                'response_body'    => $response->body(),
+            ]);
+
             return ['geometry' => null];
         }
 
