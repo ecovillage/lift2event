@@ -2,20 +2,27 @@
     <div class="h-screen flex flex-col overflow-hidden">
 
         <!-- Header -->
-        <div class="bg-white border-b px-4 py-4 flex-shrink-0 flex items-start justify-between gap-4">
-            <div>
-                <p class="text-xs text-gray-400 uppercase tracking-wide">{{ t('event.rideshare_for') }}</p>
-                <h1 class="text-xl font-bold text-gray-900 leading-tight">{{ event?.name ?? '…' }}</h1>
-                <div v-if="event" class="mt-0.5 text-sm text-gray-500 flex flex-wrap gap-x-3">
-                    <span>{{ fmtLong(event.start_at) }} – {{ fmtLong(event.end_at) }}</span>
-                    <span v-if="event.location" class="truncate">{{ event.location.address }}</span>
-                </div>
-            </div>
+        <div class="bg-white border-b flex-shrink-0 relative" style="border-top: 4px solid var(--color-primary)">
             <router-link
                 v-if="isAuthenticated"
                 :to="{ name: 'admin.home' }"
-                class="flex-shrink-0 px-3 py-1.5 rounded text-xs font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 transition-colors"
+                class="absolute top-3 right-4 px-3 py-1.5 rounded text-xs font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 transition-colors"
             >{{ t('nav.admin') }}</router-link>
+            <div class="px-6 py-6 text-center">
+                <p v-if="organisationName" class="text-xs font-semibold text-[var(--color-primary)] uppercase tracking-widest mb-1">{{ organisationName }}</p>
+                <p class="text-xs text-gray-400 uppercase tracking-wide">{{ t('event.rideshare_for') }}</p>
+                <h1 class="text-2xl font-bold text-gray-900 leading-tight mt-1">{{ event?.name ?? '…' }}</h1>
+                <div v-if="event" class="mt-3 text-sm text-gray-500 flex flex-wrap justify-center gap-x-5 gap-y-1">
+                    <span class="flex items-center gap-1.5">
+                        <Calendar class="w-3.5 h-3.5 flex-shrink-0 text-gray-400" />
+                        {{ fmtLong(event.start_at) }} – {{ fmtLong(event.end_at) }}
+                    </span>
+                    <span v-if="event.location" class="flex items-center gap-1.5">
+                        <MapPin class="w-3.5 h-3.5 flex-shrink-0 text-gray-400" />
+                        {{ event.location.address }}
+                    </span>
+                </div>
+            </div>
         </div>
 
         <!-- Filter bar -->
@@ -26,7 +33,7 @@
                     v-for="f in typeFilters" :key="f.value"
                     :class="['px-3 py-1 rounded-full text-xs font-medium transition-colors',
                         activeFilter === f.value
-                            ? 'bg-gray-800 text-white'
+                            ? 'bg-[var(--color-primary)] text-white'
                             : 'bg-gray-100 text-gray-600 hover:bg-gray-200']"
                     @click="setFilter(f.value)"
                 >{{ f.label }}</button>
@@ -65,18 +72,21 @@
                     {{ t('ride.outside_viewport', { n: hiddenRideCount }) }}
                     <button type="button" class="ml-1 font-medium underline hover:no-underline" @click="showAllRides">{{ t('ride.show_all') }}</button>
                 </div>
-                <div v-if="rides.length === 0" class="p-4 text-xs text-gray-400 text-center">{{ t('ride.none') }}</div>
-                <div v-else-if="viewportRides.length === 0 && hiddenRideCount === 0" class="p-4 text-xs text-gray-400 text-center">–</div>
-                <RideCard
-                    v-for="ride in viewportRides"
-                    :key="ride.id"
-                    :ride="ride"
-                    :event="event"
-                    @open="selectedRide = ride"
-                />
-                <div class="p-4 text-center">
+                <div class="p-2 flex flex-col gap-2">
+                    <div v-if="rides.length === 0" class="flex flex-col items-center gap-3 text-center py-6 px-2">
+                        <Bus class="w-10 h-10 text-gray-300" :stroke-width="1.5" />
+                        <p class="text-sm text-gray-500">{{ t('ride.none') }}</p>
+                    </div>
+                    <div v-else-if="viewportRides.length === 0 && hiddenRideCount === 0" class="py-6 px-2 text-sm text-gray-400 text-center">–</div>
+                    <RideCard
+                        v-for="ride in viewportRides"
+                        :key="ride.id"
+                        :ride="ride"
+                        :event="event"
+                        @open="selectedRide = ride"
+                    />
                     <button
-                        class="px-3 py-1.5 rounded text-xs font-medium text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] transition-colors"
+                        class="w-full px-3 py-2 rounded-lg text-sm font-medium text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] transition-colors"
                         @click="showForm = true"
                     >{{ t('ride.new_entry') }}</button>
                 </div>
@@ -159,6 +169,7 @@ import { useRoute } from 'vue-router';
 import axios from 'axios';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { Bus, Calendar, MapPin } from '@lucide/vue';
 import RideCard from './RideCard.vue';
 import RideForm from './RideForm.vue';
 import RidePopup from './RidePopup.vue';
@@ -179,8 +190,9 @@ const selectedRide = ref(null);
 const mapBounds    = ref(null);
 const activeFilter = ref('all');
 const dateFilter   = ref('');
-const footerLinks     = ref([]);
-const retentionDays   = ref(90);
+const footerLinks        = ref([]);
+const retentionDays      = ref(90);
+const organisationName   = ref('');
 const pendingConfirmation = ref(false);
 
 useEscapeKey(() => { if (pendingConfirmation.value) pendingConfirmation.value = false; });
@@ -396,8 +408,9 @@ async function load() {
 async function loadSettings() {
     try {
         const { data } = await axios.get('/api/settings');
-        footerLinks.value   = data.footer_links ?? [];
-        retentionDays.value = data.ride_data_retention_days ?? 90;
+        footerLinks.value      = data.footer_links ?? [];
+        retentionDays.value    = data.ride_data_retention_days ?? 90;
+        organisationName.value = data.organisation_name ?? '';
     } catch {
         footerLinks.value = [];
     }

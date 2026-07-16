@@ -1,59 +1,65 @@
 <template>
     <div
-        :class="['border-l-4 bg-white cursor-pointer hover:bg-gray-50 transition-colors p-3',
-            ride.type === 'offer' ? 'border-[var(--color-offer)]' : 'border-[var(--color-request)]']"
+        class="relative rounded-xl shadow-sm bg-white cursor-pointer hover:shadow-md transition-all overflow-hidden"
         @click="emit('open')"
     >
-        <div class="flex items-start justify-between gap-2">
-            <!-- Type badge -->
-            <span :class="['inline-block px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide mb-1',
-                ride.type === 'offer'
-                    ? 'bg-[var(--color-offer-light)] text-[var(--color-offer)]'
-                    : 'bg-[var(--color-request-light)] text-[var(--color-request)]']">
-                {{ t('ride.' + ride.type) }}
-            </span>
-
-            <!-- Manage icons (admin / event creator on the edit page, no token required) -->
-            <div v-if="manageable" class="flex gap-2 shrink-0 text-gray-400">
-                <button
-                    type="button"
-                    class="hover:text-gray-700"
-                    :title="t('ride.edit')"
-                    :aria-label="t('ride.edit')"
-                    :data-testid="`ride-edit-${ride.id}`"
-                    @click.stop="emit('edit')"
-                >✎</button>
-                <button
-                    type="button"
-                    class="hover:text-red-500"
-                    :title="t('ride.delete')"
-                    :aria-label="t('ride.delete')"
-                    :data-testid="`ride-delete-${ride.id}`"
-                    @click.stop="emit('delete')"
-                >🗑</button>
-            </div>
-        </div>
-
-        <!-- Direction note (only when not both-ways) -->
         <span
-            v-if="ride.direction !== 'both-ways'"
-            class="ml-1 text-[10px] text-gray-400"
-        >· {{ ride.direction === 'outbound-only' ? t('ride.direction_outbound') : t('ride.direction_return') }}</span>
+            :class="['absolute left-0 top-0 bottom-0 w-[3px]',
+                ride.type === 'offer' ? 'bg-[var(--color-offer)]' : 'bg-[var(--color-request)]']"
+            aria-hidden="true"
+        ></span>
+        <div class="p-3 pl-4">
+            <div class="flex items-start justify-between gap-2">
+                <!-- Type badge -->
+                <span :class="['inline-block px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide mb-1',
+                    ride.type === 'offer'
+                        ? 'bg-[var(--color-offer-light)] text-[var(--color-offer)]'
+                        : 'bg-[var(--color-request-light)] text-[var(--color-request)]']">
+                    {{ t('ride.' + ride.type) }}
+                </span>
 
-        <!-- Departure address (truncated) -->
-        <p class="text-xs text-gray-700 truncate mt-0.5">{{ ride.location?.address }}</p>
+                <!-- Manage icons (admin / event creator on the edit page, no token required) -->
+                <div v-if="manageable" class="flex gap-2 shrink-0 text-gray-400">
+                    <button
+                        type="button"
+                        class="hover:text-gray-700"
+                        :title="t('ride.edit')"
+                        :aria-label="t('ride.edit')"
+                        :data-testid="`ride-edit-${ride.id}`"
+                        @click.stop="emit('edit')"
+                    >✎</button>
+                    <button
+                        type="button"
+                        class="hover:text-red-500"
+                        :title="t('ride.delete')"
+                        :aria-label="t('ride.delete')"
+                        :data-testid="`ride-delete-${ride.id}`"
+                        @click.stop="emit('delete')"
+                    >🗑</button>
+                </div>
+            </div>
 
-        <!-- Outbound date/time -->
-        <p v-if="hasOutbound" class="text-xs text-gray-500 mt-0.5 flex items-start gap-1">
-            <span v-if="outboundWarning" title="Abweichendes Datum">⚠</span>
-            <span>{{ outboundLine }}</span>
-        </p>
+            <!-- Direction note (only when not both-ways) -->
+            <span
+                v-if="ride.direction !== 'both-ways'"
+                class="ml-1 text-[10px] text-gray-400"
+            >· {{ ride.direction === 'outbound-only' ? t('ride.direction_outbound') : t('ride.direction_return') }}</span>
 
-        <!-- Return date/time -->
-        <p v-if="hasReturn && returnWarning" class="text-xs text-gray-500 mt-0.5 flex items-start gap-1">
-            <span title="Abweichendes Datum">⚠</span>
-            <span>{{ returnLine }}</span>
-        </p>
+            <!-- Departure address (truncated) -->
+            <p class="text-sm text-gray-700 truncate mt-0.5">{{ ride.location?.address }}</p>
+
+            <!-- Outbound date/time -->
+            <p v-if="hasOutbound" class="text-xs text-gray-500 mt-0.5 flex items-start gap-1">
+                <span v-if="outboundWarning" title="Abweichendes Datum">⚠</span>
+                <span>{{ outboundLine }}</span>
+            </p>
+
+            <!-- Return date/time -->
+            <p v-if="hasReturn && returnWarning" class="text-xs text-gray-500 mt-0.5 flex items-start gap-1">
+                <span title="Abweichendes Datum">⚠</span>
+                <span>{{ returnLine }}</span>
+            </p>
+        </div>
     </div>
 </template>
 
