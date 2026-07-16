@@ -4,14 +4,6 @@
             {{ isEdit ? 'Eintrag bearbeiten' : t('ride.new_entry_heading') }}
         </h2>
 
-        <!-- Privacy notice (create mode only) -->
-        <div v-if="!isEdit" class="flex gap-3 bg-amber-50 border border-amber-200 rounded-lg p-4 mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 flex-shrink-0 text-amber-600 mt-0.5" aria-hidden="true">
-                <path fill-rule="evenodd" d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5z" clip-rule="evenodd" />
-            </svg>
-            <p class="text-sm text-amber-800 leading-snug">{{ t('ride.privacy_notice', { eventName: event.name, n: retentionDays }) }}</p>
-        </div>
-
         <form class="space-y-4" novalidate @submit.prevent="submit">
 
             <!-- Type -->
@@ -196,6 +188,11 @@
             <!-- Errors -->
             <p v-for="e in errors" :key="e" class="text-sm text-red-500">{{ e }}</p>
 
+            <!-- Privacy notice (create mode only) -->
+            <div v-if="!isEdit" class="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                <p class="text-xs text-amber-800 leading-snug">{{ organisationName ? t('ride.privacy_notice_with_org', { eventName: event.name, organisationName, n: retentionDays }) : t('ride.privacy_notice', { eventName: event.name, n: retentionDays }) }}</p>
+            </div>
+
             <!-- Buttons -->
             <div class="flex gap-2 pt-1">
                 <button type="button" class="flex-1 py-2 border border-gray-300 rounded text-sm hover:bg-gray-50" @click="emit('cancelled')">
@@ -219,11 +216,12 @@ import api from '@/api/axios';
 import { useEscapeKey } from '@/composables/useEscapeKey';
 
 const props = defineProps({
-    event:         { type: Object, required: true },
-    ride:          { type: Object, default: null },
-    editToken:     { type: String, default: null },
-    manage:        { type: Boolean, default: false },
-    retentionDays: { type: Number, default: 90 },
+    event:            { type: Object, required: true },
+    ride:             { type: Object, default: null },
+    editToken:        { type: String, default: null },
+    manage:           { type: Boolean, default: false },
+    retentionDays:    { type: Number, default: 90 },
+    organisationName: { type: String, default: '' },
 });
 
 const emit = defineEmits(['submitted', 'cancelled']);

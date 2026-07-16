@@ -153,6 +153,7 @@
                     <RideForm
                         :event="event"
                         :retention-days="retentionDays"
+                        :organisation-name="organisationName"
                         @submitted="onRideCreated"
                         @cancelled="showForm = false"
                     />
