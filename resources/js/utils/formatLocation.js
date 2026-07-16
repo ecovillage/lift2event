@@ -5,14 +5,14 @@
  * - If location is in a different country than eventLocation, show country
  * - If allowPostal is true (ride popup), postal code is included before city
  */
-export function formatLocation(location, eventLocation = null, { allowPostal = false } = {}) {
+export function formatLocation(location, eventLocation = null, { allowPostal = false, cityOnly = false } = {}) {
     if (!location) return '';
 
     if (!location.city && !location.street) return location.address ?? '';
 
     const parts = [];
 
-    if (location.street) {
+    if (!cityOnly && location.street) {
         parts.push(location.house_number
             ? `${location.street} ${location.house_number}`
             : location.street);

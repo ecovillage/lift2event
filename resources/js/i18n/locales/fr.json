@@ -70,6 +70,8 @@
         "direction_both": "… aller et retour",
         "direction_outbound": "… aller seulement",
         "direction_return": "… retour seulement",
+        "outbound_only": "aller seulement",
+        "return_only": "retour seulement",
         "name": "Nom",
         "email": "Email",
         "phone": "Numéro de téléphone",

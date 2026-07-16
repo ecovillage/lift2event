@@ -70,6 +70,8 @@
         "direction_both": "… Hin- und Rückfahrt",
         "direction_outbound": "… nur Hinfahrt",
         "direction_return": "… nur Rückfahrt",
+        "outbound_only": "nur Hinfahrt",
+        "return_only": "nur Rückfahrt",
         "name": "Name",
         "email": "Email",
         "phone": "Telefonnummer",

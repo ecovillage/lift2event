@@ -70,6 +70,8 @@
         "direction_both": "……去程和返程",
         "direction_outbound": "……仅去程",
         "direction_return": "……仅返程",
+        "outbound_only": "仅去程",
+        "return_only": "仅返程",
         "name": "姓名",
         "email": "电子邮箱",
         "phone": "电话号码",

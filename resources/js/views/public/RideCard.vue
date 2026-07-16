@@ -9,55 +9,63 @@
             aria-hidden="true"
         ></span>
         <div class="p-3 pl-4">
-            <div class="flex items-start justify-between gap-2">
-                <!-- Type badge -->
-                <span :class="['inline-block px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide mb-1',
-                    ride.type === 'offer'
-                        ? 'bg-[var(--color-offer-light)] text-[var(--color-offer)]'
-                        : 'bg-[var(--color-request-light)] text-[var(--color-request)]']">
-                    {{ t('ride.' + ride.type) }}
-                </span>
+            <div class="flex items-start gap-2">
+                <!-- City name + creator name -->
+                <div class="flex-1 min-w-0">
+                    <h2 class="text-base font-bold text-gray-800 leading-tight">
+                        {{ cityLocation }}
+                    </h2>
+                    <p v-if="ride.name" class="text-sm text-gray-800 leading-tight">{{ ride.name }}</p>
+                </div>
 
-                <!-- Manage icons (admin / event creator on the edit page, no token required) -->
-                <div v-if="manageable" class="flex gap-2 shrink-0 text-gray-400">
-                    <button
-                        type="button"
-                        class="hover:text-gray-700"
-                        :title="t('ride.edit')"
-                        :aria-label="t('ride.edit')"
-                        :data-testid="`ride-edit-${ride.id}`"
-                        @click.stop="emit('edit')"
-                    >✎</button>
-                    <button
-                        type="button"
-                        class="hover:text-red-500"
-                        :title="t('ride.delete')"
-                        :aria-label="t('ride.delete')"
-                        :data-testid="`ride-delete-${ride.id}`"
-                        @click.stop="emit('delete')"
-                    >🗑</button>
+                <!-- Right side: badges + manage icons -->
+                <div class="flex flex-col items-end gap-1 shrink-0">
+                    <!-- Type badge -->
+                    <span :class="['inline-block px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide',
+                        ride.type === 'offer'
+                            ? 'bg-[var(--color-offer-light)] text-[var(--color-offer)]'
+                            : 'bg-[var(--color-request-light)] text-[var(--color-request)]']">
+                        {{ t('ride.' + ride.type) }}
+                    </span>
+
+                    <!-- Direction badge (only when not both-ways) -->
+                    <span
+                        v-if="ride.direction !== 'both-ways'"
+                        class="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide bg-orange-100 text-orange-600"
+                    >
+                        {{ t('ride.' + (ride.direction === 'outbound-only' ? 'outbound_only' : 'return_only')) }}
+                    </span>
+
+                    <!-- Manage icons (admin / event creator on the edit page) -->
+                    <div v-if="manageable" class="flex gap-2 shrink-0 text-gray-400 mt-0.5">
+                        <button
+                            type="button"
+                            class="hover:text-gray-700"
+                            :title="t('ride.edit')"
+                            :aria-label="t('ride.edit')"
+                            :data-testid="`ride-edit-${ride.id}`"
+                            @click.stop="emit('edit')"
+                        >✎</button>
+                        <button
+                            type="button"
+                            class="hover:text-red-500"
+                            :title="t('ride.delete')"
+                            :aria-label="t('ride.delete')"
+                            :data-testid="`ride-delete-${ride.id}`"
+                            @click.stop="emit('delete')"
+                        >🗑</button>
+                    </div>
                 </div>
             </div>
 
-            <!-- Direction note (only when not both-ways) -->
-            <span
-                v-if="ride.direction !== 'both-ways'"
-                class="ml-1 text-[10px] text-gray-400"
-            >· {{ ride.direction === 'outbound-only' ? t('ride.direction_outbound') : t('ride.direction_return') }}</span>
-
-            <!-- Departure address (truncated) -->
-            <p class="text-sm text-gray-700 truncate mt-0.5">{{ formatLocation(ride.location, event.location) }}</p>
-
             <!-- Outbound date/time -->
-            <p v-if="hasOutbound" class="text-xs text-gray-500 mt-0.5 flex items-start gap-1">
-                <span v-if="outboundWarning" title="Abweichendes Datum">⚠</span>
-                <span>{{ outboundLine }}</span>
+            <p v-if="hasOutbound" class="text-sm text-gray-500 mt-1">
+                <ArrowRight class="w-3 h-3 inline align-middle" /> <strong>{{ outboundTime }}</strong><template v-if="outboundWarning">&nbsp;&nbsp;<TriangleAlert class="w-3 h-3 inline align-middle text-amber-500" :title="t('ride.warning_date')" />&nbsp;{{ outboundDayText }}</template>
             </p>
 
-            <!-- Return date/time -->
-            <p v-if="hasReturn && returnWarning" class="text-xs text-gray-500 mt-0.5 flex items-start gap-1">
-                <span title="Abweichendes Datum">⚠</span>
-                <span>{{ returnLine }}</span>
+            <!-- Return date/time (only shown when deviating from event end) -->
+            <p v-if="hasReturn && returnWarning" class="text-sm text-gray-500 mt-0.5">
+                <ArrowLeft class="w-3 h-3 inline align-middle" /> <strong>{{ returnTime }}</strong>&nbsp;&nbsp;<TriangleAlert class="w-3 h-3 inline align-middle text-amber-500" :title="t('ride.warning_date')" />&nbsp;{{ returnDayText }}
             </p>
         </div>
     </div>
@@ -66,6 +74,7 @@
 <script setup>
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { ArrowRight, ArrowLeft, TriangleAlert } from '@lucide/vue';
 import { formatLocation } from '@/utils/formatLocation';
 
 const props = defineProps({
@@ -76,6 +85,8 @@ const props = defineProps({
 
 const emit = defineEmits(['open', 'edit', 'delete']);
 const { t } = useI18n();
+
+const cityLocation = computed(() => formatLocation(props.ride.location, props.event.location, { cityOnly: true }));
 
 const hasOutbound = computed(() => ['both-ways', 'outbound-only'].includes(props.ride.direction));
 const hasReturn   = computed(() => ['both-ways', 'return-only'].includes(props.ride.direction));
@@ -93,20 +104,15 @@ const returnDiff      = computed(() => props.ride.return_at && props.event?.end_
 const outboundWarning = computed(() => outboundDiff.value !== 0);
 const returnWarning   = computed(() => returnDiff.value !== 0);
 
-const outboundLine = computed(() => {
-    if (!props.ride.outbound_at) return '';
-    const time = fmtTime(props.ride.outbound_at);
-    if (!outboundWarning.value) return `→ ${time}`;
+const outboundTime    = computed(() => fmtTime(props.ride.outbound_at));
+const outboundDayText = computed(() => {
     const d = outboundDiff.value;
-    const key = d < 0 ? 'ride.days_before_start' : 'ride.days_after_start';
-    return `→ ${time} · ${t(key, { n: Math.abs(d) })}`;
+    return t(d < 0 ? 'ride.days_before_start' : 'ride.days_after_start', { n: Math.abs(d) });
 });
 
-const returnLine = computed(() => {
-    if (!props.ride.return_at) return '';
-    const time = fmtTime(props.ride.return_at);
+const returnTime    = computed(() => fmtTime(props.ride.return_at));
+const returnDayText = computed(() => {
     const d = returnDiff.value;
-    const key = d < 0 ? 'ride.days_before_end' : 'ride.days_after_end';
-    return `← ${time} · ${t(key, { n: Math.abs(d) })}`;
+    return t(d < 0 ? 'ride.days_before_end' : 'ride.days_after_end', { n: Math.abs(d) });
 });
 </script>
