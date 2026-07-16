@@ -17,8 +17,10 @@ return [
     'manage_prompt'   => '您可以随时通过以下链接编辑或删除您的参与信息：',
     'edit_button'     => '编辑参与信息',
     'delete_button'   => '删除参与信息',
+    'book_button'     => '标记为已满员',
     'direct_links'    => '或直接使用以下链接：',
     'edit_direct'     => '**编辑：** :url',
     'delete_direct'   => '**删除：** :url',
+    'book_direct'     => '**标记为已满员：** :url',
     'signoff'         => '此致',
 ];

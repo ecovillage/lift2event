@@ -28,6 +28,14 @@
                         {{ t('ride.' + ride.type) }}
                     </span>
 
+                    <!-- Booked badge (ride offers with 0 seats left) -->
+                    <span
+                        v-if="isBooked"
+                        class="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide bg-orange-100 text-orange-600"
+                    >
+                        {{ t('ride.booked') }}
+                    </span>
+
                     <!-- Direction badge (only when not both-ways) -->
                     <span
                         v-if="ride.direction !== 'both-ways'"
@@ -87,6 +95,7 @@ const emit = defineEmits(['open', 'edit', 'delete']);
 const { t } = useI18n();
 
 const cityLocation = computed(() => formatLocation(props.ride.location, props.event.location, { cityOnly: true }));
+const isBooked = computed(() => props.ride.type === 'offer' && props.ride.seats === 0);
 
 const hasOutbound = computed(() => ['both-ways', 'outbound-only'].includes(props.ride.direction));
 const hasReturn   = computed(() => ['both-ways', 'return-only'].includes(props.ride.direction));

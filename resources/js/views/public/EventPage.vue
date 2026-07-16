@@ -275,6 +275,7 @@ function fmtDay(ymd)  { return dayFmt.value.format(new Date(ymd + 'T12:00:00Z'))
 
 const offerColor   = '#7c3aed';
 const requestColor = '#e07b30';
+const bookedColor  = '#9ca3af';
 
 function starIcon() {
     return L.divIcon({
@@ -326,7 +327,8 @@ function drawRides() {
         if (!ride.location) return;
         const lat   = parseFloat(ride.location.latitude);
         const lng   = parseFloat(ride.location.longitude);
-        const color = ride.type === 'offer' ? offerColor : requestColor;
+        const booked = ride.type === 'offer' && ride.seats === 0;
+        const color  = booked ? bookedColor : (ride.type === 'offer' ? offerColor : requestColor);
 
         if (evLat !== null) {
             const polyline = L.polyline([[lat, lng], [evLat, evLng]], { color, weight: 4, opacity: 0.85 })

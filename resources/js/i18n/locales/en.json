@@ -93,6 +93,7 @@
         "on_last_day": "On the last day of the event",
         "seats_available": "Available seats",
         "seats_needed": "Seats needed",
+        "booked": "Fully booked",
         "info_label": "Info about your ride",
         "info_placeholder": "e.g. route details, special requests etc.",
         "day_back": "1 day back",

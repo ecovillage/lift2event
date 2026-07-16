@@ -19,6 +19,10 @@
                         <span>{{ ride.seats }}</span>
                         <span>{{ t(ride.type === 'offer' ? 'ride.seats_available' : 'ride.seats_needed') }}</span>
                     </span>
+                    <span
+                        v-if="isBooked"
+                        class="px-3 py-1.5 rounded-full text-sm font-semibold bg-orange-100 text-orange-600"
+                    >{{ t('ride.booked') }}</span>
                     <span class="text-sm text-gray-500">{{ directionLabel }}</span>
                 </div>
 
@@ -138,6 +142,7 @@ const { t, locale } = useI18n();
 useEscapeKey(() => emit('close'));
 
 const editToken   = computed(() => localStorage.getItem(`ride_token_${props.ride.id}`));
+const isBooked    = computed(() => props.ride.type === 'offer' && props.ride.seats === 0);
 const hasOutbound = computed(() => ['both-ways', 'outbound-only'].includes(props.ride.direction));
 const hasReturn   = computed(() => ['both-ways', 'return-only'].includes(props.ride.direction));
 const showEmail   = computed(() => props.ride.contact_methods?.includes('email'));

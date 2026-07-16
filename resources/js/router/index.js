@@ -23,6 +23,11 @@ const routes = [
         name: 'ride.confirm',
         component: () => import('@/views/public/RideConfirm.vue'),
     },
+    {
+        path: '/e/:slug/ride/:id/book',
+        name: 'ride.book',
+        component: () => import('@/views/public/RideBook.vue'),
+    },
     // Auth
     {
         path: '/login',

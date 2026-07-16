@@ -108,6 +108,25 @@ class PublicRideController extends Controller
         return response()->json($ride->fresh()->load('location'));
     }
 
+    public function book(Request $request, string $slug, Ride $ride): JsonResponse
+    {
+        abort_unless($ride->event->slug === $slug, 404);
+
+        if (! $ride->edit_token || ! hash_equals($ride->edit_token, $request->input('edit_token', ''))) {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
+
+        if ($ride->type !== 'offer') {
+            return response()->json(['message' => 'Only ride offers can be marked as fully booked.'], 422);
+        }
+
+        if ($ride->seats !== 0) {
+            $ride->update(['seats' => 0]);
+        }
+
+        return response()->json($ride->fresh()->load('location'));
+    }
+
     public function route(Request $request, string $slug, Ride $ride, RoutingService $routingService): JsonResponse
     {
         abort_unless($ride->event->slug === $slug, 404);

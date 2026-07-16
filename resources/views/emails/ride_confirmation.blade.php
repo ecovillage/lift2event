@@ -25,11 +25,21 @@
 {{ __('mail.delete_button') }}
 @endcomponent
 
+@if ($bookUrl && ! $ride->is_booked)
+@component('mail::button', ['url' => $bookUrl, 'color' => 'orange'])
+{{ __('mail.book_button') }}
+@endcomponent
+@endif
+
 {{ __('mail.direct_links') }}
 
 {{ __('mail.edit_direct', ['url' => $editUrl]) }}
 
 {{ __('mail.delete_direct', ['url' => $deleteUrl]) }}
+
+@if ($bookUrl && ! $ride->is_booked)
+{{ __('mail.book_direct', ['url' => $bookUrl]) }}
+@endif
 
 {{ __('mail.signoff') }},
 {{ $organisationName }}

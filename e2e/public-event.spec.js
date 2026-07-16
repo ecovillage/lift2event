@@ -268,6 +268,55 @@ test.describe('Öffentliche Mitfahrbörse', () => {
         await expect(page.locator('.cursor-pointer')).toHaveCount(0);
     });
 
+    test('Mitfahrangebot mit 0 Plätzen zeigt "Ausgebucht"-Badge in Liste und Popup', async ({ page }) => {
+        await mockGeocode(page);
+        await page.goto(eventUrl);
+        await page.getByText('+ Neue Mitfahrt einstellen').first().click();
+        await page.getByTestId('ride-name').waitFor();
+
+        // Type: offer (default)
+        await page.getByText('Ich biete eine Mitfahrgelegenheit').click();
+
+        await page.getByTestId('ride-name').fill('Ausgebucht Tester');
+        await page.getByTestId('ride-email').fill('ausgebucht@example.com');
+        await page.getByTestId('ride-address').fill('Hamburg');
+        await page.locator('[data-testid="ride-suggestions"]').waitFor();
+        await page.locator('[data-testid="ride-suggestions"] li').first().click();
+        await page.locator('input[type="time"]').first().fill('09:00');
+
+        // Seats stepper: decrement from default 1 down to 0
+        await page.locator('button.stepper-btn.rounded-l').click();
+        await expect(page.getByText('Ausgebucht', { exact: true })).toBeVisible();
+
+        await expect(page.getByTestId('ride-submit')).toBeEnabled({ timeout: 5000 });
+        await page.getByTestId('ride-submit').click();
+
+        // Dismiss the pending-confirmation popup shown after guest ride creation
+        await page.getByRole('button', { name: 'Schließen' }).click();
+
+        const card = page.locator('.cursor-pointer', { hasText: 'Ausgebucht Tester' });
+        await expect(card).toBeVisible({ timeout: 8000 });
+        await expect(card.getByText('Ausgebucht', { exact: true })).toBeVisible();
+
+        await card.click();
+        const popup = page.locator('.fixed.inset-0.z-\\[1500\\]');
+        await expect(popup.getByText('Kontakt')).toBeVisible();
+        await expect(popup.getByText('Ausgebucht', { exact: true })).toBeVisible();
+    });
+
+    test('Mitfahrgesuch kann nicht auf 0 Plätze reduziert werden', async ({ page }) => {
+        await mockGeocode(page);
+        await page.goto(eventUrl);
+        await page.getByText('+ Neue Mitfahrt einstellen').first().click();
+        await page.getByTestId('ride-name').waitFor();
+
+        await page.getByText('Ich suche eine Mitfahrgelegenheit').click();
+        await page.locator('button.stepper-btn.rounded-l').click();
+
+        // Seats span stays at 1 (min for requests), no "Ausgebucht" hint appears
+        await expect(page.getByText('Ausgebucht', { exact: true })).not.toBeVisible();
+    });
+
     test('Event von nicht-bestätigtem Nutzer ist nicht öffentlich', async ({ page }) => {
         // The unapproved user event slug is NOT in the seeder,
         // but we can test via API directly.

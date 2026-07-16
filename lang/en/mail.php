@@ -17,8 +17,10 @@ return [
     'manage_prompt'   => 'You can edit or delete your entry at any time using the following links:',
     'edit_button'     => 'Edit entry',
     'delete_button'   => 'Delete entry',
+    'book_button'     => 'Mark as fully booked',
     'direct_links'    => 'Or use these links directly:',
     'edit_direct'     => '**Edit:** :url',
     'delete_direct'   => '**Delete:** :url',
+    'book_direct'     => '**Mark as fully booked:** :url',
     'signoff'         => 'Best regards',
 ];

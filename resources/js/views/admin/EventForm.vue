@@ -337,6 +337,7 @@ let rideLayer = null;
 
 const offerColor   = '#7c3aed';
 const requestColor = '#e07b30';
+const bookedColor  = '#9ca3af';
 
 const starIcon = () => L.divIcon({
     html: '<span style="font-size:22px;display:block;transform:translate(-50%,-50%)">⭐</span>',
@@ -368,7 +369,8 @@ function drawRides() {
         if (!ride.location) return;
         const lat   = parseFloat(ride.location.latitude);
         const lng   = parseFloat(ride.location.longitude);
-        const color = ride.type === 'offer' ? offerColor : requestColor;
+        const booked = ride.type === 'offer' && ride.seats === 0;
+        const color  = booked ? bookedColor : (ride.type === 'offer' ? offerColor : requestColor);
 
         const polyline = L.polyline([[lat, lng], [evLat, evLng]], { color, weight: 4, opacity: 0.85 })
             .addTo(rideLayer);

@@ -169,10 +169,13 @@
                 <label class="field-label">
                     {{ t(form.type === 'offer' ? 'ride.seats_available' : 'ride.seats_needed') }}
                 </label>
-                <div class="flex items-center gap-0">
-                    <button type="button" class="stepper-btn rounded-l" @click="form.seats = Math.max(1, form.seats - 1)">−</button>
-                    <span class="px-5 py-2 border-y border-gray-300 text-sm font-medium text-center min-w-[3rem]">{{ form.seats }}</span>
-                    <button type="button" class="stepper-btn rounded-r" @click="form.seats = Math.min(8, form.seats + 1)">+</button>
+                <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-0">
+                        <button type="button" class="stepper-btn rounded-l" @click="form.seats = Math.max(minSeats, form.seats - 1)">−</button>
+                        <span class="px-5 py-2 border-y border-gray-300 text-sm font-medium text-center min-w-[3rem]">{{ form.seats }}</span>
+                        <button type="button" class="stepper-btn rounded-r" @click="form.seats = Math.min(8, form.seats + 1)">+</button>
+                    </div>
+                    <span v-if="form.type === 'offer' && form.seats === 0" class="text-xs font-medium text-orange-600">{{ t('ride.booked') }}</span>
                 </div>
             </div>
 
@@ -289,6 +292,10 @@ let   notFoundTimer         = null;
 
 const hasOutbound = computed(() => ['both-ways', 'outbound-only'].includes(form.direction));
 const hasReturn   = computed(() => ['both-ways', 'return-only'].includes(form.direction));
+
+// Ride offers may drop to 0 seats to mark themselves as fully booked; requests always need at least 1.
+const minSeats = computed(() => (form.type === 'offer' ? 0 : 1));
+watch(() => form.type, () => { if (form.seats < minSeats.value) form.seats = minSeats.value; });
 
 // ── Field validation (validate on blur, re-validate earlier fields on focus) ───
 

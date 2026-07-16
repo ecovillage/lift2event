@@ -93,6 +93,7 @@
         "on_last_day": "活动最后一天",
         "seats_available": "可用座位",
         "seats_needed": "所需座位",
+        "booked": "已满员",
         "info_label": "行程信息",
         "info_placeholder": "例如：路线详情、特殊要求等",
         "day_back": "前一天",

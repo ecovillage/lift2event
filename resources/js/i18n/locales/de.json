@@ -95,6 +95,7 @@
         "days_after": "{n} Tag nach | {n} Tage nach",
         "seats_available": "Verfügbare Plätze",
         "seats_needed": "Benötigte Plätze",
+        "booked": "Ausgebucht",
         "info_label": "Infos zu deiner Fahrt",
         "info_placeholder": "z.B. Infos zur Route, besondere Wünsche etc.",
         "day_back": "1 Tag zurück",

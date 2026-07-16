@@ -255,6 +255,14 @@ img {
     border-top: 8px solid #16a34a;
 }
 
+.button-orange {
+    background-color: #ea580c;
+    border-bottom: 8px solid #ea580c;
+    border-left: 18px solid #ea580c;
+    border-right: 18px solid #ea580c;
+    border-top: 8px solid #ea580c;
+}
+
 .button-red,
 .button-error {
     background-color: #dc2626;

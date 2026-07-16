@@ -17,8 +17,10 @@ return [
     'manage_prompt'   => 'Vous pouvez modifier ou supprimer votre inscription à tout moment via les liens suivants :',
     'edit_button'     => "Modifier l'inscription",
     'delete_button'   => "Supprimer l'inscription",
+    'book_button'     => 'Marquer comme complet',
     'direct_links'    => 'Ou utilisez directement ces liens :',
     'edit_direct'     => '**Modifier :** :url',
     'delete_direct'   => '**Supprimer :** :url',
+    'book_direct'     => '**Marquer comme complet :** :url',
     'signoff'         => 'Cordialement',
 ];

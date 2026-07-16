@@ -190,13 +190,21 @@ class PublicRideTest extends TestCase
             ->assertUnprocessable()->assertJsonValidationErrors(['contact_methods.0']);
     }
 
-    public function test_create_requires_seats_between_1_and_8(): void
+    public function test_create_requires_seats_between_1_and_8_for_requests(): void
     {
         $event = Event::factory()->create();
-        $this->postJson("/api/e/{$event->slug}/rides", $this->payload(['seats' => 0]))
+        $this->postJson("/api/e/{$event->slug}/rides", $this->payload(['type' => 'request', 'seats' => 0]))
             ->assertUnprocessable()->assertJsonValidationErrors(['seats']);
         $this->postJson("/api/e/{$event->slug}/rides", $this->payload(['seats' => 9]))
             ->assertUnprocessable()->assertJsonValidationErrors(['seats']);
+    }
+
+    public function test_create_allows_zero_seats_for_offer(): void
+    {
+        $event = Event::factory()->create();
+        $this->postJson("/api/e/{$event->slug}/rides", $this->payload(['type' => 'offer', 'seats' => 0]))
+            ->assertCreated()
+            ->assertJsonPath('seats', 0);
     }
 
     public function test_create_requires_location(): void
@@ -230,8 +238,21 @@ class PublicRideTest extends TestCase
                 && str_contains($mail->envelope()->subject, 'Testkongress 2025')
                 && str_contains($mail->confirmUrl, '/confirm?token=')
                 && str_contains($mail->editUrl, '/edit?token=')
-                && str_contains($mail->deleteUrl, '/delete?token=');
+                && str_contains($mail->deleteUrl, '/delete?token=')
+                && str_contains($mail->bookUrl, '/book?token=');
         });
+    }
+
+    public function test_create_confirmation_email_has_no_book_url_for_requests(): void
+    {
+        Mail::fake();
+
+        $event = Event::factory()->create();
+
+        $this->postJson("/api/e/{$event->slug}/rides", $this->payload(['type' => 'request']))
+            ->assertCreated();
+
+        Mail::assertSent(RideConfirmation::class, fn (RideConfirmation $mail) => $mail->bookUrl === null);
     }
 
     public function test_guest_ride_is_not_kept_when_confirmation_email_fails(): void
@@ -342,6 +363,61 @@ class PublicRideTest extends TestCase
         ])->assertOk();
 
         $this->assertEquals($confirmedAt, $ride->fresh()->confirmed_at);
+    }
+
+    // -------------------------------------------------------------------------
+    // POST /api/e/{slug}/rides/{id}/book
+    // -------------------------------------------------------------------------
+
+    public function test_book_with_correct_token_sets_seats_to_zero(): void
+    {
+        $event = Event::factory()->create();
+        $ride  = $this->rideWithToken($event, 'book_token');
+        $ride->update(['type' => 'offer', 'seats' => 3]);
+
+        $response = $this->postJson("/api/e/{$event->slug}/rides/{$ride->id}/book", [
+            'edit_token' => 'book_token',
+        ])->assertOk();
+
+        $this->assertSame(0, $response->json('seats'));
+        $this->assertSame(0, $ride->fresh()->seats);
+        $this->assertTrue($ride->fresh()->is_booked);
+    }
+
+    public function test_book_with_wrong_token_returns_403(): void
+    {
+        $event = Event::factory()->create();
+        $ride  = $this->rideWithToken($event, 'real_token');
+        $ride->update(['type' => 'offer', 'seats' => 3]);
+
+        $this->postJson("/api/e/{$event->slug}/rides/{$ride->id}/book", [
+            'edit_token' => 'wrong_token',
+        ])->assertForbidden();
+
+        $this->assertSame(3, $ride->fresh()->seats);
+    }
+
+    public function test_book_rejects_ride_requests(): void
+    {
+        $event = Event::factory()->create();
+        $ride  = $this->rideWithToken($event, 'tok');
+        $ride->update(['type' => 'request', 'seats' => 3]);
+
+        $this->postJson("/api/e/{$event->slug}/rides/{$ride->id}/book", [
+            'edit_token' => 'tok',
+        ])->assertUnprocessable();
+
+        $this->assertSame(3, $ride->fresh()->seats);
+    }
+
+    public function test_book_with_wrong_slug_returns_404(): void
+    {
+        $event = Event::factory()->create();
+        $ride  = $this->rideWithToken($event, 'tok');
+
+        $this->postJson("/api/e/wrongslug/rides/{$ride->id}/book", [
+            'edit_token' => 'tok',
+        ])->assertNotFound();
     }
 
     // -------------------------------------------------------------------------

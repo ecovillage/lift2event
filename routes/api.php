@@ -25,6 +25,7 @@ Route::prefix('e')->group(function () {
     Route::put('{slug}/rides/{ride}', [PublicRideController::class, 'update']);
     Route::delete('{slug}/rides/{ride}', [PublicRideController::class, 'destroy']);
     Route::post('{slug}/rides/{ride}/confirm', [PublicRideController::class, 'confirm']);
+    Route::post('{slug}/rides/{ride}/book', [PublicRideController::class, 'book']);
     Route::get('{slug}/rides/{ride}/route', [PublicRideController::class, 'route']);
 });
 

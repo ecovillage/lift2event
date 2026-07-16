@@ -93,6 +93,7 @@
         "on_last_day": "Le dernier jour de l'événement",
         "seats_available": "Places disponibles",
         "seats_needed": "Places nécessaires",
+        "booked": "Complet",
         "info_label": "Infos sur votre trajet",
         "info_placeholder": "p.ex. détails de l'itinéraire, demandes particulières…",
         "day_back": "1 jour en arrière",

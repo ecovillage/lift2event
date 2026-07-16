@@ -10,7 +10,8 @@ trait InteractsWithRides
 {
     private function rideRules(Request $request): array
     {
-        $dir = $request->input('direction');
+        $dir  = $request->input('direction');
+        $type = $request->input('type');
 
         return [
             'type'                  => ['required', Rule::in(['offer', 'request'])],
@@ -23,7 +24,9 @@ trait InteractsWithRides
                 in_array($dir, ['both-ways', 'return-only']) ? 'required' : 'nullable',
                 'date',
             ],
-            'seats'                 => ['required', 'integer', 'min:1', 'max:8'],
+            // Ride offers may drop to 0 seats to mark themselves as fully booked;
+            // ride requests always need at least 1 seat.
+            'seats'                 => ['required', 'integer', $type === 'offer' ? 'min:0' : 'min:1', 'max:8'],
             'name'                  => ['required', 'string', 'max:100'],
             'email'                 => ['required', 'email', 'max:200'],
             'phone'                 => ['nullable', 'string', 'max:50'],

@@ -19,6 +19,7 @@ class RideConfirmation extends Mailable
     public readonly string $confirmUrl;
     public readonly string $editUrl;
     public readonly string $deleteUrl;
+    public readonly ?string $bookUrl;
     public readonly string $organisationName;
 
     public function __construct(
@@ -33,6 +34,7 @@ class RideConfirmation extends Mailable
         $this->confirmUrl      = "{$base}/e/{$slug}/ride/{$id}/confirm?token={$tok}";
         $this->editUrl         = "{$base}/e/{$slug}/ride/{$id}/edit?token={$tok}";
         $this->deleteUrl       = "{$base}/e/{$slug}/ride/{$id}/delete?token={$tok}";
+        $this->bookUrl          = $ride->type === 'offer' ? "{$base}/e/{$slug}/ride/{$id}/book?token={$tok}" : null;
         $this->organisationName = Setting::organisationName();
 
         $this->locale($ride->locale ?? 'de');

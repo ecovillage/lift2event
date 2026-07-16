@@ -17,8 +17,10 @@ return [
     'manage_prompt'   => 'Über die folgenden Links kannst du deinen Eintrag jederzeit bearbeiten oder löschen:',
     'edit_button'     => 'Eintrag bearbeiten',
     'delete_button'   => 'Eintrag löschen',
+    'book_button'     => 'Als ausgebucht markieren',
     'direct_links'    => 'Oder verwende diese Links direkt:',
     'edit_direct'     => '**Bearbeiten:** :url',
     'delete_direct'   => '**Löschen:** :url',
+    'book_direct'     => '**Als ausgebucht markieren:** :url',
     'signoff'         => 'Viele Grüße',
 ];
