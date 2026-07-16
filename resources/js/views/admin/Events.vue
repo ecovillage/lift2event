@@ -39,7 +39,7 @@
                         <td class="px-4 py-3 font-medium">{{ event.name }}</td>
                         <td class="px-4 py-3 hidden sm:table-cell text-gray-600">{{ fmt(event.start_at) }}</td>
                         <td class="px-4 py-3 hidden md:table-cell text-gray-600">{{ fmt(event.end_at) }}</td>
-                        <td class="px-4 py-3 hidden lg:table-cell text-gray-600">{{ event.location?.address ?? '–' }}</td>
+                        <td class="px-4 py-3 hidden lg:table-cell text-gray-600">{{ formatLocation(event.location) || '–' }}</td>
                         <td class="px-4 py-3 text-right text-gray-600">{{ event.offers_count }}</td>
                         <td class="px-4 py-3 text-right text-gray-600">{{ event.requests_count }}</td>
                         <td class="px-4 py-3 text-right">
@@ -62,6 +62,7 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useAuth } from '@/composables/useAuth';
 import api from '@/api/axios';
+import { formatLocation } from '@/utils/formatLocation';
 
 const { t, locale } = useI18n();
 const router = useRouter();
@@ -88,7 +89,7 @@ onMounted(async () => {
 });
 
 async function confirmDelete(event) {
-    const location = event.location?.address ?? '–';
+    const location = formatLocation(event.location) || '–';
     const count = (event.offers_count ?? 0) + (event.requests_count ?? 0);
     if (! window.confirm(t('event.delete_confirm', { name: event.name, location, count }))) return;
     await api.delete(`/events/${event.id}`);

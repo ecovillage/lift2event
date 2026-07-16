@@ -46,7 +46,7 @@
             >· {{ ride.direction === 'outbound-only' ? t('ride.direction_outbound') : t('ride.direction_return') }}</span>
 
             <!-- Departure address (truncated) -->
-            <p class="text-sm text-gray-700 truncate mt-0.5">{{ ride.location?.address }}</p>
+            <p class="text-sm text-gray-700 truncate mt-0.5">{{ formatLocation(ride.location, event.location) }}</p>
 
             <!-- Outbound date/time -->
             <p v-if="hasOutbound" class="text-xs text-gray-500 mt-0.5 flex items-start gap-1">
@@ -66,6 +66,7 @@
 <script setup>
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { formatLocation } from '@/utils/formatLocation';
 
 const props = defineProps({
     ride:       { type: Object, required: true },

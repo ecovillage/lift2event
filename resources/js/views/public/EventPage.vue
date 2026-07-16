@@ -19,7 +19,7 @@
                     </span>
                     <span v-if="event.location" class="flex items-center gap-1.5">
                         <MapPin class="w-3.5 h-3.5 flex-shrink-0 text-gray-400" />
-                        {{ event.location.address }}
+                        {{ formatLocation(event.location) }}
                     </span>
                 </div>
             </div>
@@ -178,6 +178,7 @@ import RideForm from './RideForm.vue';
 import RidePopup from './RidePopup.vue';
 import { useEscapeKey } from '@/composables/useEscapeKey';
 import { useAuth } from '@/composables/useAuth';
+import { formatLocation } from '@/utils/formatLocation';
 
 const { t, locale } = useI18n();
 const route = useRoute();

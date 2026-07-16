@@ -216,6 +216,7 @@ import { ref, reactive, computed, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import api from '@/api/axios';
 import { useEscapeKey } from '@/composables/useEscapeKey';
+import { locationFromNominatim } from '@/utils/formatLocation';
 
 const props = defineProps({
     event:            { type: Object, required: true },
@@ -262,6 +263,10 @@ const form = reactive({
         latitude:     parseFloat(props.ride.location.latitude),
         longitude:    parseFloat(props.ride.location.longitude),
         country_code: props.ride.location.country_code ?? null,
+        street:       props.ride.location.street ?? null,
+        house_number: props.ride.location.house_number ?? null,
+        postal_code:  props.ride.location.postal_code ?? null,
+        city:         props.ride.location.city ?? null,
     } : null,
 });
 
@@ -441,8 +446,7 @@ function onAddressKeydown(e) {
 }
 
 function selectSuggestion(s) {
-    const cc = (s.address?.country_code ?? '').toUpperCase().slice(0, 2) || null;
-    form.location          = { address: s.display_name, latitude: parseFloat(s.lat), longitude: parseFloat(s.lon), country_code: cc };
+    form.location          = locationFromNominatim(s);
     addressInput.value     = s.display_name;
     suggestions.value      = [];
     addressNotFound.value  = false;

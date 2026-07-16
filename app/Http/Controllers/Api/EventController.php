@@ -34,11 +34,15 @@ class EventController extends Controller
             'name'                  => ['required', 'string', 'max:255'],
             'start_at'              => ['required', 'date'],
             'end_at'                => ['required', 'date', 'after:start_at'],
-            'location'              => ['required', 'array'],
-            'location.address'      => ['required', 'string', 'max:500'],
-            'location.latitude'     => ['required', 'numeric', 'between:-90,90'],
-            'location.longitude'    => ['required', 'numeric', 'between:-180,180'],
-            'location.country_code' => ['nullable', 'string', 'size:2'],
+            'location'                  => ['required', 'array'],
+            'location.address'          => ['required', 'string', 'max:500'],
+            'location.latitude'         => ['required', 'numeric', 'between:-90,90'],
+            'location.longitude'        => ['required', 'numeric', 'between:-180,180'],
+            'location.country_code'     => ['nullable', 'string', 'size:2'],
+            'location.street'           => ['nullable', 'string', 'max:255'],
+            'location.house_number'     => ['nullable', 'string', 'max:50'],
+            'location.postal_code'      => ['nullable', 'string', 'max:20'],
+            'location.city'             => ['nullable', 'string', 'max:255'],
         ]);
 
         $location = Location::create($data['location']);
@@ -76,11 +80,15 @@ class EventController extends Controller
             'name'                  => ['required', 'string', 'max:255'],
             'start_at'              => ['required', 'date'],
             'end_at'                => ['required', 'date', 'after:start_at'],
-            'location'              => ['required', 'array'],
-            'location.address'      => ['required', 'string', 'max:500'],
-            'location.latitude'     => ['required', 'numeric', 'between:-90,90'],
-            'location.longitude'    => ['required', 'numeric', 'between:-180,180'],
-            'location.country_code' => ['nullable', 'string', 'size:2'],
+            'location'                  => ['required', 'array'],
+            'location.address'          => ['required', 'string', 'max:500'],
+            'location.latitude'         => ['required', 'numeric', 'between:-90,90'],
+            'location.longitude'        => ['required', 'numeric', 'between:-180,180'],
+            'location.country_code'     => ['nullable', 'string', 'size:2'],
+            'location.street'           => ['nullable', 'string', 'max:255'],
+            'location.house_number'     => ['nullable', 'string', 'max:50'],
+            'location.postal_code'      => ['nullable', 'string', 'max:20'],
+            'location.city'             => ['nullable', 'string', 'max:255'],
         ]);
 
         $event->location->update($data['location']);

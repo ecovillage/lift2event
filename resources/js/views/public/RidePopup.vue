@@ -51,7 +51,7 @@
                     <span class="text-gray-500">
                         {{ ride.direction === 'return-only' ? t('ride.destination_label') : t('ride.departure_label') }}
                     </span>
-                    <span class="ml-1 text-gray-800">{{ ride.location?.address }}</span>
+                    <span class="ml-1 text-gray-800">{{ formatLocation(ride.location, event.location, { allowPostal: true }) }}</span>
                 </div>
 
                 <!-- Info text -->
@@ -124,6 +124,7 @@
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useEscapeKey } from '@/composables/useEscapeKey';
+import { formatLocation } from '@/utils/formatLocation';
 
 const props = defineProps({
     ride:       { type: Object, required: true },

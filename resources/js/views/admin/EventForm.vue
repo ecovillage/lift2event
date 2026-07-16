@@ -260,6 +260,7 @@ import { useRouter, useRoute } from 'vue-router';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import api from '@/api/axios';
+import { locationFromNominatim } from '@/utils/formatLocation';
 import RideCard from '../public/RideCard.vue';
 import RideForm from '../public/RideForm.vue';
 import RidePopup from '../public/RidePopup.vue';
@@ -478,6 +479,10 @@ onMounted(async () => {
                 latitude:     parseFloat(data.location.latitude),
                 longitude:    parseFloat(data.location.longitude),
                 country_code: data.location.country_code,
+                street:       data.location.street ?? null,
+                house_number: data.location.house_number ?? null,
+                postal_code:  data.location.postal_code ?? null,
+                city:         data.location.city ?? null,
             };
             addressInput.value = data.location.address;
             setMarker(form.location.latitude, form.location.longitude);
@@ -531,10 +536,8 @@ function onAddressKeydown(e) {
 }
 
 function selectSuggestion(s) {
-    const lat = parseFloat(s.lat);
-    const lng = parseFloat(s.lon);
-    const cc  = (s.address?.country_code ?? '').toUpperCase().slice(0, 2) || null;
-    form.location      = { address: s.display_name, latitude: lat, longitude: lng, country_code: cc };
+    const loc = locationFromNominatim(s);
+    form.location      = loc;
     addressInput.value = s.display_name;
     suggestions.value  = [];
     setMarker(lat, lng);
