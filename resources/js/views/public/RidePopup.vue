@@ -146,12 +146,12 @@ const directionLabel = computed(() => ({
     'return-only':   t('ride.direction_return'),
 }[props.ride.direction] ?? ''));
 
-const dtFmt = computed(() => new Intl.DateTimeFormat(locale.value, { dateStyle: 'medium', timeStyle: 'short' }));
+const dtFmt = computed(() => new Intl.DateTimeFormat(locale.value, { dateStyle: 'medium', timeStyle: 'short', timeZone: 'UTC' }));
 function fmtDateTime(iso) { return iso ? dtFmt.value.format(new Date(iso)) : ''; }
 
 function dayDiff(iso, anchor) {
-    const a = new Date(iso);    a.setHours(0, 0, 0, 0);
-    const b = new Date(anchor); b.setHours(0, 0, 0, 0);
+    const a = new Date(iso.substring(0, 10) + 'T00:00:00Z');
+    const b = new Date(anchor.substring(0, 10) + 'T00:00:00Z');
     return Math.round((a - b) / 86400000);
 }
 

@@ -262,10 +262,10 @@ function onFilterChange() {
 
 // ── Date formatting ───────────────────────────────────────────────────────────
 
-const longFmt = computed(() => new Intl.DateTimeFormat(locale.value, { dateStyle: 'medium', timeStyle: 'short' }));
-const dayFmt  = computed(() => new Intl.DateTimeFormat(locale.value, { dateStyle: 'medium' }));
+const longFmt = computed(() => new Intl.DateTimeFormat(locale.value, { dateStyle: 'medium', timeStyle: 'short', timeZone: 'UTC' }));
+const dayFmt  = computed(() => new Intl.DateTimeFormat(locale.value, { dateStyle: 'medium', timeZone: 'UTC' }));
 function fmtLong(iso) { return iso ? longFmt.value.format(new Date(iso)) : ''; }
-function fmtDay(ymd)  { return dayFmt.value.format(new Date(ymd + 'T12:00')); }
+function fmtDay(ymd)  { return dayFmt.value.format(new Date(ymd + 'T12:00:00Z')); }
 
 // ── Map ───────────────────────────────────────────────────────────────────────
 

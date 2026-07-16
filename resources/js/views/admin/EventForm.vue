@@ -442,11 +442,10 @@ async function deleteRide(ride) {
     drawRides();
 }
 
-function toLocalInput(iso) {
+// Times are stored naively (no timezone). Slice directly.
+function toNaiveInput(iso) {
     if (!iso) return '';
-    const d   = new Date(iso);
-    const pad = n => String(n).padStart(2, '0');
-    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    return iso.substring(0, 16);
 }
 
 onMounted(async () => {
@@ -467,8 +466,8 @@ onMounted(async () => {
         event.value   = data;
         rides.value   = data.rides ?? [];
         form.name = data.name;
-        [startDate.value, startTime.value] = toLocalInput(data.start_at).split('T');
-        [endDate.value, endTime.value]     = toLocalInput(data.end_at).split('T');
+        [startDate.value, startTime.value] = toNaiveInput(data.start_at).split('T');
+        [endDate.value, endTime.value]     = toNaiveInput(data.end_at).split('T');
         if (data.location) {
             form.location      = {
                 address:      data.location.address,

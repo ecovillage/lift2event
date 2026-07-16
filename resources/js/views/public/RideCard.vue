@@ -74,19 +74,18 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['open', 'edit', 'delete']);
-const { t, locale } = useI18n();
+const { t } = useI18n();
 
 const hasOutbound = computed(() => ['both-ways', 'outbound-only'].includes(props.ride.direction));
 const hasReturn   = computed(() => ['both-ways', 'return-only'].includes(props.ride.direction));
 
 function dayDiff(iso, anchor) {
-    const a = new Date(iso);    a.setHours(0, 0, 0, 0);
-    const b = new Date(anchor); b.setHours(0, 0, 0, 0);
+    const a = new Date(iso.substring(0, 10) + 'T00:00:00Z');
+    const b = new Date(anchor.substring(0, 10) + 'T00:00:00Z');
     return Math.round((a - b) / 86400000);
 }
 
-const timeFmt = computed(() => new Intl.DateTimeFormat(locale.value, { timeStyle: 'short' }));
-function fmtTime(iso) { return iso ? timeFmt.value.format(new Date(iso)) : ''; }
+function fmtTime(iso) { return iso ? iso.substring(11, 16) : ''; }
 
 const outboundDiff    = computed(() => props.ride.outbound_at && props.event?.start_at ? dayDiff(props.ride.outbound_at, props.event.start_at) : 0);
 const returnDiff      = computed(() => props.ride.return_at && props.event?.end_at ? dayDiff(props.ride.return_at, props.event.end_at) : 0);

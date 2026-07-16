@@ -234,13 +234,16 @@ useEscapeKey(() => emit('cancelled'));
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
+// Times are stored naively (no timezone). Slice directly – never use new Date() here.
 function isoDate(iso) { return iso ? iso.substring(0, 10) : ''; }
 function isoTime(iso) { return iso ? iso.substring(11, 16) : ''; }
+
 function shiftDateStr(dateStr, days) {
     if (!dateStr) return dateStr;
-    const d = new Date(dateStr + 'T12:00');
-    d.setDate(d.getDate() + days);
-    return d.toISOString().substring(0, 10);
+    const pad = n => String(n).padStart(2, '0');
+    const d = new Date(dateStr + 'T12:00:00Z');
+    d.setUTCDate(d.getUTCDate() + days);
+    return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`;
 }
 
 // ── Form state ────────────────────────────────────────────────────────────────
@@ -454,7 +457,7 @@ async function submit() {
     if (fieldOrder.some(k => fieldErrors.value[k])) return;
     if (form.contact_methods.length === 0) { errors.value = [t('error.contact_required')]; return; }
 
-    // Combine date + time; use event end time as default for return if time is empty
+    // Combine date + time; no timezone suffix – times are stored as entered
     const outbound_at = hasOutbound.value && outboundDate.value
         ? `${outboundDate.value}T${outboundTime.value || '00:00'}`
         : null;
