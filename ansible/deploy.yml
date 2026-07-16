@@ -14,10 +14,34 @@
         dest: "{{ deploy_path }}"
         version: "{{ deploy_branch }}"
 
+    # APP_KEY vor dem Ueberschreiben des .env sichern, damit er nicht
+    # verloren geht. Ansible schreibt ihn danach direkt zurueck (kein PHP
+    # noetig, also keine Schreibrechtsprobleme auf Shared Hosting).
+    - name: Existierenden APP_KEY sichern
+      ansible.builtin.command: grep '^APP_KEY=.' .env
+      args:
+        chdir: "{{ deploy_path }}"
+      register: old_app_key
+      changed_when: false
+      failed_when: false
+
     - name: Copy .env to remote
       ansible.builtin.copy:
         src: templates/.env
         dest: "{{ deploy_path }}"
+
+    - name: Gesicherten APP_KEY in neues .env schreiben
+      ansible.builtin.lineinfile:
+        path: "{{ deploy_path }}/.env"
+        regexp: '^APP_KEY='
+        line: "{{ old_app_key.stdout }}"
+      when: old_app_key.rc == 0
+
+    - name: APP_KEY erzeugen, da noch kein gueltiger vorhanden war
+      ansible.builtin.command: "{{ php_bin }} artisan key:generate --force"
+      args:
+        chdir: "{{ deploy_path }}"
+      when: old_app_key.rc != 0
 
     # Composer und npm sind auf vielen Webspace-Paketen nicht installiert,
     # PHP dagegen schon. Vendor- und Frontend-Build entstehen deshalb lokal
@@ -97,20 +121,6 @@
         - storage/framework/views
         - storage/logs
         - bootstrap/cache
-
-    - name: Pruefen, ob APP_KEY bereits gesetzt ist
-      ansible.builtin.command: grep -q '^APP_KEY=.\+' .env
-      args:
-        chdir: "{{ deploy_path }}"
-      register: app_key_present
-      changed_when: false
-      failed_when: false
-
-    - name: APP_KEY erzeugen, falls noch leer
-      ansible.builtin.command: "{{ php_bin }} artisan key:generate --force"
-      args:
-        chdir: "{{ deploy_path }}"
-      when: app_key_present.rc != 0
 
     - name: Symlink fuer oeffentliche Storage-Dateien anlegen
       ansible.builtin.command: "{{ php_bin }} artisan storage:link"
