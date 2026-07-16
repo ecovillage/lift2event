@@ -540,8 +540,8 @@ function selectSuggestion(s) {
     form.location      = loc;
     addressInput.value = s.display_name;
     suggestions.value  = [];
-    setMarker(lat, lng);
-    map.setView([lat, lng], 12);
+    setMarker(loc.latitude, loc.longitude);
+    map.setView([loc.latitude, loc.longitude], 12);
     drawRides();
 }
 

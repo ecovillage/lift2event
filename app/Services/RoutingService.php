@@ -26,9 +26,12 @@ class RoutingService
         try {
             $response = Http::withHeaders(['Authorization' => config('services.openrouteservice.key')])
                 ->timeout(5)
-                ->get("$baseUrl/v2/directions/driving-car", [
-                    'start' => "{$from->longitude},{$from->latitude}",
-                    'end'   => "{$to->longitude},{$to->latitude}",
+                ->post("$baseUrl/v2/directions/driving-car/geojson", [
+                    'coordinates' => [
+                        [(float) $from->longitude, (float) $from->latitude],
+                        [(float) $to->longitude,   (float) $to->latitude],
+                    ],
+                    'radiuses' => [5000, 5000],
                 ]);
         } catch (\Throwable $e) {
             Log::warning('ORS request failed', [
