@@ -1,6 +1,7 @@
 <template>
     <div class="fixed inset-0 z-[1500] bg-black/50 flex items-end md:items-center justify-center" @click.self="emit('close')">
-        <div class="bg-white rounded-t-2xl md:rounded-xl w-full md:max-w-md max-h-[90vh] overflow-y-auto">
+        <div class="bg-white rounded-t-2xl md:rounded-xl w-full md:max-w-md max-h-[90vh] overflow-hidden">
+          <div class="max-h-[90vh] overflow-y-auto">
 
             <!-- Header: close button -->
             <div class="flex justify-end p-3 pb-0">
@@ -114,6 +115,7 @@
                 </div>
 
             </div>
+          </div>
         </div>
     </div>
 </template>

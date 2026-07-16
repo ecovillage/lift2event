@@ -71,10 +71,11 @@
                             @focus="onFocus('address')"
                             @blur="onAddressBlur"
                         />
-                        <ul
+                        <div
                             v-if="suggestions.length"
-                            class="absolute z-50 left-0 right-0 bg-white border border-gray-200 rounded shadow-lg max-h-48 overflow-y-auto text-sm"
+                            class="absolute z-50 left-0 right-0 bg-white border border-gray-200 rounded shadow-lg max-h-48 overflow-hidden"
                         >
+                          <ul class="max-h-48 overflow-y-auto text-sm">
                             <li
                                 v-for="(s, i) in suggestions"
                                 :key="s.place_id"
@@ -83,7 +84,8 @@
                             >
                                 {{ s.display_name }}
                             </li>
-                        </ul>
+                          </ul>
+                        </div>
                         <p v-if="form.location" class="mt-1 text-xs text-gray-400 truncate">
                             {{ form.location.latitude.toFixed(4) }}, {{ form.location.longitude.toFixed(4) }}
                         </p>
@@ -180,7 +182,8 @@
                 class="fixed inset-0 z-[2000] bg-black/50 flex items-end md:items-center justify-center"
                 @click.self="editingRide = null"
             >
-                <div class="bg-white rounded-t-2xl md:rounded-xl w-full md:max-w-lg max-h-[90vh] overflow-y-auto">
+                <div class="bg-white rounded-t-2xl md:rounded-xl w-full md:max-w-lg max-h-[90vh] overflow-hidden">
+                  <div class="max-h-[90vh] overflow-y-auto">
                     <RideForm
                         :event="event"
                         :ride="editingRide"
@@ -188,6 +191,7 @@
                         @submitted="onRideUpdated"
                         @cancelled="editingRide = null"
                     />
+                  </div>
                 </div>
             </div>
         </Teleport>

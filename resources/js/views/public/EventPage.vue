@@ -149,7 +149,8 @@
                 class="fixed inset-0 z-[2000] bg-black/50 flex items-end md:items-center justify-center"
                 @click.self="showForm = false"
             >
-                <div class="bg-white rounded-t-2xl md:rounded-xl w-full md:max-w-lg max-h-[90vh] overflow-y-auto">
+                <div class="bg-white rounded-t-2xl md:rounded-xl w-full md:max-w-lg max-h-[90vh] overflow-hidden">
+                  <div class="max-h-[90vh] overflow-y-auto">
                     <RideForm
                         :event="event"
                         :retention-days="retentionDays"
@@ -157,6 +158,7 @@
                         @submitted="onRideCreated"
                         @cancelled="showForm = false"
                     />
+                  </div>
                 </div>
             </div>
         </Teleport>

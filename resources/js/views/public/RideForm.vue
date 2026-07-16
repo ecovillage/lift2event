@@ -101,18 +101,20 @@
                         @focus="onFocus('address')"
                         @blur="onAddressBlur"
                     />
-                    <ul
+                    <div
                         v-if="suggestions.length"
                         data-testid="ride-suggestions"
-                        class="absolute z-50 left-0 right-0 bg-white border border-gray-200 rounded shadow-lg max-h-48 overflow-y-auto text-sm"
+                        class="absolute z-50 left-0 right-0 bg-white border border-gray-200 rounded shadow-lg max-h-48 overflow-hidden"
                     >
+                      <ul class="max-h-48 overflow-y-auto text-sm">
                         <li
                             v-for="(s, i) in suggestions"
                             :key="s.place_id"
                             :class="['px-3 py-2 cursor-pointer leading-snug', i === highlightedIndex ? 'bg-gray-100' : 'hover:bg-gray-100']"
                             @mousedown.prevent="selectSuggestion(s)"
                         >{{ s.display_name }}</li>
-                    </ul>
+                      </ul>
+                    </div>
                     <p v-if="addressNotFound" class="mt-1 text-xs text-amber-600">
                         {{ t('ride.address_not_found', { query: addressNotFoundQuery }) }}
                     </p>
