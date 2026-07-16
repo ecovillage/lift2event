@@ -11,7 +11,7 @@ class SettingController extends Controller
 {
     public function show(): JsonResponse
     {
-        return response()->json(Setting::instance());
+        return $this->settingsResponse(Setting::instance());
     }
 
     public function update(Request $request): JsonResponse
@@ -34,6 +34,13 @@ class SettingController extends Controller
         $settings = Setting::instance();
         $settings->update($data);
 
-        return response()->json($settings->fresh());
+        return $this->settingsResponse($settings->fresh());
+    }
+
+    private function settingsResponse(Setting $settings): JsonResponse
+    {
+        return response()->json(
+            array_merge($settings->toArray(), ['organisation_name' => Setting::organisationName()])
+        );
     }
 }

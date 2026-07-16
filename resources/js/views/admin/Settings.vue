@@ -135,7 +135,7 @@ onMounted(async () => {
 
     footerLinks.value    = settings.footer_links ? JSON.parse(JSON.stringify(settings.footer_links)) : [];
     retentionDays.value  = settings.ride_data_retention_days ?? 90;
-    organisationName.value = settings.organisation_name ?? 'Lift2Event';
+    organisationName.value = settings.organisation_name;
 
     map = L.map(mapEl.value, { zoomControl: true }).setView(
         [settings.map_center_lat, settings.map_center_lng],
