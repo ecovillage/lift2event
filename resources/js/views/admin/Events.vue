@@ -74,6 +74,7 @@ const loading = ref(true);
 const dtFmt = new Intl.DateTimeFormat(locale.value, {
     day: '2-digit', month: '2-digit', year: 'numeric',
     hour: '2-digit', minute: '2-digit',
+    timeZone: 'UTC',
 });
 function fmt(iso) {
     return iso ? dtFmt.format(new Date(iso)) : '–';
