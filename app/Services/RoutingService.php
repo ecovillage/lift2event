@@ -25,7 +25,7 @@ class RoutingService
 
         try {
             $response = Http::withHeaders(['Authorization' => config('services.openrouteservice.key')])
-                ->timeout(15)
+                ->timeout(5)
                 ->get("$baseUrl/v2/directions/driving-car", [
                     'start' => "{$from->longitude},{$from->latitude}",
                     'end'   => "{$to->longitude},{$to->latitude}",
