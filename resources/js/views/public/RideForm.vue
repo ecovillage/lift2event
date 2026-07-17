@@ -267,9 +267,9 @@
 <script setup>
 import { ref, reactive, computed, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { Mail, MessageSquare, Phone, User, MapPin, Car, Hand, ArrowLeftRight, ArrowRight, ArrowLeft } from '@lucide/vue';
-import { siSignal, siTelegram, siWhatsapp } from 'simple-icons';
+import { User, MapPin, Car, Hand, ArrowLeftRight, ArrowRight, ArrowLeft } from '@lucide/vue';
 import BrandIcon from '@/components/BrandIcon.vue';
+import { contactIcons } from '@/constants/contactIcons';
 import api from '@/api/axios';
 import { useEscapeKey } from '@/composables/useEscapeKey';
 import { locationFromNominatim } from '@/utils/formatLocation';
@@ -429,16 +429,6 @@ const directionOptions = computed(() => [
     { value: 'outbound-only', icon: ArrowRight,     label: t('ride.direction_outbound') },
     { value: 'return-only',   icon: ArrowLeft,      label: t('ride.direction_return') },
 ]);
-
-// Messenger icons use the actual brand marks (recognisability); email/SMS/call are generic channels.
-const contactIcons = {
-    email:    { kind: 'lucide', component: Mail },
-    signal:   { kind: 'brand', icon: siSignal },
-    telegram: { kind: 'brand', icon: siTelegram },
-    whatsapp: { kind: 'brand', icon: siWhatsapp },
-    sms:  { kind: 'lucide', component: MessageSquare },
-    call: { kind: 'lucide', component: Phone },
-};
 
 // ── Relative date labels ──────────────────────────────────────────────────────
 

@@ -1,6 +1,9 @@
 <template>
     <div data-testid="ride-popup" class="fixed inset-0 z-[1500] bg-black/50 flex items-end md:items-center justify-center" @click.self="emit('close')">
-        <div class="bg-white rounded-t-2xl md:rounded-xl w-full md:max-w-md max-h-[90vh] overflow-hidden">
+        <div
+            class="bg-white border-l-4 rounded-t-2xl md:rounded-xl w-full md:max-w-md max-h-[90vh] overflow-hidden"
+            :style="{ borderLeftColor: ride.type === 'offer' ? 'var(--color-offer)' : 'var(--color-request)' }"
+        >
           <div class="max-h-[90vh] overflow-y-auto">
 
             <!-- Header: close button -->
@@ -12,58 +15,72 @@
 
                 <!-- Seats badge + type -->
                 <div class="flex items-center gap-2">
-                    <span :class="['px-3 py-1.5 rounded-full text-sm font-semibold flex items-center gap-1.5',
-                        ride.type === 'offer'
-                            ? 'bg-[var(--color-offer-light)] text-[var(--color-offer)]'
-                            : 'bg-[var(--color-request-light)] text-[var(--color-request)]']">
+                    <Badge :variant="ride.type === 'offer' ? 'offer' : 'request'">
                         <span>{{ ride.seats }}</span>
                         <span>{{ t(ride.type === 'offer' ? 'ride.seats_available' : 'ride.seats_needed') }}</span>
-                    </span>
-                    <span
-                        v-if="isBooked"
-                        class="px-3 py-1.5 rounded-full text-sm font-semibold bg-orange-100 text-orange-600"
-                    >{{ t('ride.booked') }}</span>
-                    <span class="text-sm text-gray-500">{{ directionLabel }}</span>
+                    </Badge>
+                    <Badge v-if="isBooked" variant="warning">{{ t('ride.booked') }}</Badge>
+                    <Badge
+                        v-if="ride.direction !== 'both-ways'"
+                        variant="warning"
+                    >{{ t('ride.' + (ride.direction === 'outbound-only' ? 'outbound_only' : 'return_only')) }}</Badge>
                 </div>
 
-                <!-- Dates -->
-                <div class="space-y-1">
-                    <div v-if="hasOutbound" class="flex items-start gap-2 text-sm">
-                        <ArrowRight class="w-4 h-4 text-gray-400 mt-0.5 shrink-0" :stroke-width="2" />
-                        <div>
-                            <span class="font-medium">{{ t('ride.outbound_label') }}</span>
-                            <span class="ml-2 text-gray-600">{{ fmtDateTime(ride.outbound_at) }}</span>
-                            <span v-if="outboundWarning" class="ml-2 text-amber-600 text-xs inline-flex items-center gap-1">
-                                <TriangleAlert class="w-3 h-3" :stroke-width="2" /> {{ outboundRelLabel }}
-                            </span>
-                        </div>
-                    </div>
-                    <div v-if="hasReturn" class="flex items-start gap-2 text-sm">
-                        <ArrowLeft class="w-4 h-4 text-gray-400 mt-0.5 shrink-0" :stroke-width="2" />
-                        <div>
-                            <span class="font-medium">{{ t('ride.return_label') }}</span>
-                            <span class="ml-2 text-gray-600">{{ fmtDateTime(ride.return_at) }}</span>
-                            <span v-if="returnWarning" class="ml-2 text-amber-600 text-xs inline-flex items-center gap-1">
-                                <TriangleAlert class="w-3 h-3" :stroke-width="2" /> {{ returnRelLabel }}
-                            </span>
-                        </div>
-                    </div>
-                </div>
+                <!-- Route: dates + location -->
+                <div class="rounded-lg border border-gray-200 bg-gray-50/60 p-3 space-y-3">
+                    <h3 class="flex items-center gap-1.5 font-semibold text-sm text-gray-700">
+                        <MapPin class="w-4 h-4" :stroke-width="2" aria-hidden="true" /> {{ t('ride.route_heading') }}
+                    </h3>
 
-                <!-- Departure / destination label + address -->
-                <div class="text-sm">
-                    <span class="text-gray-500">
-                        {{ ride.direction === 'return-only' ? t('ride.destination_label') : t('ride.departure_label') }}
-                    </span>
-                    <span class="ml-1 text-gray-800">{{ formatLocation(ride.location, event.location, { allowPostal: true }) }}</span>
+                    <!-- Dates -->
+                    <div class="space-y-1">
+                        <div v-if="hasOutbound" class="flex items-start gap-2 text-sm">
+                            <ArrowRight class="w-4 h-4 text-gray-400 mt-0.5 shrink-0" :stroke-width="2" />
+                            <div>
+                                <span class="font-medium">{{ t('ride.outbound_label') }}</span>
+                                <span class="ml-2 text-gray-600">{{ fmtDateTime(ride.outbound_at) }}</span>
+                                <span v-if="outboundWarning" class="ml-2 text-amber-600 text-xs inline-flex items-center gap-1">
+                                    <TriangleAlert class="w-3 h-3" :stroke-width="2" /> {{ outboundRelLabel }}
+                                </span>
+                            </div>
+                        </div>
+                        <div v-if="hasReturn" class="flex items-start gap-2 text-sm">
+                            <ArrowLeft class="w-4 h-4 text-gray-400 mt-0.5 shrink-0" :stroke-width="2" />
+                            <div>
+                                <span class="font-medium">{{ t('ride.return_label') }}</span>
+                                <span class="ml-2 text-gray-600">{{ fmtDateTime(ride.return_at) }}</span>
+                                <span v-if="returnWarning" class="ml-2 text-amber-600 text-xs inline-flex items-center gap-1">
+                                    <TriangleAlert class="w-3 h-3" :stroke-width="2" /> {{ returnRelLabel }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Departure / destination label + address -->
+                    <div class="flex items-start gap-2 text-sm">
+                        <MapPin class="w-4 h-4 text-gray-400 mt-0.5 shrink-0" :stroke-width="2" />
+                        <div>
+                            <span class="font-medium">
+                                {{ ride.direction === 'return-only' ? t('ride.destination_label') : t('ride.departure_label') }}
+                            </span>
+                            <span class="ml-1 text-gray-600">{{ formatLocation(ride.location, event.location, { allowPostal: true }) }}</span>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Info text -->
-                <p v-if="ride.info" class="text-sm text-gray-600 italic leading-snug">{{ ride.info }}</p>
+                <div v-if="ride.info" class="rounded-lg border border-gray-200 bg-gray-50/60 p-3 space-y-1">
+                    <h3 class="flex items-center gap-1.5 font-semibold text-sm text-gray-700">
+                        <MessageSquare class="w-4 h-4" :stroke-width="2" aria-hidden="true" /> {{ t('ride.info_label') }}
+                    </h3>
+                    <p class="text-sm text-gray-600 leading-snug">{{ ride.info }}</p>
+                </div>
 
                 <!-- Contact section -->
-                <div class="border-t pt-4 space-y-3">
-                    <h3 class="font-semibold text-sm text-gray-700">{{ t('ride.contact_heading') }}</h3>
+                <div class="rounded-lg border border-gray-200 bg-gray-50/60 p-3 space-y-3">
+                    <h3 class="flex items-center gap-1.5 font-semibold text-sm text-gray-700">
+                        <User class="w-4 h-4" :stroke-width="2" aria-hidden="true" /> {{ t('ride.contact_heading') }}
+                    </h3>
 
                     <div class="space-y-1">
                         <p class="font-medium text-gray-800">{{ ride.name }}</p>
@@ -83,8 +100,14 @@
                             :href="btn.href"
                             target="_blank"
                             rel="noopener noreferrer"
-                            class="px-3 py-1.5 rounded-full text-xs font-medium bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors"
-                        >{{ btn.label }}</a>
+                            class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors"
+                        >
+                            <span class="shrink-0 inline-flex" aria-hidden="true">
+                                <BrandIcon v-if="contactIcons[btn.method].kind === 'brand'" :icon="contactIcons[btn.method].icon" class="w-3.5 h-3.5" />
+                                <component v-else :is="contactIcons[btn.method].component" class="w-3.5 h-3.5" :stroke-width="2" />
+                            </span>
+                            {{ btn.label }}
+                        </a>
                     </div>
                 </div>
 
@@ -127,7 +150,10 @@
 <script setup>
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { X, ArrowRight, ArrowLeft, TriangleAlert, Mail, Phone, Pencil, Trash2 } from '@lucide/vue';
+import { X, ArrowRight, ArrowLeft, TriangleAlert, Mail, Phone, MapPin, User, Pencil, Trash2, MessageSquare } from '@lucide/vue';
+import BrandIcon from '@/components/BrandIcon.vue';
+import Badge from '@/components/Badge.vue';
+import { contactIcons } from '@/constants/contactIcons';
 import { useEscapeKey } from '@/composables/useEscapeKey';
 import { formatLocation } from '@/utils/formatLocation';
 
@@ -148,12 +174,6 @@ const hasOutbound = computed(() => ['both-ways', 'outbound-only'].includes(props
 const hasReturn   = computed(() => ['both-ways', 'return-only'].includes(props.ride.direction));
 const showEmail   = computed(() => props.ride.contact_methods?.includes('email'));
 const showPhone   = computed(() => !!props.ride.phone);
-
-const directionLabel = computed(() => ({
-    'both-ways':     t('ride.direction_both'),
-    'outbound-only': t('ride.direction_outbound'),
-    'return-only':   t('ride.direction_return'),
-}[props.ride.direction] ?? ''));
 
 const dtFmt = computed(() => new Intl.DateTimeFormat(locale.value, { dateStyle: 'medium', timeStyle: 'short', timeZone: 'UTC' }));
 function fmtDateTime(iso) { return iso ? dtFmt.value.format(new Date(iso)) : ''; }

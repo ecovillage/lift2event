@@ -21,28 +21,19 @@
                 <!-- Right side: badges + manage icons -->
                 <div class="flex flex-col items-end gap-1 shrink-0">
                     <!-- Type badge -->
-                    <span :class="['inline-block px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide',
-                        ride.type === 'offer'
-                            ? 'bg-[var(--color-offer-light)] text-[var(--color-offer)]'
-                            : 'bg-[var(--color-request-light)] text-[var(--color-request)]']">
+                    <Badge :variant="ride.type === 'offer' ? 'offer' : 'request'" size="sm">
                         {{ t('ride.' + ride.type) }}
-                    </span>
+                    </Badge>
 
                     <!-- Booked badge (ride offers with 0 seats left) -->
-                    <span
-                        v-if="isBooked"
-                        class="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide bg-orange-100 text-orange-600"
-                    >
+                    <Badge v-if="isBooked" variant="warning" size="sm">
                         {{ t('ride.booked') }}
-                    </span>
+                    </Badge>
 
                     <!-- Direction badge (only when not both-ways) -->
-                    <span
-                        v-if="ride.direction !== 'both-ways'"
-                        class="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide bg-orange-100 text-orange-600"
-                    >
+                    <Badge v-if="ride.direction !== 'both-ways'" variant="warning" size="sm">
                         {{ t('ride.' + (ride.direction === 'outbound-only' ? 'outbound_only' : 'return_only')) }}
-                    </span>
+                    </Badge>
 
                     <!-- Manage icons (admin / event creator on the edit page) -->
                     <div v-if="manageable" class="flex gap-2 shrink-0 text-gray-400 mt-0.5">
@@ -83,6 +74,7 @@
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { ArrowRight, ArrowLeft, TriangleAlert, Pencil, Trash2 } from '@lucide/vue';
+import Badge from '@/components/Badge.vue';
 import { formatLocation } from '@/utils/formatLocation';
 
 const props = defineProps({
