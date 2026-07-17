@@ -90,7 +90,7 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue';
+import { ref, reactive, onMounted, onUnmounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { X, CircleCheck } from '@lucide/vue';
 import axios from 'axios';
@@ -108,6 +108,13 @@ const form = reactive({ name: '', email: '', message: '' });
 function close() {
     open.value = false;
 }
+
+function onKeydown(e) {
+    if (e.key === 'Escape' && open.value) close();
+}
+
+onMounted(() => document.addEventListener('keydown', onKeydown));
+onUnmounted(() => document.removeEventListener('keydown', onKeydown));
 
 async function submit() {
     messageError.value = false;
