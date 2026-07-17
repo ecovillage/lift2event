@@ -9,13 +9,15 @@
                 class="absolute top-3 right-4 px-3 py-1.5 rounded text-xs font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 transition-colors"
             >{{ t('nav.admin') }}</router-link>
             <div class="px-6 py-6 text-center">
-                <p v-if="organisationName" class="text-xs font-semibold text-[var(--color-primary)] uppercase tracking-widest mb-1">{{ organisationName }}</p>
-                <p class="text-xs text-gray-400 uppercase tracking-wide">{{ t('event.rideshare_for') }}</p>
-                <h1 class="text-2xl font-bold text-gray-900 leading-tight mt-1">{{ event?.name ?? '…' }}</h1>
+                <p class="text-2xl font-bold text-gray-900 leading-tight">{{ organisationName ? `${organisationName} · ${t('event.rideshare_for')}` : t('event.rideshare_for') }}</p>
+                <p class="text-sm text-gray-500 mt-3">{{ t('event.for_event') }}</p>
+                <h1 class="text-2xl font-bold text-[var(--color-primary)] leading-tight mt-3">{{ event?.name ?? '…' }}</h1>
                 <div v-if="event" class="mt-3 text-sm text-gray-500 flex flex-wrap justify-center gap-x-5 gap-y-1">
                     <span class="flex items-center gap-1.5">
                         <Calendar class="w-3.5 h-3.5 flex-shrink-0 text-gray-400" />
-                        {{ fmtLong(event.start_at) }} – {{ fmtLong(event.end_at) }}
+                        <span>
+                            <template v-for="(seg, i) in eventRangeSegments" :key="i"><span v-if="seg.bold" class="font-semibold">{{ seg.text }}</span><template v-else>{{ seg.text }}</template></template>
+                        </span>
                     </span>
                     <span v-if="event.location" class="flex items-center gap-1.5">
                         <MapPin class="w-3.5 h-3.5 flex-shrink-0 text-gray-400" />
@@ -266,10 +268,48 @@ function onFilterChange() {
 
 // ── Date formatting ───────────────────────────────────────────────────────────
 
-const longFmt = computed(() => new Intl.DateTimeFormat(locale.value, { dateStyle: 'medium', timeStyle: 'short', timeZone: 'UTC' }));
-const dayFmt  = computed(() => new Intl.DateTimeFormat(locale.value, { dateStyle: 'medium', timeZone: 'UTC' }));
-function fmtLong(iso) { return iso ? longFmt.value.format(new Date(iso)) : ''; }
-function fmtDay(ymd)  { return dayFmt.value.format(new Date(ymd + 'T12:00:00Z')); }
+const dayFmt = computed(() => new Intl.DateTimeFormat(locale.value, { dateStyle: 'medium', timeZone: 'UTC' }));
+function fmtDay(ymd) { return dayFmt.value.format(new Date(ymd + 'T12:00:00Z')); }
+
+// German and French use "18h30"-style times; other locales use their own idiomatic short time format.
+function fmtEventTime(date) {
+    if (locale.value === 'de' || locale.value === 'fr') {
+        const parts  = new Intl.DateTimeFormat(locale.value, { hour: 'numeric', minute: '2-digit', hourCycle: 'h23', timeZone: 'UTC' }).formatToParts(date);
+        const hour   = parts.find(p => p.type === 'hour').value;
+        const minute = parts.find(p => p.type === 'minute').value;
+        return `${hour}h${minute}`;
+    }
+    return new Intl.DateTimeFormat(locale.value, { timeStyle: 'short', timeZone: 'UTC' }).format(date);
+}
+
+function fmtEventDate(date) {
+    return new Intl.DateTimeFormat(locale.value, { dateStyle: 'long', timeZone: 'UTC' }).format(date);
+}
+
+// Date and time values are bold; connector words ("um"/"bis" etc.) stay normal weight.
+const eventRangeSegments = computed(() => {
+    const ev = event.value;
+    if (!ev?.start_at || !ev?.end_at) return [];
+
+    const start = new Date(ev.start_at);
+    const end   = new Date(ev.end_at);
+    const atWord = t('event.date_at');
+    const at     = atWord ? ` ${atWord} ` : ' ';
+    const sameDay = start.toISOString().slice(0, 10) === end.toISOString().slice(0, 10);
+
+    const segments = [
+        { bold: true,  text: fmtEventDate(start) },
+        { bold: false, text: at },
+        { bold: true,  text: fmtEventTime(start) },
+        { bold: false, text: ` ${t('event.date_until')} ` },
+    ];
+    if (!sameDay) {
+        segments.push({ bold: true, text: fmtEventDate(end) });
+        segments.push({ bold: false, text: at });
+    }
+    segments.push({ bold: true, text: fmtEventTime(end) });
+    return segments;
+});
 
 // ── Map ───────────────────────────────────────────────────────────────────────
 

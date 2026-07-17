@@ -28,7 +28,10 @@
         "invalid_token": "Dieser Link ist ungültig oder abgelaufen."
     },
     "event": {
-        "rideshare_for": "Mitfahrbörse zur Veranstaltung",
+        "rideshare_for": "Mitfahrbörse",
+        "for_event": "zur Veranstaltung",
+        "date_at": "um",
+        "date_until": "bis",
         "new": "Neue Veranstaltung anlegen",
         "edit": "Veranstaltung bearbeiten",
         "none": "Noch keine Veranstaltungen.",

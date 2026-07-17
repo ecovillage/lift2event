@@ -28,7 +28,10 @@
         "invalid_token": "Ce lien est invalide ou a expiré."
     },
     "event": {
-        "rideshare_for": "Covoiturage pour l'événement",
+        "rideshare_for": "Covoiturage",
+        "for_event": "pour l'événement",
+        "date_at": "à",
+        "date_until": "jusqu'à",
         "new": "Créer un événement",
         "edit": "Modifier l'événement",
         "name": "Nom",

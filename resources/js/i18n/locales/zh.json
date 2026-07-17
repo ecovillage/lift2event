@@ -28,7 +28,10 @@
         "invalid_token": "此链接无效或已过期。"
     },
     "event": {
-        "rideshare_for": "活动拼车信息",
+        "rideshare_for": "拼车",
+        "for_event": "关于本次活动",
+        "date_at": "",
+        "date_until": "至",
         "new": "创建活动",
         "edit": "编辑活动",
         "name": "名称",

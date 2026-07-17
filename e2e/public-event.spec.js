@@ -14,7 +14,7 @@ test.describe('Öffentliche Mitfahrbörse', () => {
 
     test('Zeigt Veranstaltungsdaten in der Kopfzeile', async ({ page }) => {
         await page.goto(eventUrl);
-        await expect(page.getByText('Mitfahrbörse zur Veranstaltung')).toBeVisible();
+        await expect(page.getByText('Mitfahrbörse', { exact: false })).toBeVisible();
         await expect(page.getByText('Testveranstaltung Berlin')).toBeVisible();
         await expect(page.getByText(/Alexanderplatz/)).toBeVisible();
     });

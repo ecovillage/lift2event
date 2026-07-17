@@ -28,7 +28,10 @@
         "invalid_token": "This link is invalid or has expired."
     },
     "event": {
-        "rideshare_for": "Rideshare for event",
+        "rideshare_for": "Rideshare",
+        "for_event": "for the event",
+        "date_at": "at",
+        "date_until": "to",
         "new": "Create new event",
         "edit": "Edit event",
         "name": "Name",
