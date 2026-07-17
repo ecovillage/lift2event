@@ -173,6 +173,27 @@ class EventCrudTest extends TestCase
             ->assertUnprocessable()->assertJsonValidationErrors(['location.longitude']);
     }
 
+    public function test_create_stores_location_display_name(): void
+    {
+        [, $headers] = $this->auth();
+        $loc = array_merge($this->validLocation, ['display_name' => 'Berlin Mitte']);
+
+        $response = $this->postJson('/api/events', $this->payload(['location' => $loc]), $headers)
+            ->assertCreated();
+
+        $this->assertDatabaseHas('locations', ['display_name' => 'Berlin Mitte']);
+        $this->assertSame('Berlin Mitte', $response->json('location.display_name'));
+    }
+
+    public function test_location_display_name_is_optional(): void
+    {
+        [, $headers] = $this->auth();
+
+        $this->postJson('/api/events', $this->payload(), $headers)->assertCreated();
+
+        $this->assertDatabaseHas('locations', ['display_name' => null]);
+    }
+
     // -------------------------------------------------------------------------
     // GET /api/events/{id}
     // -------------------------------------------------------------------------
@@ -276,6 +297,18 @@ class EventCrudTest extends TestCase
         $event = Event::factory()->create();
 
         $this->putJson("/api/events/{$event->id}", $this->payload(), $headers)->assertForbidden();
+    }
+
+    public function test_update_stores_location_display_name(): void
+    {
+        [$user, $headers] = $this->auth();
+        $event = Event::factory()->create(['created_by_id' => $user->id]);
+
+        $loc = array_merge($this->validLocation, ['display_name' => 'Neuer Anzeigename']);
+        $this->putJson("/api/events/{$event->id}", $this->payload(['location' => $loc]), $headers)
+            ->assertOk();
+
+        $this->assertDatabaseHas('locations', ['id' => $event->location_id, 'display_name' => 'Neuer Anzeigename']);
     }
 
     public function test_update_validates_end_after_start(): void
