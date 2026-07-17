@@ -30,6 +30,7 @@
     "event": {
         "rideshare_for": "拼车",
         "for_event": "关于本次活动",
+        "all_dates": "所有日期",
         "date_at": "",
         "date_until": "至",
         "new": "创建活动",
@@ -64,7 +65,7 @@
         "edit": "编辑",
         "delete": "删除",
         "delete_confirm": "确定要删除此信息吗？",
-        "new_entry": "+ 添加信息",
+        "new_entry": "添加信息",
         "new_entry_heading": "添加信息",
         "privacy_notice": "此拼车平台的链接仅会告知 {eventName} 的参与者，不会被搜索引擎收录。您填写的数据仅限于我们之间，将在活动结束后 {n} 天自动删除。",
         "privacy_notice_with_org": "此拼车平台的链接仅会告知 {eventName} 的参与者，也可能告知 {organisationName} 同期举办的其他活动的参与者，不会被搜索引擎收录。您填写的数据仅限于我们之间，将在活动结束后 {n} 天自动删除。",

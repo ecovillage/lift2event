@@ -77,7 +77,7 @@ test.describe('Öffentliche Mitfahrbörse', () => {
     test('Neue Mitfahrt erstellen', async ({ page }) => {
         await mockGeocode(page);
         await page.goto(eventUrl);
-        await page.getByText('+ Neue Mitfahrt einstellen').first().click();
+        await page.getByText('Neue Mitfahrt einstellen').first().click();
 
         // Wait for the ride form modal to open
         await page.getByTestId('ride-name').waitFor();
@@ -115,7 +115,7 @@ test.describe('Öffentliche Mitfahrbörse', () => {
             { place_id: 3, display_name: 'Dritte Straße 3, Berlin', lat: '52.3', lon: '13.3', address: { country_code: 'de' } },
         ]);
         await page.goto(eventUrl);
-        await page.getByText('+ Neue Mitfahrt einstellen').first().click();
+        await page.getByText('Neue Mitfahrt einstellen').first().click();
         await page.getByTestId('ride-name').waitFor();
 
         const address = page.getByTestId('ride-address');
@@ -135,7 +135,7 @@ test.describe('Öffentliche Mitfahrbörse', () => {
 
     test('Mitfahrt-Formular schließt mit Escape-Taste', async ({ page }) => {
         await page.goto(eventUrl);
-        await page.getByText('+ Neue Mitfahrt einstellen').first().click();
+        await page.getByText('Neue Mitfahrt einstellen').first().click();
         await page.getByTestId('ride-name').waitFor();
         await page.keyboard.press('Escape');
         await expect(page.getByTestId('ride-name')).not.toBeVisible();
@@ -144,7 +144,7 @@ test.describe('Öffentliche Mitfahrbörse', () => {
     test('Neue Mitfahrt als Gast zeigt Hinweis auf ausstehende Bestätigung', async ({ page }) => {
         await mockGeocode(page);
         await page.goto(eventUrl);
-        await page.getByText('+ Neue Mitfahrt einstellen').first().click();
+        await page.getByText('Neue Mitfahrt einstellen').first().click();
         await page.getByTestId('ride-name').waitFor();
 
         await page.getByTestId('ride-name').fill('Gast Tester');
@@ -171,7 +171,7 @@ test.describe('Öffentliche Mitfahrbörse', () => {
                 : route.continue()
         );
         await page.goto(eventUrl);
-        await page.getByText('+ Neue Mitfahrt einstellen').first().click();
+        await page.getByText('Neue Mitfahrt einstellen').first().click();
         await page.getByTestId('ride-name').waitFor();
 
         await page.getByTestId('ride-name').fill('Gast Tester');
@@ -192,7 +192,7 @@ test.describe('Öffentliche Mitfahrbörse', () => {
         await loginAs(page, ADMIN_EMAIL);
         await mockGeocode(page);
         await page.goto(eventUrl);
-        await page.getByText('+ Neue Mitfahrt einstellen').first().click();
+        await page.getByText('Neue Mitfahrt einstellen').first().click();
         await page.getByTestId('ride-name').waitFor();
 
         await page.getByTestId('ride-name').fill('Admin Tester');
@@ -211,7 +211,7 @@ test.describe('Öffentliche Mitfahrbörse', () => {
 
     test('Mitfahrt-Formular: Datum/Uhrzeit sind mit Veranstaltungsdaten vorbefüllt', async ({ page }) => {
         await page.goto(eventUrl);
-        await page.getByText('+ Neue Mitfahrt einstellen').first().click();
+        await page.getByText('Neue Mitfahrt einstellen').first().click();
         await page.getByTestId('ride-name').waitFor();
 
         const dateInputs = page.locator('input[type="date"]');
@@ -274,7 +274,7 @@ test.describe('Öffentliche Mitfahrbörse', () => {
     test('Mitfahrangebot mit 0 Plätzen zeigt "Ausgebucht"-Badge in Liste und Popup', async ({ page }) => {
         await mockGeocode(page);
         await page.goto(eventUrl);
-        await page.getByText('+ Neue Mitfahrt einstellen').first().click();
+        await page.getByText('Neue Mitfahrt einstellen').first().click();
         await page.getByTestId('ride-name').waitFor();
 
         // Type: offer (default)
@@ -310,7 +310,7 @@ test.describe('Öffentliche Mitfahrbörse', () => {
     test('Mitfahrgesuch kann nicht auf 0 Plätze reduziert werden', async ({ page }) => {
         await mockGeocode(page);
         await page.goto(eventUrl);
-        await page.getByText('+ Neue Mitfahrt einstellen').first().click();
+        await page.getByText('Neue Mitfahrt einstellen').first().click();
         await page.getByTestId('ride-name').waitFor();
 
         await page.getByText('Ich suche eine Mitfahrgelegenheit').click();

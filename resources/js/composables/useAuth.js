@@ -1,7 +1,7 @@
 import { reactive, computed } from 'vue';
 import api from '@/api/axios';
 import { i18n } from '@/i18n/instance';
-import { getBrowserLocale } from '@/i18n/locale';
+import { getBrowserLocale, getUrlLang } from '@/i18n/locale';
 
 const state = reactive({
     user: null,
@@ -27,7 +27,7 @@ export function useAuth() {
         } finally {
             state.ready = true;
         }
-        if (state.user?.preferred_language) {
+        if (state.user?.preferred_language && !getUrlLang()) {
             i18n.global.locale.value = state.user.preferred_language;
         }
     }
@@ -36,7 +36,7 @@ export function useAuth() {
         const { data } = await api.post('/login', { email, password });
         localStorage.setItem('auth_token', data.token);
         state.user = data.user;
-        i18n.global.locale.value = data.user.preferred_language;
+        if (!getUrlLang()) i18n.global.locale.value = data.user.preferred_language;
     }
 
     async function logout() {

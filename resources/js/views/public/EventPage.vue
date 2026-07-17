@@ -48,7 +48,7 @@
                 class="px-2 py-1 text-xs border border-gray-200 rounded bg-white text-gray-600"
                 @change="onFilterChange"
             >
-                <option value="">Alle Daten</option>
+                <option value="">{{ t('event.all_dates') }}</option>
                 <option v-for="d in rideDates" :key="d" :value="d">{{ fmtDay(d) }}</option>
             </select>
 
@@ -56,9 +56,9 @@
 
             <button
                 v-if="event"
-                class="px-3 py-1.5 rounded text-xs font-medium text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] transition-colors"
+                class="px-3 py-1.5 rounded text-xs font-medium text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] transition-colors flex items-center gap-1"
                 @click="showForm = true"
-            >{{ t('ride.new_entry') }}</button>
+            ><Plus class="w-3.5 h-3.5" />{{ t('ride.new_entry') }}</button>
         </div>
 
         <!-- Loading / error -->
@@ -88,9 +88,9 @@
                         @open="selectedRide = ride"
                     />
                     <button
-                        class="w-full px-3 py-2 rounded-lg text-sm font-medium text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] transition-colors"
+                        class="w-full px-3 py-2 rounded-lg text-sm font-medium text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] transition-colors flex items-center justify-center gap-1.5"
                         @click="showForm = true"
-                    >{{ t('ride.new_entry') }}</button>
+                    ><Plus class="w-4 h-4" />{{ t('ride.new_entry') }}</button>
                 </div>
             </div>
 
@@ -176,7 +176,7 @@ import { useRoute } from 'vue-router';
 import axios from 'axios';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Bus, Calendar, MapPin, TriangleAlert } from '@lucide/vue';
+import { Bus, Calendar, MapPin, Plus, TriangleAlert } from '@lucide/vue';
 import RideCard from './RideCard.vue';
 import RideForm from './RideForm.vue';
 import RidePopup from './RidePopup.vue';

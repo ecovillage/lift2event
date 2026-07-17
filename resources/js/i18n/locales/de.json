@@ -30,6 +30,7 @@
     "event": {
         "rideshare_for": "Mitfahrbörse",
         "for_event": "zur Veranstaltung",
+        "all_dates": "Alle Daten",
         "date_at": "um",
         "date_until": "bis",
         "new": "Neue Veranstaltung anlegen",
@@ -64,7 +65,7 @@
         "edit": "Bearbeiten",
         "delete": "Löschen",
         "delete_confirm": "Diesen Eintrag wirklich löschen?",
-        "new_entry": "+ Neue Mitfahrt einstellen",
+        "new_entry": "Neue Mitfahrt einstellen",
         "new_entry_heading": "Neue Mitfahrt einstellen",
         "privacy_notice": "Der Link zu dieser Mitfahrbörse wird nur den Teilnehmern von {eventName} mitgeteilt. Von Suchmaschinen kann die Mitfahrbörse nicht gefunden werden. Deine eingegebenen Daten bleiben also unter uns. {n} Tage nach Veranstaltungsende werden sie automatisch gelöscht.",
         "privacy_notice_with_org": "Der Link zu dieser Mitfahrbörse wird nur den Teilnehmern von {eventName} mitgeteilt, ggf. auch Teilnehmern anderer Veranstaltungen von {organisationName}, die zur gleichen Zeit stattfinden. Von Suchmaschinen kann die Mitfahrbörse nicht gefunden werden. Deine eingegebenen Daten bleiben also unter uns. {n} Tage nach Veranstaltungsende werden sie automatisch gelöscht.",

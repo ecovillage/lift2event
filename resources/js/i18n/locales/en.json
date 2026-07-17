@@ -30,6 +30,7 @@
     "event": {
         "rideshare_for": "Rideshare",
         "for_event": "for the event",
+        "all_dates": "All dates",
         "date_at": "at",
         "date_until": "to",
         "new": "Create new event",
@@ -64,7 +65,7 @@
         "edit": "Edit",
         "delete": "Delete",
         "delete_confirm": "Really delete this entry?",
-        "new_entry": "+ Add a new ride",
+        "new_entry": "Add a new ride",
         "new_entry_heading": "Add a new ride",
         "privacy_notice": "The link to this rideshare board will only be shared with participants of {eventName}. It cannot be found by search engines. Your data stays among us and will be automatically deleted {n} days after the event ends.",
         "privacy_notice_with_org": "The link to this rideshare board will only be shared with participants of {eventName}, possibly also with participants of other events by {organisationName} taking place at the same time. It cannot be found by search engines. Your data stays among us and will be automatically deleted {n} days after the event ends.",

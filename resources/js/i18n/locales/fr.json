@@ -30,6 +30,7 @@
     "event": {
         "rideshare_for": "Covoiturage",
         "for_event": "pour l'événement",
+        "all_dates": "Toutes les dates",
         "date_at": "à",
         "date_until": "jusqu'à",
         "new": "Créer un événement",
@@ -64,7 +65,7 @@
         "edit": "Modifier",
         "delete": "Supprimer",
         "delete_confirm": "Voulez-vous vraiment supprimer cette annonce ?",
-        "new_entry": "+ Ajouter une annonce",
+        "new_entry": "Ajouter une annonce",
         "new_entry_heading": "Ajouter une annonce",
         "privacy_notice": "Le lien vers cette bourse de covoiturage ne sera communiqué qu'aux participants de {eventName}. Il ne peut pas être trouvé par les moteurs de recherche. Vos données restent entre nous et seront automatiquement supprimées {n} jours après la fin de l'événement.",
         "privacy_notice_with_org": "Le lien vers cette bourse de covoiturage ne sera communiqué qu'aux participants de {eventName}, éventuellement aussi aux participants d'autres événements de {organisationName} ayant lieu en même temps. Il ne peut pas être trouvé par les moteurs de recherche. Vos données restent entre nous et seront automatiquement supprimées {n} jours après la fin de l'événement.",

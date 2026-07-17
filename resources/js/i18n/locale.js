@@ -1,8 +1,13 @@
 const SUPPORTED = ['de', 'en', 'fr', 'zh'];
 
-export function getBrowserLocale() {
+export function getUrlLang() {
     const param = new URLSearchParams(window.location.search).get('lang');
-    if (param && SUPPORTED.includes(param)) return param;
+    return param && SUPPORTED.includes(param) ? param : null;
+}
+
+export function getBrowserLocale() {
+    const url = getUrlLang();
+    if (url) return url;
 
     const lang = navigator.languages?.[0] ?? navigator.language;
     if (!lang) return 'de';
