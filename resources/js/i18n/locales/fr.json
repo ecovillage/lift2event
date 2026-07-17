@@ -164,7 +164,7 @@
     },
     "error": {
         "phone_country": "Si votre lieu de départ est dans un autre pays que l'événement, votre numéro de téléphone doit commencer par +.",
-        "contact_required": "Veuillez fournir au moins une adresse email ou un numéro de téléphone.",
+        "contact_required": "Veuillez cocher au moins un moyen de contact.",
         "name_required": "Veuillez indiquer votre nom.",
         "email_required": "Veuillez indiquer votre adresse email.",
         "email_invalid": "Veuillez indiquer une adresse email valide.",
