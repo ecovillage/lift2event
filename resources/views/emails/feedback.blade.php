@@ -1,7 +1,7 @@
-@if($name)Von: {{ $name }}
+@if($name)Von: {!! $name !!}
 @endif
-@if($email)E-Mail: {{ $email }}
+@if($email)E-Mail: {!! $email !!}
 @endif
 ---
 
-{{ $feedbackMessage }}
+{!! $feedbackMessage !!}
