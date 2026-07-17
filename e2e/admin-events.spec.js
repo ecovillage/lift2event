@@ -46,12 +46,41 @@ test.describe('Admin – Veranstaltungen', () => {
         await page.waitForSelector('ul li');
         await page.locator('ul li').first().click();
 
+        // "Ort wird angezeigt als" field must appear and be pre-filled
+        const displayNameInput = page.getByLabel('Ort wird angezeigt als');
+        await expect(displayNameInput).toBeVisible();
+        await expect(displayNameInput).not.toHaveValue('');
+
         // Submit – a modal appears with the public link, close it to reach the list
         await page.getByRole('button', { name: 'Speichern' }).click();
         await expect(page.getByRole('heading', { name: /Veranstaltung angelegt/i })).toBeVisible();
         await page.getByRole('button', { name: /Schlie/i }).click();
         await expect(page).toHaveURL(/\/admin\/events$/);
         await expect(page.getByText('E2E-Test-Event')).toBeVisible();
+    });
+
+    test('Anzeigename-Feld erscheint erst nach Ortsauswahl und lässt sich überschreiben', async ({ page }) => {
+        await mockGeocode(page);
+        await loginAs(page, ADMIN_EMAIL);
+        await page.getByRole('link', { name: /Neue Veranstaltung/i }).click();
+
+        // Field must not be visible before a location is chosen
+        await expect(page.getByLabel('Ort wird angezeigt als')).not.toBeVisible();
+
+        // Select a location
+        const addressInput = page.locator('input[placeholder*="Adresse"]');
+        await addressInput.fill('Muster');
+        await page.waitForSelector('ul li');
+        await page.locator('ul li').first().click();
+
+        // Field must appear and be pre-filled with the formatted location string
+        const displayNameInput = page.getByLabel('Ort wird angezeigt als');
+        await expect(displayNameInput).toBeVisible();
+        await expect(displayNameInput).toHaveValue('Musterstraße 1, 12345 Musterstadt, Deutschland');
+
+        // User can overwrite the value
+        await displayNameInput.fill('Musterstadt (Festsaal)');
+        await expect(displayNameInput).toHaveValue('Musterstadt (Festsaal)');
     });
 
     test('Veranstaltung bearbeiten – Name ändern', async ({ page }) => {

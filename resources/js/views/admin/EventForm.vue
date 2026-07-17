@@ -94,8 +94,9 @@
 
                     <!-- Display name for location (shown once a location is chosen) -->
                     <div v-if="form.location">
-                        <label class="field-label">{{ t('event.location_display_name') }}</label>
+                        <label for="location-display-name" class="field-label">{{ t('event.location_display_name') }}</label>
                         <input
+                            id="location-display-name"
                             v-model="locationDisplayName"
                             type="text"
                             class="field-input"
