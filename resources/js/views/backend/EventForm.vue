@@ -141,7 +141,7 @@
                         <button
                             type="button"
                             class="flex-1 py-2 border border-gray-300 rounded text-sm hover:bg-gray-50"
-                            @click="router.push({ name: 'admin.events' })"
+                            @click="router.push({ name: 'backend.events' })"
                         >{{ t('ride.cancel') }}</button>
                         <button
                             type="submit"
@@ -564,7 +564,7 @@ async function copyCreatedLink() {
 
 function closeCreatedModal() {
     createdEvent.value = null;
-    router.push({ name: 'admin.events' });
+    router.push({ name: 'backend.events' });
 }
 
 async function submit() {
@@ -583,7 +583,7 @@ async function submit() {
     try {
         if (isEdit.value) {
             await api.put(`/events/${eventId.value}`, payload);
-            router.push({ name: 'admin.events' });
+            router.push({ name: 'backend.events' });
         } else {
             const { data } = await api.post('/events', payload);
             createdEvent.value = data;

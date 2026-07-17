@@ -103,7 +103,7 @@ async function submit() {
         const { data } = await api.post('/register', form);
         localStorage.setItem('auth_token', data.token);
         state.user = data.user;
-        router.push({ name: 'admin.events' });
+        router.push({ name: 'backend.events' });
     } catch (e) {
         const resp = e.response?.data;
         if (resp?.errors) {

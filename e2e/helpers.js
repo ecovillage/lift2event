@@ -17,7 +17,7 @@ export async function loginAs(page, email, password = PASSWORD) {
     await page.locator('#email').fill(email);
     await page.locator('#password').fill(password);
     await page.getByRole('button', { name: 'Anmelden' }).click();
-    await page.waitForURL('**/admin/**');
+    await page.waitForURL('**/backend/**');
 }
 
 /** Mock the geocoding endpoint for the duration of this page context. */

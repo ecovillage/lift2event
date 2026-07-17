@@ -9,7 +9,7 @@
         "settings": "设置",
         "profile": "我的资料",
         "logout": "退出登录",
-        "admin": "管理后台"
+        "backend": "后台"
     },
     "auth": {
         "email": "电子邮箱",

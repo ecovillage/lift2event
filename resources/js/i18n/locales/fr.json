@@ -9,7 +9,7 @@
         "settings": "Paramètres",
         "profile": "Mon profil",
         "logout": "Déconnexion",
-        "admin": "Espace admin"
+        "backend": "Backend"
     },
     "auth": {
         "email": "Adresse email",

@@ -4,7 +4,7 @@
             <h1 class="text-xl font-semibold">
                 {{ isAdmin ? t('nav.events') : t('nav.my_events') }}
             </h1>
-            <RouterLink :to="{ name: 'admin.events.create' }" class="btn-primary px-4 py-2 rounded font-medium text-sm text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] transition-colors">
+            <RouterLink :to="{ name: 'backend.events.create' }" class="btn-primary px-4 py-2 rounded font-medium text-sm text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] transition-colors">
                 + {{ t('event.new') }}
             </RouterLink>
         </div>
@@ -34,7 +34,7 @@
                         :key="event.id"
                         class="border-b border-gray-100 last:border-0 hover:bg-gray-50 cursor-pointer"
                         :data-testid="`event-row-${event.id}`"
-                        @click="router.push({ name: 'admin.events.edit', params: { id: event.id } })"
+                        @click="router.push({ name: 'backend.events.edit', params: { id: event.id } })"
                     >
                         <td class="px-4 py-3 font-medium">{{ event.name }}</td>
                         <td class="px-4 py-3 hidden sm:table-cell text-gray-600">{{ fmt(event.start_at) }}</td>

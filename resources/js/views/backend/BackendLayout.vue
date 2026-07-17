@@ -2,7 +2,7 @@
     <div class="min-h-screen flex flex-col bg-gray-100">
         <header class="bg-white shadow-sm">
             <div class="max-w-6xl mx-auto px-4 flex items-center justify-between h-14">
-                <RouterLink :to="{ name: 'admin.events' }" class="flex items-center gap-2">
+                <RouterLink :to="{ name: 'backend.events' }" class="flex items-center gap-2">
                     <img src="/logo.svg" alt="Lift2Event" class="h-8" />
                 </RouterLink>
 
@@ -10,28 +10,28 @@
                 <nav class="hidden sm:flex items-center gap-1">
                     <RouterLink
                         v-if="isAdmin"
-                        :to="{ name: 'admin.users' }"
+                        :to="{ name: 'backend.users' }"
                         class="nav-link"
-                        :class="{ active: $route.name === 'admin.users' }"
+                        :class="{ active: $route.name === 'backend.users' }"
                     >{{ t('nav.users') }}</RouterLink>
 
                     <RouterLink
-                        :to="{ name: 'admin.events' }"
+                        :to="{ name: 'backend.events' }"
                         class="nav-link"
-                        :class="{ active: $route.name?.startsWith('admin.events') }"
+                        :class="{ active: $route.name?.startsWith('backend.events') }"
                     >{{ isAdmin ? t('nav.events') : t('nav.my_events') }}</RouterLink>
 
                     <RouterLink
                         v-if="isAdmin"
-                        :to="{ name: 'admin.settings' }"
+                        :to="{ name: 'backend.settings' }"
                         class="nav-link"
-                        :class="{ active: $route.name === 'admin.settings' }"
+                        :class="{ active: $route.name === 'backend.settings' }"
                     >{{ t('nav.settings') }}</RouterLink>
 
                     <RouterLink
-                        :to="{ name: 'admin.profile' }"
+                        :to="{ name: 'backend.profile' }"
                         class="nav-link"
-                        :class="{ active: $route.name === 'admin.profile' }"
+                        :class="{ active: $route.name === 'backend.profile' }"
                     >{{ t('nav.profile') }}</RouterLink>
 
                     <button @click="doLogout" class="nav-link text-gray-500">
@@ -54,26 +54,26 @@
             <nav v-if="menuOpen" class="sm:hidden border-t border-gray-200 bg-white px-4 py-2 flex flex-col gap-1">
                 <RouterLink
                     v-if="isAdmin"
-                    :to="{ name: 'admin.users' }"
+                    :to="{ name: 'backend.users' }"
                     class="nav-link"
                     @click="menuOpen = false"
                 >{{ t('nav.users') }}</RouterLink>
 
                 <RouterLink
-                    :to="{ name: 'admin.events' }"
+                    :to="{ name: 'backend.events' }"
                     class="nav-link"
                     @click="menuOpen = false"
                 >{{ isAdmin ? t('nav.events') : t('nav.my_events') }}</RouterLink>
 
                 <RouterLink
                     v-if="isAdmin"
-                    :to="{ name: 'admin.settings' }"
+                    :to="{ name: 'backend.settings' }"
                     class="nav-link"
                     @click="menuOpen = false"
                 >{{ t('nav.settings') }}</RouterLink>
 
                 <RouterLink
-                    :to="{ name: 'admin.profile' }"
+                    :to="{ name: 'backend.profile' }"
                     class="nav-link"
                     @click="menuOpen = false"
                 >{{ t('nav.profile') }}</RouterLink>

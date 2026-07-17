@@ -9,7 +9,7 @@
         "settings": "Einstellungen",
         "profile": "Mein Profil",
         "logout": "Abmelden",
-        "admin": "Admin-Bereich"
+        "backend": "Verwaltung"
     },
     "auth": {
         "email": "Emailadresse",

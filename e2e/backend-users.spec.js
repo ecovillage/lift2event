@@ -5,16 +5,16 @@ import { ADMIN_EMAIL, USER_EMAIL, UNAPPROVED_EMAIL } from './fixtures.js';
 test.describe('Admin – Nutzerverwaltung', () => {
     test.beforeAll(() => resetDb());
 
-    test('Normaler Nutzer kann /admin/users nicht aufrufen', async ({ page }) => {
+    test('Normaler Nutzer kann /backend/users nicht aufrufen', async ({ page }) => {
         await loginAs(page, USER_EMAIL);
-        await page.goto('/admin/users');
+        await page.goto('/backend/users');
         // Router redirects non-admins away
-        await expect(page).not.toHaveURL(/\/admin\/users/);
+        await expect(page).not.toHaveURL(/\/backend\/users/);
     });
 
     test('Admin sieht alle Nutzer in der Tabelle', async ({ page }) => {
         await loginAs(page, ADMIN_EMAIL);
-        await page.goto('/admin/users');
+        await page.goto('/backend/users');
         await expect(page.getByText('Admin Test')).toBeVisible();
         await expect(page.getByText('Regular User')).toBeVisible();
         await expect(page.getByText('Unapproved User')).toBeVisible();
@@ -22,7 +22,7 @@ test.describe('Admin – Nutzerverwaltung', () => {
 
     test('Freigegebene Nutzer haben grünen Status-Button', async ({ page }) => {
         await loginAs(page, ADMIN_EMAIL);
-        await page.goto('/admin/users');
+        await page.goto('/backend/users');
         // Regular User and Admin Test are approved → green button
         const approvedButtons = page.locator('.bg-green-100');
         await expect(approvedButtons.first()).toBeVisible();
@@ -30,14 +30,14 @@ test.describe('Admin – Nutzerverwaltung', () => {
 
     test('Nicht-bestätigter Nutzer hat grauen Status-Button', async ({ page }) => {
         await loginAs(page, ADMIN_EMAIL);
-        await page.goto('/admin/users');
+        await page.goto('/backend/users');
         // Unapproved User should have the gray button with "Freigeben" text
         await expect(page.getByText('Freigeben')).toBeVisible();
     });
 
     test('Nutzer kann freigegeben werden', async ({ page }) => {
         await loginAs(page, ADMIN_EMAIL);
-        await page.goto('/admin/users');
+        await page.goto('/backend/users');
         // Click "Freigeben" for the unapproved user
         await page.getByText('Freigeben').click();
         // Button should change to green/approved state
@@ -46,7 +46,7 @@ test.describe('Admin – Nutzerverwaltung', () => {
 
     test('Nutzer kann gelöscht werden', async ({ page }) => {
         await loginAs(page, ADMIN_EMAIL);
-        await page.goto('/admin/users');
+        await page.goto('/backend/users');
 
         // Accept the confirmation dialog
         page.on('dialog', d => d.accept());
@@ -61,7 +61,7 @@ test.describe('Admin – Nutzerverwaltung', () => {
 
     test('Admin kann sich selbst nicht löschen', async ({ page }) => {
         await loginAs(page, ADMIN_EMAIL);
-        await page.goto('/admin/users');
+        await page.goto('/backend/users');
         // The delete button should not be present for the admin's own row
         const adminRow = page.getByRole('row').filter({ hasText: 'Admin Test' });
         await expect(adminRow.getByRole('button', { name: 'Löschen' })).not.toBeVisible();

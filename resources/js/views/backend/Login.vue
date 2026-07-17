@@ -78,7 +78,7 @@ async function submit() {
     loading.value = true;
     try {
         await login(email.value, password.value);
-        router.push({ name: 'admin.events' });
+        router.push({ name: 'backend.events' });
     } catch (e) {
         error.value = e.response?.data?.message ?? 'Anmeldung fehlgeschlagen.';
     } finally {

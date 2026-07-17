@@ -5,13 +5,13 @@ import { ADMIN_EMAIL, USER_EMAIL, PASSWORD } from './fixtures.js';
 test.describe('Authentifizierung', () => {
     test.beforeAll(() => resetDb());
 
-    test('Nicht-eingeloggter Nutzer wird von /admin zu /login umgeleitet', async ({ page }) => {
-        await page.goto('/admin');
+    test('Nicht-eingeloggter Nutzer wird von /backend zu /login umgeleitet', async ({ page }) => {
+        await page.goto('/backend');
         await expect(page).toHaveURL(/\/login/);
     });
 
-    test('Nicht-eingeloggter Nutzer wird von /admin/users zu /login umgeleitet', async ({ page }) => {
-        await page.goto('/admin/users');
+    test('Nicht-eingeloggter Nutzer wird von /backend/users zu /login umgeleitet', async ({ page }) => {
+        await page.goto('/backend/users');
         await expect(page).toHaveURL(/\/login/);
     });
 
@@ -32,26 +32,26 @@ test.describe('Authentifizierung', () => {
 
     test('Admin sieht Nutzerverwaltung und Einstellungen im Menü', async ({ page }) => {
         await loginAs(page, ADMIN_EMAIL);
-        await expect(page).toHaveURL(/\/admin\/events/);
+        await expect(page).toHaveURL(/\/backend\/events/);
         await expect(page.getByRole('link', { name: 'Nutzerverwaltung' })).toBeVisible();
         await expect(page.getByRole('link', { name: 'Einstellungen' })).toBeVisible();
     });
 
-    test('Admin wird von /admin auf /admin/users umgeleitet', async ({ page }) => {
+    test('Admin wird von /backend auf /backend/users umgeleitet', async ({ page }) => {
         await loginAs(page, ADMIN_EMAIL);
-        await page.goto('/admin');
-        await expect(page).toHaveURL(/\/admin\/users/);
+        await page.goto('/backend');
+        await expect(page).toHaveURL(/\/backend\/users/);
     });
 
-    test('Normaler Nutzer wird von /admin auf /admin/events umgeleitet', async ({ page }) => {
+    test('Normaler Nutzer wird von /backend auf /backend/events umgeleitet', async ({ page }) => {
         await loginAs(page, USER_EMAIL);
-        await page.goto('/admin');
-        await expect(page).toHaveURL(/\/admin\/events/);
+        await page.goto('/backend');
+        await expect(page).toHaveURL(/\/backend\/events/);
     });
 
     test('Normaler Nutzer sieht kein Admin-Menü', async ({ page }) => {
         await loginAs(page, USER_EMAIL);
-        await expect(page).toHaveURL(/\/admin\/events/);
+        await expect(page).toHaveURL(/\/backend\/events/);
         await expect(page.getByRole('link', { name: 'Meine Veranstaltungen' })).toBeVisible();
         await expect(page.getByRole('link', { name: 'Nutzerverwaltung' })).not.toBeVisible();
         await expect(page.getByRole('link', { name: 'Einstellungen' })).not.toBeVisible();
@@ -70,7 +70,7 @@ test.describe('Authentifizierung', () => {
         await page.locator('#password').fill('password123');
         await page.locator('#password_confirmation').fill('password123');
         await page.getByRole('button', { name: 'Registrieren' }).click();
-        await expect(page).toHaveURL(/\/admin\/events/);
+        await expect(page).toHaveURL(/\/backend\/events/);
     });
 
     test('Registrierung mit bereits vorhandener E-Mail zeigt Fehler', async ({ page }) => {
@@ -80,7 +80,7 @@ test.describe('Authentifizierung', () => {
         await page.locator('#password').fill('password123');
         await page.locator('#password_confirmation').fill('password123');
         await page.getByRole('button', { name: 'Registrieren' }).click();
-        await expect(page).not.toHaveURL(/\/admin\/events/);
+        await expect(page).not.toHaveURL(/\/backend\/events/);
     });
 
     test('Registrierung mit falschem Passwortbestätigung zeigt Fehler', async ({ page }) => {

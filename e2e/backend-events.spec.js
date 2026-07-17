@@ -7,21 +7,21 @@ test.describe('Admin – Veranstaltungen', () => {
 
     test('Admin sieht alle Veranstaltungen aller Nutzer', async ({ page }) => {
         await loginAs(page, ADMIN_EMAIL);
-        await page.goto('/admin/events');
+        await page.goto('/backend/events');
         await expect(page.getByText('Testveranstaltung Berlin')).toBeVisible();
         await expect(page.getByText('Testveranstaltung Stuttgart')).toBeVisible();
     });
 
     test('Normaler Nutzer sieht nur eigene Veranstaltungen', async ({ page }) => {
         await loginAs(page, USER_EMAIL);
-        await page.goto('/admin/events');
+        await page.goto('/backend/events');
         await expect(page.getByText('Testveranstaltung Stuttgart')).toBeVisible();
         await expect(page.getByText('Testveranstaltung Berlin')).not.toBeVisible();
     });
 
     test('Admin sieht Mitfahrten-Anzahl in der Tabelle', async ({ page }) => {
         await loginAs(page, ADMIN_EMAIL);
-        await page.goto('/admin/events');
+        await page.goto('/backend/events');
         // Admin event has 1 pre-seeded ride – use row-scoped cell to avoid matching "1" elsewhere
         const row = page.getByRole('row').filter({ hasText: 'Testveranstaltung Berlin' });
         await expect(row.getByRole('cell', { name: '1', exact: true })).toBeVisible();
@@ -31,7 +31,7 @@ test.describe('Admin – Veranstaltungen', () => {
         await mockGeocode(page);
         await loginAs(page, ADMIN_EMAIL);
         await page.getByRole('link', { name: /Neue Veranstaltung/i }).click();
-        await expect(page).toHaveURL(/\/admin\/events\/create/);
+        await expect(page).toHaveURL(/\/backend\/events\/create/);
 
         // Fill the form
         await page.locator('input[type="text"]').first().fill('E2E-Test-Event');
@@ -55,7 +55,7 @@ test.describe('Admin – Veranstaltungen', () => {
         await page.getByRole('button', { name: 'Speichern' }).click();
         await expect(page.getByRole('heading', { name: /Veranstaltung angelegt/i })).toBeVisible();
         await page.getByRole('button', { name: /Schlie/i }).click();
-        await expect(page).toHaveURL(/\/admin\/events$/);
+        await expect(page).toHaveURL(/\/backend\/events$/);
         await expect(page.getByText('E2E-Test-Event')).toBeVisible();
     });
 
@@ -86,10 +86,10 @@ test.describe('Admin – Veranstaltungen', () => {
     test('Veranstaltung bearbeiten – Name ändern', async ({ page }) => {
         await mockGeocode(page);
         await loginAs(page, ADMIN_EMAIL);
-        await page.goto('/admin/events');
+        await page.goto('/backend/events');
         // Click the admin event row
         await page.getByText('Testveranstaltung Berlin').click();
-        await expect(page).toHaveURL(/\/admin\/events\/\d+\/edit/);
+        await expect(page).toHaveURL(/\/backend\/events\/\d+\/edit/);
 
         const nameInput = page.locator('input[type="text"]').first();
         // Wait for async event data to populate the form before editing
@@ -102,14 +102,14 @@ test.describe('Admin – Veranstaltungen', () => {
         await expect(saveBtn).toBeEnabled({ timeout: 10000 });
         await saveBtn.click();
 
-        await expect(page).toHaveURL(/\/admin\/events$/);
+        await expect(page).toHaveURL(/\/backend\/events$/);
         await expect(page.getByText('Testveranstaltung Berlin (geändert)')).toBeVisible();
     });
 
     test('Bearbeiten-Formular zeigt öffentlichen Link', async ({ page }) => {
         await mockGeocode(page);
         await loginAs(page, ADMIN_EMAIL);
-        await page.goto('/admin/events');
+        await page.goto('/backend/events');
         await page.getByText(/Testveranstaltung Berlin/).click();
         // Public link is shown as a clickable link
         const publicLink = page.locator('a[href*="/e/"]').first();
@@ -120,9 +120,9 @@ test.describe('Admin – Veranstaltungen', () => {
     test('Bearbeiten-Seite zeigt Mitfahrten-Kacheln des Events', async ({ page }) => {
         await mockGeocode(page);
         await loginAs(page, ADMIN_EMAIL);
-        await page.goto('/admin/events');
+        await page.goto('/backend/events');
         await page.getByText('Testveranstaltung Berlin').click();
-        await expect(page).toHaveURL(/\/admin\/events\/\d+\/edit/);
+        await expect(page).toHaveURL(/\/backend\/events\/\d+\/edit/);
 
         // Pre-seeded ride tile (same RideCard as on the public page)
         await expect(page.getByText('Hauptbahnhof, 80335 München')).toBeVisible();
@@ -137,9 +137,9 @@ test.describe('Admin – Veranstaltungen', () => {
     test('Bearbeiten-Karte zeichnet die Route der Mitfahrt', async ({ page }) => {
         await mockGeocode(page);
         await loginAs(page, ADMIN_EMAIL);
-        await page.goto('/admin/events');
+        await page.goto('/backend/events');
         await page.getByText('Testveranstaltung Berlin').click();
-        await expect(page).toHaveURL(/\/admin\/events\/\d+\/edit/);
+        await expect(page).toHaveURL(/\/backend\/events\/\d+\/edit/);
 
         // Pre-seeded offer ride renders as a violet pin (circle marker) on the map
         const pin = page.locator('path.leaflet-interactive[fill="#7c3aed"]');
@@ -153,16 +153,16 @@ test.describe('Admin – Veranstaltungen', () => {
     test('Neu-Anlegen-Seite zeigt keine Mitfahrten-Kacheln', async ({ page }) => {
         await loginAs(page, ADMIN_EMAIL);
         await page.getByRole('link', { name: /Neue Veranstaltung/i }).click();
-        await expect(page).toHaveURL(/\/admin\/events\/create/);
+        await expect(page).toHaveURL(/\/backend\/events\/create/);
         await expect(page.getByText('Angebot')).not.toBeVisible();
     });
 
     test('Admin kann nicht-eigene Veranstaltung bearbeiten', async ({ page }) => {
         await mockGeocode(page);
         await loginAs(page, ADMIN_EMAIL);
-        await page.goto('/admin/events');
+        await page.goto('/backend/events');
         await page.getByText('Testveranstaltung Stuttgart').click();
-        await expect(page).toHaveURL(/\/admin\/events\/\d+\/edit/);
+        await expect(page).toHaveURL(/\/backend\/events\/\d+\/edit/);
         // Form should be shown (not an error)
         await expect(page.locator('input[type="text"]').first()).toBeVisible();
     });
@@ -179,9 +179,9 @@ test.describe('Admin – Veranstaltungen', () => {
             address:      { country_code: 'de' },
         }]);
         await loginAs(page, ADMIN_EMAIL);
-        await page.goto('/admin/events');
+        await page.goto('/backend/events');
         await page.getByText('Testveranstaltung Berlin').click();
-        await expect(page).toHaveURL(/\/admin\/events\/\d+\/edit/);
+        await expect(page).toHaveURL(/\/backend\/events\/\d+\/edit/);
         await expect(page.getByText('Hauptbahnhof, 80335 München')).toBeVisible();
 
         // Edit icon on the tile opens the ride form directly, no edit_token needed
@@ -198,9 +198,9 @@ test.describe('Admin – Veranstaltungen', () => {
 
     test('Admin kann Mitfahrt über das Löschen-Icon auf der Kachel entfernen (ohne Token)', async ({ page }) => {
         await loginAs(page, ADMIN_EMAIL);
-        await page.goto('/admin/events');
+        await page.goto('/backend/events');
         await page.getByText('Testveranstaltung Berlin').click();
-        await expect(page).toHaveURL(/\/admin\/events\/\d+\/edit/);
+        await expect(page).toHaveURL(/\/backend\/events\/\d+\/edit/);
         await expect(page.locator('[data-testid^="ride-delete-"]')).toHaveCount(1);
 
         page.once('dialog', dialog => dialog.accept());

@@ -5,9 +5,9 @@
         <div class="bg-white border-b flex-shrink-0 relative" style="border-top: 4px solid var(--color-primary)">
             <router-link
                 v-if="isAuthenticated"
-                :to="{ name: 'admin.home' }"
+                :to="{ name: 'backend.home' }"
                 class="absolute top-3 right-4 px-3 py-1.5 rounded text-xs font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 transition-colors"
-            >{{ t('nav.admin') }}</router-link>
+            >{{ t('nav.backend') }}</router-link>
             <div class="px-6 py-6 text-center">
                 <p class="text-2xl font-bold text-gray-900 leading-tight">{{ organisationName ? `${organisationName} · ${t('event.rideshare_for')}` : t('event.rideshare_for') }}</p>
                 <p class="text-sm text-gray-500 mt-3">{{ t('event.for_event') }}</p>

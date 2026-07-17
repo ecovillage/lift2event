@@ -240,7 +240,7 @@ test.describe('Öffentliche Mitfahrbörse', () => {
 
     test('Footer zeigt benutzerdefinierte Links aus den Einstellungen', async ({ page }) => {
         await loginAs(page, ADMIN_EMAIL);
-        await page.goto('/admin/settings');
+        await page.goto('/backend/settings');
         await page.getByTestId('add-footer-link-btn').click();
         await page.getByTestId('footer-link-label-0').fill('Datenschutz');
         await page.getByTestId('footer-link-url-0').fill('https://example.com/datenschutz');
@@ -251,18 +251,18 @@ test.describe('Öffentliche Mitfahrbörse', () => {
         await expect(page.getByRole('link', { name: 'Datenschutz' })).toBeVisible();
     });
 
-    test('Admin-Bereich-Button nicht sichtbar wenn nicht eingeloggt', async ({ page }) => {
+    test('Verwaltung-Button nicht sichtbar wenn nicht eingeloggt', async ({ page }) => {
         await page.goto(eventUrl);
-        await expect(page.getByRole('link', { name: 'Admin-Bereich' })).not.toBeVisible();
+        await expect(page.getByRole('link', { name: 'Verwaltung' })).not.toBeVisible();
     });
 
-    test('Admin-Bereich-Button sichtbar wenn eingeloggt und leitet zum Admin-Bereich weiter', async ({ page }) => {
+    test('Verwaltung-Button sichtbar wenn eingeloggt und leitet zur Verwaltung weiter', async ({ page }) => {
         await loginAs(page, ADMIN_EMAIL);
         await page.goto(eventUrl);
-        const adminLink = page.getByRole('link', { name: 'Admin-Bereich' });
-        await expect(adminLink).toBeVisible();
-        await adminLink.click();
-        await expect(page).toHaveURL(/\/admin/);
+        const backendLink = page.getByRole('link', { name: 'Verwaltung' });
+        await expect(backendLink).toBeVisible();
+        await backendLink.click();
+        await expect(page).toHaveURL(/\/backend/);
     });
 
     test('Veranstaltung ohne Mitfahrten zeigt Hinweistext statt Kacheln', async ({ page }) => {

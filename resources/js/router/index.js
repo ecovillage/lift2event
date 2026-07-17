@@ -32,70 +32,70 @@ const routes = [
     {
         path: '/login',
         name: 'login',
-        component: () => import('@/views/admin/Login.vue'),
+        component: () => import('@/views/backend/Login.vue'),
         meta: { guestOnly: true },
     },
     {
         path: '/register',
         name: 'register',
-        component: () => import('@/views/admin/Register.vue'),
+        component: () => import('@/views/backend/Register.vue'),
         meta: { guestOnly: true },
     },
     {
         path: '/forgot-password',
         name: 'password.request',
-        component: () => import('@/views/admin/ForgotPassword.vue'),
+        component: () => import('@/views/backend/ForgotPassword.vue'),
         meta: { guestOnly: true },
     },
     {
         path: '/reset-password',
         name: 'password.reset',
-        component: () => import('@/views/admin/ResetPassword.vue'),
+        component: () => import('@/views/backend/ResetPassword.vue'),
         meta: { guestOnly: true },
     },
 
-    // Admin area
+    // Backend area
     {
-        path: '/admin',
-        component: () => import('@/views/admin/AdminLayout.vue'),
+        path: '/backend',
+        component: () => import('@/views/backend/BackendLayout.vue'),
         meta: { requiresAuth: true },
         children: [
             {
                 path: '',
-                name: 'admin.home',
+                name: 'backend.home',
                 component: { render: () => null },
             },
             {
                 path: 'events',
-                name: 'admin.events',
-                component: () => import('@/views/admin/Events.vue'),
+                name: 'backend.events',
+                component: () => import('@/views/backend/Events.vue'),
             },
             {
                 path: 'events/create',
-                name: 'admin.events.create',
-                component: () => import('@/views/admin/EventForm.vue'),
+                name: 'backend.events.create',
+                component: () => import('@/views/backend/EventForm.vue'),
             },
             {
                 path: 'events/:id/edit',
-                name: 'admin.events.edit',
-                component: () => import('@/views/admin/EventForm.vue'),
+                name: 'backend.events.edit',
+                component: () => import('@/views/backend/EventForm.vue'),
             },
             {
                 path: 'users',
-                name: 'admin.users',
-                component: () => import('@/views/admin/Users.vue'),
+                name: 'backend.users',
+                component: () => import('@/views/backend/Users.vue'),
                 meta: { requiresAdmin: true },
             },
             {
                 path: 'settings',
-                name: 'admin.settings',
-                component: () => import('@/views/admin/Settings.vue'),
+                name: 'backend.settings',
+                component: () => import('@/views/backend/Settings.vue'),
                 meta: { requiresAdmin: true },
             },
             {
                 path: 'profile',
-                name: 'admin.profile',
-                component: () => import('@/views/admin/Profile.vue'),
+                name: 'backend.profile',
+                component: () => import('@/views/backend/Profile.vue'),
             },
         ],
     },
@@ -119,13 +119,13 @@ router.beforeEach(async (to) => {
         return { name: 'login' };
     }
     if (to.meta.requiresAdmin && !isAdmin.value) {
-        return { name: 'admin.events' };
+        return { name: 'backend.events' };
     }
     if (to.meta.guestOnly && isAuthenticated.value) {
-        return { name: 'admin.events' };
+        return { name: 'backend.events' };
     }
-    if (to.name === 'admin.home') {
-        return { name: isAdmin.value ? 'admin.users' : 'admin.events' };
+    if (to.name === 'backend.home') {
+        return { name: isAdmin.value ? 'backend.users' : 'backend.events' };
     }
 });
 
