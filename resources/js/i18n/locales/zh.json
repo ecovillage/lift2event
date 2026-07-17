@@ -38,6 +38,7 @@
         "public_link": "公开链接",
         "none": "暂无活动。",
         "location_placeholder": "搜索地址…",
+        "location_display_name": "地点显示为",
         "location_required": "请选择活动地点。",
         "start_date_required": "请填写开始日期。",
         "start_time_required": "请填写开始时间。",

@@ -43,6 +43,7 @@ class EventController extends Controller
             'location.house_number'     => ['nullable', 'string', 'max:50'],
             'location.postal_code'      => ['nullable', 'string', 'max:20'],
             'location.city'             => ['nullable', 'string', 'max:255'],
+            'location.display_name'     => ['nullable', 'string', 'max:255'],
         ]);
 
         $location = Location::create($data['location']);
@@ -89,6 +90,7 @@ class EventController extends Controller
             'location.house_number'     => ['nullable', 'string', 'max:50'],
             'location.postal_code'      => ['nullable', 'string', 'max:20'],
             'location.city'             => ['nullable', 'string', 'max:255'],
+            'location.display_name'     => ['nullable', 'string', 'max:255'],
         ]);
 
         $event->location->update($data['location']);

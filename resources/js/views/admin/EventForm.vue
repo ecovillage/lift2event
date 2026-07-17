@@ -92,6 +92,16 @@
                         <p v-else-if="fieldErrors.address" class="mt-1 text-xs text-red-400">{{ fieldErrors.address }}</p>
                     </div>
 
+                    <!-- Display name for location (shown once a location is chosen) -->
+                    <div v-if="form.location">
+                        <label class="field-label">{{ t('event.location_display_name') }}</label>
+                        <input
+                            v-model="locationDisplayName"
+                            type="text"
+                            class="field-input"
+                        />
+                    </div>
+
                     <!-- Public link (edit mode only) -->
                     <div v-if="isEdit && event">
                         <label class="field-label">{{ t('event.public_link') }}</label>
@@ -260,7 +270,7 @@ import { useRouter, useRoute } from 'vue-router';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import api from '@/api/axios';
-import { locationFromNominatim } from '@/utils/formatLocation';
+import { locationFromNominatim, formatLocation } from '@/utils/formatLocation';
 import RideCard from '../public/RideCard.vue';
 import RideForm from '../public/RideForm.vue';
 import RidePopup from '../public/RidePopup.vue';
@@ -292,10 +302,11 @@ const createdEventPublicLink = computed(() =>
     createdEvent.value ? `${window.location.origin}/e/${createdEvent.value.slug}` : ''
 );
 
-const addressInput     = ref('');
-const suggestions      = ref([]);
-const highlightedIndex = ref(-1);
-let searchTimer        = null;
+const addressInput        = ref('');
+const locationDisplayName = ref('');
+const suggestions         = ref([]);
+const highlightedIndex    = ref(-1);
+let searchTimer           = null;
 
 const publicLink = computed(() =>
     event.value ? `${window.location.origin}/e/${event.value.slug}` : ''
@@ -486,7 +497,8 @@ onMounted(async () => {
                 postal_code:  data.location.postal_code ?? null,
                 city:         data.location.city ?? null,
             };
-            addressInput.value = data.location.address;
+            addressInput.value        = data.location.address;
+            locationDisplayName.value = data.location.display_name ?? formatLocation(form.location);
             setMarker(form.location.latitude, form.location.longitude);
             drawRides();
             fitMapToRides();
@@ -539,9 +551,10 @@ function onAddressKeydown(e) {
 
 function selectSuggestion(s) {
     const loc = locationFromNominatim(s);
-    form.location      = loc;
-    addressInput.value = s.display_name;
-    suggestions.value  = [];
+    form.location             = loc;
+    addressInput.value        = s.display_name;
+    locationDisplayName.value = formatLocation(loc);
+    suggestions.value         = [];
     setMarker(loc.latitude, loc.longitude);
     map.setView([loc.latitude, loc.longitude], 12);
     drawRides();
@@ -573,7 +586,7 @@ async function submit() {
         name:     form.name,
         start_at: `${startDate.value}T${startTime.value}`,
         end_at:   `${endDate.value}T${endTime.value}`,
-        location: form.location,
+        location: { ...form.location, display_name: locationDisplayName.value || null },
     };
 
     saving.value = true;

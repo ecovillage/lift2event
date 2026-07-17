@@ -19,7 +19,7 @@
                     </span>
                     <span v-if="event.location" class="flex items-center gap-1.5">
                         <MapPin class="w-3.5 h-3.5 flex-shrink-0 text-gray-400" />
-                        {{ formatLocation(event.location) }}
+                        {{ event.location.display_name || formatLocation(event.location) }}
                     </span>
                 </div>
             </div>

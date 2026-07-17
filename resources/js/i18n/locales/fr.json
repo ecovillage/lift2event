@@ -38,6 +38,7 @@
         "public_link": "Lien public",
         "none": "Aucun événement.",
         "location_placeholder": "Rechercher une adresse…",
+        "location_display_name": "Lieu affiché comme",
         "location_required": "Veuillez sélectionner un lieu.",
         "start_date_required": "Veuillez indiquer la date de début.",
         "start_time_required": "Veuillez indiquer l'heure de début.",

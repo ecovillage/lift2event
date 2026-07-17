@@ -38,6 +38,7 @@
         "public_link": "Public link",
         "none": "No events yet.",
         "location_placeholder": "Search address…",
+        "location_display_name": "Location displayed as",
         "location_required": "Please select a venue.",
         "start_date_required": "Please enter the start date.",
         "start_time_required": "Please enter the start time.",

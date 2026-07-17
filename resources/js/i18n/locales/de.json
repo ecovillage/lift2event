@@ -38,6 +38,7 @@
         "location": "Ort",
         "public_link": "Öffentlicher Link",
         "location_placeholder": "Adresse suchen…",
+        "location_display_name": "Ort wird angezeigt als",
         "location_required": "Bitte wähle einen Veranstaltungsort aus.",
         "start_date_required": "Bitte gib das Datum des Beginns an.",
         "start_time_required": "Bitte gib die Uhrzeit des Beginns an.",
