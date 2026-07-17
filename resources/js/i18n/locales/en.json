@@ -147,6 +147,18 @@
         "saved": "Saved!",
         "error": "Failed to save."
     },
+    "feedback": {
+        "button": "Feedback",
+        "title": "Send feedback",
+        "name": "Your name (optional)",
+        "email": "Your email (optional, for a reply)",
+        "message": "Your message",
+        "message_placeholder": "What would you like to tell us?",
+        "submit": "Send",
+        "success": "Thank you for your feedback!",
+        "error": "Sending failed. Please try again later.",
+        "message_required": "Please write a message."
+    },
     "footer": {
         "github": "GitHub"
     },

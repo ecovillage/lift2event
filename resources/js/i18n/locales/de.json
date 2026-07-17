@@ -149,6 +149,18 @@
         "saved": "Gespeichert!",
         "error": "Speichern fehlgeschlagen."
     },
+    "feedback": {
+        "button": "Feedback",
+        "title": "Feedback senden",
+        "name": "Dein Name (optional)",
+        "email": "Deine E-Mail (optional, für eine Antwort)",
+        "message": "Deine Nachricht",
+        "message_placeholder": "Was möchtest du uns mitteilen?",
+        "submit": "Absenden",
+        "success": "Danke für dein Feedback!",
+        "error": "Senden fehlgeschlagen. Bitte versuche es später erneut.",
+        "message_required": "Bitte schreibe eine Nachricht."
+    },
     "footer": {
         "github": "GitHub"
     },

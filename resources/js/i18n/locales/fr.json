@@ -147,6 +147,18 @@
         "saved": "Enregistré !",
         "error": "Échec de l'enregistrement."
     },
+    "feedback": {
+        "button": "Avis",
+        "title": "Envoyer un commentaire",
+        "name": "Votre nom (optionnel)",
+        "email": "Votre email (optionnel, pour une réponse)",
+        "message": "Votre message",
+        "message_placeholder": "Que souhaitez-vous nous dire ?",
+        "submit": "Envoyer",
+        "success": "Merci pour votre commentaire !",
+        "error": "Envoi échoué. Veuillez réessayer plus tard.",
+        "message_required": "Veuillez écrire un message."
+    },
     "footer": {
         "github": "GitHub"
     },

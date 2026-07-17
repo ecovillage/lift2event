@@ -147,6 +147,18 @@
         "saved": "已保存！",
         "error": "保存失败。"
     },
+    "feedback": {
+        "button": "反馈",
+        "title": "发送反馈",
+        "name": "您的姓名（可选）",
+        "email": "您的邮箱（可选，用于回复）",
+        "message": "您的留言",
+        "message_placeholder": "您想告诉我们什么？",
+        "submit": "发送",
+        "success": "感谢您的反馈！",
+        "error": "发送失败，请稍后再试。",
+        "message_required": "请填写留言内容。"
+    },
     "footer": {
         "github": "GitHub"
     },

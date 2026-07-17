@@ -164,6 +164,8 @@
                 </div>
             </div>
         </Teleport>
+
+        <FeedbackWidget />
     </div>
 </template>
 
@@ -178,6 +180,7 @@ import { Bus, Calendar, MapPin, TriangleAlert } from '@lucide/vue';
 import RideCard from './RideCard.vue';
 import RideForm from './RideForm.vue';
 import RidePopup from './RidePopup.vue';
+import FeedbackWidget from '@/components/FeedbackWidget.vue';
 import { useEscapeKey } from '@/composables/useEscapeKey';
 import { useAuth } from '@/composables/useAuth';
 import { formatLocation } from '@/utils/formatLocation';

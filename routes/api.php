@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\EventController;
+use App\Http\Controllers\Api\FeedbackController;
 use App\Http\Controllers\Api\GeocodingController;
 use App\Http\Controllers\Api\PublicEventController;
 use App\Http\Controllers\Api\PublicRideController;
@@ -16,6 +17,7 @@ Route::post('login', [AuthController::class, 'login']);
 Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
 Route::post('reset-password', [AuthController::class, 'resetPassword']);
 Route::get('settings', [SettingController::class, 'show']);
+Route::post('feedback', [FeedbackController::class, 'store']);
 Route::get('geocode/search', [GeocodingController::class, 'search']);
 
 // Public event / ride pages (no auth)
