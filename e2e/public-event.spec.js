@@ -44,8 +44,7 @@ test.describe('Öffentliche Mitfahrbörse', () => {
     test('Popup schließen funktioniert', async ({ page }) => {
         await page.goto(eventUrl);
         await page.locator('.cursor-pointer').first().click();
-        // Close button is ×
-        await page.getByText('×').click();
+        await page.getByRole('button', { name: 'Schließen' }).click();
         await expect(page.getByText('Kontakt')).not.toBeVisible();
     });
 

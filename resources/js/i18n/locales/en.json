@@ -60,6 +60,7 @@
         "request": "Request",
         "create": "Post entry!",
         "cancel": "Cancel",
+        "close": "Close",
         "edit": "Edit",
         "delete": "Delete",
         "delete_confirm": "Really delete this entry?",

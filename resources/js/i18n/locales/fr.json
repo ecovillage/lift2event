@@ -60,6 +60,7 @@
         "request": "Demande",
         "create": "Publier l'annonce !",
         "cancel": "Annuler",
+        "close": "Fermer",
         "edit": "Modifier",
         "delete": "Supprimer",
         "delete_confirm": "Voulez-vous vraiment supprimer cette annonce ?",

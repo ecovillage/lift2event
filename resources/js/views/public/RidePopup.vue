@@ -5,7 +5,7 @@
 
             <!-- Header: close button -->
             <div class="flex justify-end p-3 pb-0">
-                <button class="text-gray-400 hover:text-gray-600 text-xl leading-none" @click="emit('close')">&#215;</button>
+                <button class="text-gray-400 hover:text-gray-600" :aria-label="t('ride.close')" @click="emit('close')"><X class="w-5 h-5" :stroke-width="2" /></button>
             </div>
 
             <div class="px-5 pb-6 space-y-4">
@@ -29,22 +29,22 @@
                 <!-- Dates -->
                 <div class="space-y-1">
                     <div v-if="hasOutbound" class="flex items-start gap-2 text-sm">
-                        <span class="text-gray-400 mt-0.5">→</span>
+                        <ArrowRight class="w-4 h-4 text-gray-400 mt-0.5 shrink-0" :stroke-width="2" />
                         <div>
                             <span class="font-medium">{{ t('ride.outbound_label') }}</span>
                             <span class="ml-2 text-gray-600">{{ fmtDateTime(ride.outbound_at) }}</span>
-                            <span v-if="outboundWarning" class="ml-2 text-amber-600 text-xs">
-                                ⚠ {{ outboundRelLabel }}
+                            <span v-if="outboundWarning" class="ml-2 text-amber-600 text-xs inline-flex items-center gap-1">
+                                <TriangleAlert class="w-3 h-3" :stroke-width="2" /> {{ outboundRelLabel }}
                             </span>
                         </div>
                     </div>
                     <div v-if="hasReturn" class="flex items-start gap-2 text-sm">
-                        <span class="text-gray-400 mt-0.5">←</span>
+                        <ArrowLeft class="w-4 h-4 text-gray-400 mt-0.5 shrink-0" :stroke-width="2" />
                         <div>
                             <span class="font-medium">{{ t('ride.return_label') }}</span>
                             <span class="ml-2 text-gray-600">{{ fmtDateTime(ride.return_at) }}</span>
-                            <span v-if="returnWarning" class="ml-2 text-amber-600 text-xs">
-                                ⚠ {{ returnRelLabel }}
+                            <span v-if="returnWarning" class="ml-2 text-amber-600 text-xs inline-flex items-center gap-1">
+                                <TriangleAlert class="w-3 h-3" :stroke-width="2" /> {{ returnRelLabel }}
                             </span>
                         </div>
                     </div>
@@ -68,10 +68,10 @@
                     <div class="space-y-1">
                         <p class="font-medium text-gray-800">{{ ride.name }}</p>
                         <a v-if="showEmail" :href="`mailto:${ride.email}`" class="flex items-center gap-1.5 text-sm text-gray-600 hover:text-gray-900">
-                            <span>✉</span> {{ ride.email }}
+                            <Mail class="w-3.5 h-3.5" :stroke-width="2" /> {{ ride.email }}
                         </a>
                         <p v-if="showPhone" class="flex items-center gap-1.5 text-sm text-gray-600">
-                            <span>📞</span> {{ ride.phone }}
+                            <Phone class="w-3.5 h-3.5" :stroke-width="2" /> {{ ride.phone }}
                         </p>
                     </div>
 
@@ -104,18 +104,18 @@
                 <div v-if="manageable" class="border-t pt-3 flex justify-end gap-3 text-gray-400">
                     <button
                         type="button"
-                        class="hover:text-gray-700 text-base leading-none"
+                        class="hover:text-gray-700"
                         :title="t('ride.edit')"
                         :aria-label="t('ride.edit')"
                         @click="emit('edit')"
-                    >✎</button>
+                    ><Pencil class="w-4 h-4" :stroke-width="2" /></button>
                     <button
                         type="button"
-                        class="hover:text-red-500 text-base leading-none"
+                        class="hover:text-red-500"
                         :title="t('ride.delete')"
                         :aria-label="t('ride.delete')"
                         @click="emit('delete')"
-                    >🗑</button>
+                    ><Trash2 class="w-4 h-4" :stroke-width="2" /></button>
                 </div>
 
             </div>
@@ -127,6 +127,7 @@
 <script setup>
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { X, ArrowRight, ArrowLeft, TriangleAlert, Mail, Phone, Pencil, Trash2 } from '@lucide/vue';
 import { useEscapeKey } from '@/composables/useEscapeKey';
 import { formatLocation } from '@/utils/formatLocation';
 

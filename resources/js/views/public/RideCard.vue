@@ -53,7 +53,7 @@
                             :aria-label="t('ride.edit')"
                             :data-testid="`ride-edit-${ride.id}`"
                             @click.stop="emit('edit')"
-                        >✎</button>
+                        ><Pencil class="w-4 h-4" :stroke-width="2" /></button>
                         <button
                             type="button"
                             class="hover:text-red-500"
@@ -61,7 +61,7 @@
                             :aria-label="t('ride.delete')"
                             :data-testid="`ride-delete-${ride.id}`"
                             @click.stop="emit('delete')"
-                        >🗑</button>
+                        ><Trash2 class="w-4 h-4" :stroke-width="2" /></button>
                     </div>
                 </div>
             </div>
@@ -82,7 +82,7 @@
 <script setup>
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { ArrowRight, ArrowLeft, TriangleAlert } from '@lucide/vue';
+import { ArrowRight, ArrowLeft, TriangleAlert, Pencil, Trash2 } from '@lucide/vue';
 import { formatLocation } from '@/utils/formatLocation';
 
 const props = defineProps({

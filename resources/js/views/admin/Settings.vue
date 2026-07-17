@@ -19,7 +19,7 @@
                     data-testid="save-organisation-name-btn"
                     @click="saveOrgName"
                 >{{ saving.orgName ? '…' : t('settings.save') }}</button>
-                <span v-if="saved.orgName" class="text-sm text-green-600">✓ {{ t('settings.saved') }}</span>
+                <span v-if="saved.orgName" class="text-sm text-green-600 inline-flex items-center gap-1"><Check class="w-3.5 h-3.5" :stroke-width="2" /> {{ t('settings.saved') }}</span>
                 <span v-if="errors.orgName" class="text-sm text-red-500">{{ errors.orgName }}</span>
             </div>
         </div>
@@ -37,7 +37,7 @@
                     data-testid="save-map-btn"
                     @click="saveMap"
                 >{{ saving.map ? '…' : t('settings.save') }}</button>
-                <span v-if="saved.map" class="text-sm text-green-600">✓ {{ t('settings.saved') }}</span>
+                <span v-if="saved.map" class="text-sm text-green-600 inline-flex items-center gap-1"><Check class="w-3.5 h-3.5" :stroke-width="2" /> {{ t('settings.saved') }}</span>
                 <span v-if="errors.map" class="text-sm text-red-500">{{ errors.map }}</span>
             </div>
         </div>
@@ -60,7 +60,7 @@
                     data-testid="save-retention-btn"
                     @click="saveRetention"
                 >{{ saving.retention ? '…' : t('settings.save') }}</button>
-                <span v-if="saved.retention" class="text-sm text-green-600">✓ {{ t('settings.saved') }}</span>
+                <span v-if="saved.retention" class="text-sm text-green-600 inline-flex items-center gap-1"><Check class="w-3.5 h-3.5" :stroke-width="2" /> {{ t('settings.saved') }}</span>
                 <span v-if="errors.retention" class="text-sm text-red-500">{{ errors.retention }}</span>
             </div>
         </div>
@@ -85,17 +85,17 @@
                     :data-testid="`footer-link-url-${i}`"
                 />
                 <button
-                    class="px-2 py-2 text-red-400 hover:text-red-600 text-sm"
+                    class="px-2 py-2 text-red-400 hover:text-red-600"
                     :data-testid="`remove-footer-link-${i}`"
                     @click="footerLinks.splice(i, 1)"
-                >✕</button>
+                ><X class="w-4 h-4" :stroke-width="2" /></button>
             </div>
 
             <button
-                class="text-sm text-[var(--color-primary)] hover:underline mt-1"
+                class="text-sm text-[var(--color-primary)] hover:underline mt-1 inline-flex items-center gap-1"
                 data-testid="add-footer-link-btn"
                 @click="footerLinks.push({ label: '', url: '' })"
-            >+ {{ t('settings.add_link') }}</button>
+            ><Plus class="w-3.5 h-3.5" :stroke-width="2" /> {{ t('settings.add_link') }}</button>
 
             <div class="mt-4 flex items-center gap-3">
                 <button
@@ -104,7 +104,7 @@
                     data-testid="save-footer-btn"
                     @click="saveFooter"
                 >{{ saving.footer ? '…' : t('settings.save') }}</button>
-                <span v-if="saved.footer" class="text-sm text-green-600">✓ {{ t('settings.saved') }}</span>
+                <span v-if="saved.footer" class="text-sm text-green-600 inline-flex items-center gap-1"><Check class="w-3.5 h-3.5" :stroke-width="2" /> {{ t('settings.saved') }}</span>
                 <span v-if="errors.footer" class="text-sm text-red-500">{{ errors.footer }}</span>
             </div>
         </div>
@@ -114,6 +114,7 @@
 <script setup>
 import { ref, reactive, onMounted, onUnmounted } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { Check, X, Plus } from '@lucide/vue';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import api from '@/api/axios';

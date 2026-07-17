@@ -45,12 +45,8 @@
                     @click="menuOpen = !menuOpen"
                     aria-label="Menü"
                 >
-                    <svg v-if="!menuOpen" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                    </svg>
-                    <svg v-else class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
+                    <Menu v-if="!menuOpen" class="w-6 h-6" :stroke-width="2" />
+                    <X v-else class="w-6 h-6" :stroke-width="2" />
                 </button>
             </div>
 
@@ -98,6 +94,7 @@
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter, RouterView, RouterLink } from 'vue-router';
+import { Menu, X } from '@lucide/vue';
 import { useAuth } from '@/composables/useAuth';
 
 const { t } = useI18n();

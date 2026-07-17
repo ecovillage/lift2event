@@ -3,8 +3,8 @@
         <div class="max-w-lg mx-auto px-4 py-8">
             <RouterLink
                 :to="{ name: 'event.show', params: { slug: route.params.slug } }"
-                class="text-sm text-gray-500 hover:text-gray-700 mb-6 inline-block"
-            >&#8592; Zurück zur Mitfahrbörse</RouterLink>
+                class="text-sm text-gray-500 hover:text-gray-700 mb-6 inline-flex items-center gap-1"
+            ><ArrowLeft class="w-3.5 h-3.5" :stroke-width="2" /> Zurück zur Mitfahrbörse</RouterLink>
 
             <div class="bg-white rounded-lg shadow-sm p-6 border">
                 <h1 class="text-lg font-semibold text-gray-800 mb-3">Mitfahrangebot als ausgebucht markieren</h1>
@@ -34,6 +34,7 @@
 <script setup>
 import { ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
+import { ArrowLeft } from '@lucide/vue';
 import axios from 'axios';
 
 const route = useRoute();

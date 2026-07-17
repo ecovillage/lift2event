@@ -60,6 +60,7 @@
         "request": "寻找搭车",
         "create": "发布信息！",
         "cancel": "取消",
+        "close": "关闭",
         "edit": "编辑",
         "delete": "删除",
         "delete_confirm": "确定要删除此信息吗？",

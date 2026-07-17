@@ -60,6 +60,7 @@
         "request": "Gesuch",
         "create": "Eintrag einstellen!",
         "cancel": "Abbrechen",
+        "close": "Schließen",
         "edit": "Bearbeiten",
         "delete": "Löschen",
         "delete_confirm": "Diesen Eintrag wirklich löschen?",

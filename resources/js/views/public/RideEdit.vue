@@ -3,8 +3,8 @@
         <div class="max-w-xl mx-auto px-4 py-8">
             <RouterLink
                 :to="{ name: 'event.show', params: { slug: route.params.slug } }"
-                class="text-sm text-gray-500 hover:text-gray-700 mb-6 inline-block"
-            >&#8592; Zurück zur Mitfahrbörse</RouterLink>
+                class="text-sm text-gray-500 hover:text-gray-700 mb-6 inline-flex items-center gap-1"
+            ><ArrowLeft class="w-3.5 h-3.5" :stroke-width="2" /> Zurück zur Mitfahrbörse</RouterLink>
 
             <div v-if="loading" class="text-center py-16 text-gray-400">…</div>
             <div v-else-if="fetchError" class="text-center py-16 text-red-500">{{ fetchError }}</div>
@@ -37,6 +37,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { ArrowLeft } from '@lucide/vue';
 import axios from 'axios';
 import RideForm from './RideForm.vue';
 

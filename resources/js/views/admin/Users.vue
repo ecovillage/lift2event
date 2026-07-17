@@ -34,7 +34,10 @@
                                 :data-testid="`approve-btn-${u.id}`"
                                 @click="toggleApprove(u)"
                             >
-                                {{ u.approved ? '✓ ' + t('users.approved') : t('users.approve') }}
+                                <span class="inline-flex items-center gap-1">
+                                    <Check v-if="u.approved" class="w-3.5 h-3.5" :stroke-width="2" />
+                                    {{ u.approved ? t('users.approved') : t('users.approve') }}
+                                </span>
                             </button>
                         </td>
                         <td class="px-4 py-3 text-right">
@@ -55,6 +58,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { Check } from '@lucide/vue';
 import { useAuth } from '@/composables/useAuth';
 import api from '@/api/axios';
 

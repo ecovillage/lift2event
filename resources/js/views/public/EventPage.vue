@@ -131,7 +131,7 @@
             >
                 <div class="bg-white rounded-t-2xl md:rounded-xl w-full md:max-w-sm p-5 space-y-4">
                     <div class="flex gap-3 items-start">
-                        <span class="text-xl text-amber-500 leading-none">⚠</span>
+                        <TriangleAlert class="w-5 h-5 text-amber-500 shrink-0" :stroke-width="2" />
                         <p class="text-sm text-gray-700">{{ t('ride.confirmation_pending') }}</p>
                     </div>
                     <div class="flex justify-end">
@@ -174,7 +174,7 @@ import { useRoute } from 'vue-router';
 import axios from 'axios';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Bus, Calendar, MapPin } from '@lucide/vue';
+import { Bus, Calendar, MapPin, TriangleAlert } from '@lucide/vue';
 import RideCard from './RideCard.vue';
 import RideForm from './RideForm.vue';
 import RidePopup from './RidePopup.vue';
