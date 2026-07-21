@@ -21,6 +21,10 @@
                         :class="{ active: $route.name?.startsWith('backend.events') }"
                     >{{ isAdmin ? t('nav.events') : t('nav.my_events') }}</RouterLink>
 
+                    <button @click="openAnalytics" class="nav-link">
+                        {{ t('nav.analytics') }}
+                    </button>
+
                     <RouterLink
                         v-if="isAdmin"
                         :to="{ name: 'backend.settings' }"
@@ -65,6 +69,10 @@
                     @click="menuOpen = false"
                 >{{ isAdmin ? t('nav.events') : t('nav.my_events') }}</RouterLink>
 
+                <button @click="openAnalytics(); menuOpen = false" class="nav-link text-left">
+                    {{ t('nav.analytics') }}
+                </button>
+
                 <RouterLink
                     v-if="isAdmin"
                     :to="{ name: 'backend.settings' }"
@@ -96,6 +104,7 @@ import { useI18n } from 'vue-i18n';
 import { useRouter, RouterView, RouterLink } from 'vue-router';
 import { Menu, X } from '@lucide/vue';
 import { useAuth } from '@/composables/useAuth';
+import api from '@/api/axios';
 
 const { t } = useI18n();
 const router = useRouter();
@@ -107,6 +116,13 @@ async function doLogout() {
     menuOpen.value = false;
     await logout();
     await router.push({ name: 'login' });
+}
+
+async function openAnalytics() {
+    // The dashboard is a plain server-rendered page authenticated via a web
+    // session, not the SPA's bearer token — bridge the two before navigating.
+    await api.get('/analytics-login');
+    window.location.href = '/analytics';
 }
 </script>
 

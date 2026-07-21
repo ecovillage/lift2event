@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AnalyticsBridgeController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\EventController;
 use App\Http\Controllers\Api\FeedbackController;
@@ -44,6 +45,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('events/{event}/rides/{ride}', [RideController::class, 'update']);
     Route::delete('events/{event}/rides/{ride}', [RideController::class, 'destroy']);
     Route::get('events/{event}/rides/{ride}/route', [RideController::class, 'route']);
+
+    // Bridges the token-authenticated SPA session into a Laravel web session,
+    // so a plain browser navigation to the request-analytics package's own
+    // /analytics dashboard (which relies on session auth) is authenticated too.
+    Route::get('analytics-login', [AnalyticsBridgeController::class, 'login'])->middleware('web');
 
     // Admin-only
     Route::get('users', [UserController::class, 'index']);
