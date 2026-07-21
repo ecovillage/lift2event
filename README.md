@@ -1,58 +1,116 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Lift2Event
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A self-hosted rideshare board for events. Attendees with cars can post ride offers; attendees without cars can post ride requests — each with contact details so people can coordinate directly. One installation manages multiple events, each with its own public URL.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- Public rideshare board per event (`/e/{slug}`) — no account required to browse or post
+- Interactive map (Leaflet + OpenStreetMap) showing routes and the event location
+- Ride offers (green) and ride requests (orange) with client-side filtering by type and date
+- Confirmation email with edit/delete token links for anonymous entries
+- Admin backend: manage events, users, and global settings
+- Geocoding via Nominatim (swappable via `.env`)
+- Route display via OpenRouteService
+- UI available in German, English, French, and Chinese
+- Supports MariaDB and PostgreSQL
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Requirements
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- Docker and Docker Compose (development)
+- PHP 8.3+, Composer, Node 20+, npm (production build / Ansible deploy)
 
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Local development
 
 ```bash
-composer require laravel/boost --dev
+git clone <repo-url>
+cd lift2event
 
-php artisan boost:install
+cp .env.example .env
+# Edit .env: set APP_KEY, DB credentials, SMTP, etc.
+# Or generate APP_KEY after containers start (see below)
+
+docker compose up -d
+docker compose exec app php artisan key:generate
+docker compose exec app php artisan migrate
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+The app is available at **http://localhost:8080**.  
+Adminer (DB browser) is at http://localhost:8081.  
+Vite dev server runs at http://localhost:5173 (proxied through Apache).
 
-## Contributing
+To seed demo data:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+docker compose exec app php artisan app:seed-demo-data
+```
 
-## Code of Conduct
+To create the first admin user:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+docker compose exec app php artisan tinker
+# >>> App\Models\User::factory()->create(['email' => 'you@example.com', 'is_admin' => true])
+```
 
-## Security Vulnerabilities
+## Configuration
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Copy `.env.example` to `.env` and adjust the values. Key settings:
+
+| Variable | Description |
+|---|---|
+| `DB_CONNECTION` | `mysql` (MariaDB) or `pgsql` (PostgreSQL) |
+| `MAIL_*` | SMTP credentials for confirmation and password-reset emails |
+| `NOMINATIM_URL` / `NOMINATIM_USER_AGENT` | Geocoding endpoint (Nominatim-compatible) |
+| `OPENROUTESERVICE_API_KEY` | Route display on the map (free key at openrouteservice.org) |
+| `OSM_TILE_URL` | Map tile source |
+| `APP_LOCALE` | Default UI language (`de`, `en`, `fr`, `zh`) |
+
+## Tests
+
+**Unit / integration tests** (PHPUnit, runs inside Docker):
+
+```bash
+docker compose exec -T app php artisan test
+```
+
+**End-to-end tests** (Playwright):
+
+```bash
+npx playwright test
+```
+
+## Building frontend assets
+
+After UI changes, rebuild the frontend:
+
+```bash
+docker compose exec -T node npm run build
+```
+
+## Deployment
+
+Production runs without Docker on a standard LAMP webspace with SSH access. The Ansible playbook builds `vendor/` and frontend assets locally, transfers them via rsync, runs migrations, and caches config/routes/views.
+
+**One-time server setup:**
+
+1. Create a MariaDB/PostgreSQL database via your host's control panel.
+2. Generate an SSH deploy key on the server and add it to the repository.
+3. Copy `.env.example` to `.env` on the server and fill in credentials (`APP_KEY` can be left empty; the playbook generates it on first run).
+4. Point the domain's document root to `{deploy_path}/public`.
+5. Ensure PHP extensions `pdo_mysql`, `zip`, `bcmath`, and `intl` are enabled.
+
+**Deploy:**
+
+```bash
+cp ansible/inventory.example ansible/inventory
+# Edit ansible/inventory (host, user, port/key)
+# Edit ansible/vars/main.yml (deploy_path, git_repo, php_bin, etc.)
+
+ansible-galaxy collection install -r ansible/requirements.yml
+ansible-playbook -i ansible/inventory ansible/deploy.yml
+```
+
+Each subsequent run pulls `master`, rebuilds, and migrates. The site briefly enters maintenance mode during deployment.
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+MIT
