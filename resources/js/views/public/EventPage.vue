@@ -197,6 +197,12 @@ const fetchError   = ref(null);
 const showForm     = ref(false);
 const selectedRide = ref(null);
 const mapBounds    = ref(null);
+
+watch([event, locale], ([newEvent]) => {
+    if (newEvent) {
+        document.title = `${newEvent.name}: ${t('event.rideshare_for')}`;
+    }
+});
 const activeFilter = ref('all');
 const dateFilter   = ref('');
 const footerLinks        = ref([]);
