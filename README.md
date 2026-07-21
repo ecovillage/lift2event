@@ -16,13 +16,13 @@ A self-hosted rideshare board for events. Attendees with cars can post ride offe
 
 ## Requirements
 
-- Docker and Docker Compose (development)
 - PHP 8.3+, Composer, Node 20+, npm (production build / Ansible deploy)
+- Docker and Docker Compose (development only)
 
 ## Local development
 
 ```bash
-git clone <repo-url>
+git clone git@github.com:ecovillage/lift2event.git
 cd lift2event
 
 cp .env.example .env

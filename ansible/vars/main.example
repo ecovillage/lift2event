@@ -1,0 +1,28 @@
+# Path to the Lift2Event installation directory on the server.
+# On shared LAMP webspaces this is often a subdirectory under the account root,
+# e.g. subdomains/lift2event.example.com or html/lift2event.
+# The domain's document root must point to {{ deploy_path }}/public.
+deploy_path: subdomains/lift2event.example.com
+
+# Git remote URL of the repository.
+# The server must be able to reach this URL. For private repositories, generate
+# an SSH deploy key on the server (ssh-keygen) and add the public key as a
+# read-only deploy key in the repository settings. Then use the SSH form below.
+# Public repository:  https://github.com/your-org/lift2event.git
+# Private repository: git@github.com:your-org/lift2event.git
+git_repo: git@github.com:your-org/lift2event.git
+
+# Git branch to deploy. The playbook always checks out this branch.
+deploy_branch: master
+
+# PHP binary on the server. Many shared hosts provide multiple PHP versions;
+# choose the one that meets the requirement (PHP 8.3+).
+# Examples: php, php8.3, php8.4, /usr/bin/php8.3
+php_bin: php8.3
+
+# composer and npm are NOT required on the server. The playbook builds vendor/
+# and the frontend assets locally on the Ansible control machine (the machine
+# you run ansible-playbook from) and transfers the result via rsync.
+# Adjust these paths if the binaries are not in your PATH.
+composer_bin: composer
+npm_bin: npm
