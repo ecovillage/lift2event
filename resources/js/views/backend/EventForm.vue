@@ -262,6 +262,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import api from '@/api/axios';
 import { locationFromNominatim, formatLocation } from '@/utils/formatLocation';
+import { useAddressAutocomplete } from '@/composables/useAddressAutocomplete';
 import RideCard from '../public/RideCard.vue';
 import RideForm from '../public/RideForm.vue';
 import RidePopup from '../public/RidePopup.vue';
@@ -294,11 +295,27 @@ const createdEventPublicLink = computed(() =>
     createdEvent.value ? `${window.location.origin}/e/${createdEvent.value.slug}` : ''
 );
 
-const addressInput        = ref('');
 const locationDisplayName = ref('');
-const suggestions         = ref([]);
-const highlightedIndex    = ref(-1);
-let searchTimer           = null;
+
+const {
+    addressInput,
+    suggestions,
+    highlightedIndex,
+    onAddressInput,
+    onAddressKeydown,
+    closeSuggestions,
+    selectSuggestion,
+} = useAddressAutocomplete({
+    onSelect: (s) => {
+        const loc = locationFromNominatim(s);
+        form.location             = loc;
+        addressInput.value        = s.display_name;
+        locationDisplayName.value = formatLocation(loc);
+        setMarker(loc.latitude, loc.longitude);
+        map.setView([loc.latitude, loc.longitude], 12);
+        drawRides();
+    },
+});
 
 const publicLink = computed(() =>
     event.value ? `${window.location.origin}/e/${event.value.slug}` : ''
@@ -502,54 +519,9 @@ onUnmounted(() => {
     if (map) { map.remove(); map = null; }
 });
 
-// Nominatim autocomplete (proxied through our API)
-function onAddressInput() {
-    clearTimeout(searchTimer);
-    highlightedIndex.value = -1;
-    const q = addressInput.value.trim();
-    if (q.length < 3) { suggestions.value = []; return; }
-    searchTimer = setTimeout(async () => {
-        try {
-            const { data } = await api.get('/geocode/search', { params: { q } });
-            suggestions.value      = data;
-            highlightedIndex.value = -1;
-        } catch { suggestions.value = []; }
-    }, 350);
-}
-
-function closeSuggestions() {
-    // Small delay so mousedown on suggestion fires before blur clears the list
-    setTimeout(() => { suggestions.value = []; }, 150);
-}
-
 function onAddressBlur() {
     closeSuggestions();
     onBlur('address');
-}
-
-function onAddressKeydown(e) {
-    if (!suggestions.value.length) return;
-    if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        highlightedIndex.value = highlightedIndex.value < suggestions.value.length - 1 ? highlightedIndex.value + 1 : 0;
-    } else if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        highlightedIndex.value = highlightedIndex.value > 0 ? highlightedIndex.value - 1 : suggestions.value.length - 1;
-    } else if (e.key === 'Enter' && highlightedIndex.value >= 0) {
-        e.preventDefault();
-        selectSuggestion(suggestions.value[highlightedIndex.value]);
-    }
-}
-
-function selectSuggestion(s) {
-    const loc = locationFromNominatim(s);
-    form.location             = loc;
-    addressInput.value        = s.display_name;
-    locationDisplayName.value = formatLocation(loc);
-    suggestions.value         = [];
-    setMarker(loc.latitude, loc.longitude);
-    map.setView([loc.latitude, loc.longitude], 12);
-    drawRides();
 }
 
 async function copyLink() {

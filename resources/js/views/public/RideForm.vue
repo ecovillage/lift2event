@@ -272,6 +272,7 @@ import BrandIcon from '@/components/BrandIcon.vue';
 import { contactIcons } from '@/constants/contactIcons';
 import api from '@/api/axios';
 import { useEscapeKey } from '@/composables/useEscapeKey';
+import { useAddressAutocomplete } from '@/composables/useAddressAutocomplete';
 import { locationFromNominatim } from '@/utils/formatLocation';
 
 const props = defineProps({
@@ -333,15 +334,44 @@ const returnTime   = ref(props.ride?.return_at   ? isoTime(props.ride.return_at)
 
 const eventEndTime = computed(() => isoTime(props.event?.end_at));
 
-const addressInput          = ref(props.ride?.location?.address ?? '');
-const suggestions           = ref([]);
-const highlightedIndex      = ref(-1);
 const saving                = ref(false);
 const errors                = ref([]);
 const addressNotFound       = ref(false);
 const addressNotFoundQuery  = ref('');
-let   searchTimer           = null;
 let   notFoundTimer         = null;
+
+const {
+    addressInput,
+    suggestions,
+    highlightedIndex,
+    onAddressInput,
+    onAddressKeydown,
+    closeSuggestions,
+    selectSuggestion,
+} = useAddressAutocomplete({
+    initialAddress: props.ride?.location?.address ?? '',
+    onInput: () => {
+        form.location          = null;
+        addressNotFound.value  = false;
+        clearTimeout(notFoundTimer);
+    },
+    onResults: (results, query) => {
+        if (results.length === 0) {
+            notFoundTimer = setTimeout(() => {
+                if (addressInput.value.trim() === query && !form.location && suggestions.value.length === 0) {
+                    addressNotFound.value      = true;
+                    addressNotFoundQuery.value = query;
+                }
+            }, 1000);
+        }
+    },
+    onSelect: (s) => {
+        form.location          = locationFromNominatim(s);
+        addressInput.value     = s.display_name;
+        addressNotFound.value  = false;
+        clearTimeout(notFoundTimer);
+    },
+});
 
 const hasOutbound = computed(() => ['both-ways', 'outbound-only'].includes(form.direction));
 const hasReturn   = computed(() => ['both-ways', 'return-only'].includes(form.direction));
@@ -460,58 +490,7 @@ function shiftDay(field, delta) {
     else                      returnDate.value   = shiftDateStr(returnDate.value, delta);
 }
 
-// ── Nominatim autocomplete ────────────────────────────────────────────────────
-
-function onAddressInput() {
-    clearTimeout(searchTimer);
-    clearTimeout(notFoundTimer);
-    form.location          = null;
-    addressNotFound.value  = false;
-    highlightedIndex.value = -1;
-    const q = addressInput.value.trim();
-    if (q.length < 3) { suggestions.value = []; return; }
-    searchTimer = setTimeout(async () => {
-        try {
-            const { data } = await api.get('/geocode/search', { params: { q } });
-            suggestions.value      = data;
-            highlightedIndex.value = -1;
-        } catch { suggestions.value = []; }
-
-        if (suggestions.value.length === 0) {
-            notFoundTimer = setTimeout(() => {
-                if (addressInput.value.trim() === q && !form.location && suggestions.value.length === 0) {
-                    addressNotFound.value      = true;
-                    addressNotFoundQuery.value = q;
-                }
-            }, 1000);
-        }
-    }, 350);
-}
-
-function closeSuggestions() { setTimeout(() => { suggestions.value = []; }, 150); }
 function onAddressBlur() { closeSuggestions(); onBlur('address'); }
-
-function onAddressKeydown(e) {
-    if (!suggestions.value.length) return;
-    if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        highlightedIndex.value = highlightedIndex.value < suggestions.value.length - 1 ? highlightedIndex.value + 1 : 0;
-    } else if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        highlightedIndex.value = highlightedIndex.value > 0 ? highlightedIndex.value - 1 : suggestions.value.length - 1;
-    } else if (e.key === 'Enter' && highlightedIndex.value >= 0) {
-        e.preventDefault();
-        selectSuggestion(suggestions.value[highlightedIndex.value]);
-    }
-}
-
-function selectSuggestion(s) {
-    form.location          = locationFromNominatim(s);
-    addressInput.value     = s.display_name;
-    suggestions.value      = [];
-    addressNotFound.value  = false;
-    clearTimeout(notFoundTimer);
-}
 
 // ── Submit ────────────────────────────────────────────────────────────────────
 
