@@ -172,7 +172,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
+import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 import axios from 'axios';
@@ -358,6 +358,14 @@ function initMap() {
 
     map.on('moveend', () => { mapBounds.value = map.getBounds(); });
     mapBounds.value = map.getBounds();
+
+    window.addEventListener('resize', handleMapResize);
+}
+
+// Mobile browsers resize the viewport (address bar collapsing) after Leaflet
+// has already cached the container size, leaving it stuck showing a stale crop.
+function handleMapResize() {
+    if (map) map.invalidateSize();
 }
 
 let drawGeneration = 0;
@@ -428,6 +436,7 @@ async function fetchRoute(ride, generation, polyline) {
 
 function fitMap() {
     if (!map) return;
+    map.invalidateSize();
     const points = [];
     const evLoc = event.value?.location;
     if (evLoc) points.push([parseFloat(evLoc.latitude), parseFloat(evLoc.longitude)]);
@@ -441,7 +450,10 @@ function fitMap() {
 // Redraw when filter changes (filter buttons call onFilterChange directly)
 watch(filteredRides, () => { drawRides(); });
 
-onUnmounted(() => { if (map) { map.remove(); map = null; } });
+onUnmounted(() => {
+    window.removeEventListener('resize', handleMapResize);
+    if (map) { map.remove(); map = null; }
+});
 
 // ── Data loading ──────────────────────────────────────────────────────────────
 
@@ -493,6 +505,10 @@ onMounted(async () => {
     await load();
     if (!fetchError.value && mapEl.value) {
         initMap();
+        // Mobile browsers often resize the viewport (address bar collapsing)
+        // shortly after the initial layout, leaving Leaflet's cached size stale.
+        await nextTick();
+        handleMapResize();
     }
 });
 </script>
