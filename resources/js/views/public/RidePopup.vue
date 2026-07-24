@@ -87,9 +87,9 @@
                         <a v-if="showEmail" :href="`mailto:${ride.email}`" class="flex items-center gap-1.5 text-sm text-gray-600 hover:text-gray-900">
                             <Mail class="w-3.5 h-3.5" :stroke-width="2" /> {{ ride.email }}
                         </a>
-                        <p v-if="showPhone" class="flex items-center gap-1.5 text-sm text-gray-600">
+                        <a v-if="showPhone" :href="`tel:${ride.phone}`" class="flex items-center gap-1.5 text-sm text-gray-600 hover:text-gray-900">
                             <Phone class="w-3.5 h-3.5" :stroke-width="2" /> {{ ride.phone }}
-                        </p>
+                        </a>
                     </div>
 
                     <!-- Contact deep-link buttons -->
