@@ -20,9 +20,15 @@ class SetLocale
         $locale = $request->user('sanctum')?->preferred_language
             ?? $request->header('X-Locale');
 
-        if (is_string($locale) && in_array($locale, self::SUPPORTED, true)) {
-            app()->setLocale($locale);
-        }
+        // Always set it explicitly, rather than only on a match, so a locale
+        // from a previous request can't leak into this one on long-lived
+        // processes (queue workers, Octane) or across requests within the
+        // same test. Reset to app.fallback_locale, not app.locale: the latter
+        // is overwritten by every app()->setLocale() call, so past requests
+        // would otherwise "reset" to whatever locale they last set.
+        app()->setLocale(
+            is_string($locale) && in_array($locale, self::SUPPORTED, true) ? $locale : config('app.fallback_locale')
+        );
 
         return $next($request);
     }
