@@ -13,8 +13,8 @@ class GeocodingController extends Controller
     {
         $request->validate(['q' => ['required', 'string', 'min:2', 'max:200']]);
 
-        $baseUrl   = rtrim(env('NOMINATIM_URL', 'https://nominatim.openstreetmap.org'), '/');
-        $userAgent = env('NOMINATIM_USER_AGENT', 'Lift2Event/1.0');
+        $baseUrl   = rtrim(config('services.nominatim.url'), '/');
+        $userAgent = config('services.nominatim.user_agent');
 
         $results = Http::withHeaders(['User-Agent' => $userAgent])
             ->get("$baseUrl/search", [

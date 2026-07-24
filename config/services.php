@@ -40,4 +40,9 @@ return [
         'key' => env('OPENROUTESERVICE_API_KEY'),
     ],
 
+    'nominatim' => [
+        'url'        => env('NOMINATIM_URL', 'https://nominatim.openstreetmap.org'),
+        'user_agent' => env('NOMINATIM_USER_AGENT', 'Lift2Event/1.0'),
+    ],
+
 ];
