@@ -155,7 +155,7 @@
         </form>
 
         <!-- Ride tiles: same cards as the public page, empty in create mode -->
-        <div v-if="isEdit" class="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+        <div v-if="isEdit" data-testid="ride-tiles" class="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
             <RideCard
                 v-for="ride in rides"
                 :key="ride.id"

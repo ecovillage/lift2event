@@ -126,7 +126,7 @@ test.describe('Admin – Veranstaltungen', () => {
 
         // Pre-seeded ride tile (same RideCard as on the public page)
         await expect(page.getByText('Hauptbahnhof, 80335 München')).toBeVisible();
-        await expect(page.getByText('Angebot')).toBeVisible();
+        await expect(page.getByTestId('ride-tiles').getByText('Angebot')).toBeVisible();
 
         // Clicking the tile opens the detail popup with contact info.
         // The tile stays mounted behind the popup overlay, so scope to the popup itself.
@@ -154,7 +154,7 @@ test.describe('Admin – Veranstaltungen', () => {
         await loginAs(page, ADMIN_EMAIL);
         await page.getByRole('link', { name: /Neue Veranstaltung/i }).click();
         await expect(page).toHaveURL(/\/backend\/events\/create/);
-        await expect(page.getByText('Angebot')).not.toBeVisible();
+        await expect(page.getByTestId('ride-tiles')).not.toBeVisible();
     });
 
     test('Admin kann nicht-eigene Veranstaltung bearbeiten', async ({ page }) => {
