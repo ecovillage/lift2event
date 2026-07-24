@@ -3,8 +3,6 @@
 namespace App\Models;
 
 use Database\Factories\UserFactory;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -12,12 +10,14 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use MeShaon\RequestAnalytics\Contracts\CanAccessAnalyticsDashboard;
 
-#[Fillable(['name', 'email', 'password', 'is_admin', 'approved', 'preferred_language'])]
-#[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements CanAccessAnalyticsDashboard
 {
     /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory, Notifiable;
+
+    protected $fillable = ['name', 'email', 'password', 'is_admin', 'approved', 'preferred_language'];
+
+    protected $hidden = ['password', 'remember_token'];
 
     protected function casts(): array
     {

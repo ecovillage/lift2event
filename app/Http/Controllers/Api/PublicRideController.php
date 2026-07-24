@@ -104,7 +104,7 @@ class PublicRideController extends Controller
         $this->assertValidEditToken($request, $ride);
 
         if ($ride->type !== 'offer') {
-            return response()->json(['message' => 'Only ride offers can be marked as fully booked.'], 422);
+            return response()->json(['message' => 'Nur Mitfahrangebote können als ausgebucht markiert werden.'], 422);
         }
 
         if ($ride->seats !== 0) {
