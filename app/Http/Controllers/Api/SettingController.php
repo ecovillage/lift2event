@@ -16,10 +16,6 @@ class SettingController extends Controller
 
     public function update(Request $request): JsonResponse
     {
-        if (! $request->user()->is_admin) {
-            return response()->json(['message' => 'Forbidden'], 403);
-        }
-
         $data = $request->validate([
             'map_center_lat'       => ['sometimes', 'numeric', 'between:-90,90'],
             'map_center_lng'       => ['sometimes', 'numeric', 'between:-180,180'],

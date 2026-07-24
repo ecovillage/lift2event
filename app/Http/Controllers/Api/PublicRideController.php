@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\Concerns\InteractsWithRides;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RideRequest;
 use App\Mail\RideConfirmation;
 use App\Models\Event;
 use App\Models\Location;
@@ -17,10 +18,10 @@ class PublicRideController extends Controller
 {
     use InteractsWithRides;
 
-    public function store(Request $request, string $slug): JsonResponse
+    public function store(RideRequest $request, string $slug): JsonResponse
     {
         $event = Event::where('slug', $slug)->firstOrFail();
-        $data  = $request->validate($this->rideRules($request));
+        $data  = $request->validated();
         $user  = $request->user('sanctum');
 
         $location = Location::create($data['location']);
@@ -67,26 +68,18 @@ class PublicRideController extends Controller
         return response()->json($ride->load('location'), 201);
     }
 
-    public function update(Request $request, string $slug, Ride $ride): JsonResponse
+    public function update(RideRequest $request, string $slug, Ride $ride): JsonResponse
     {
-        abort_unless($ride->event->slug === $slug, 404);
+        $this->assertRideBelongsToEvent($slug, $ride);
+        $this->assertValidEditToken($request, $ride);
 
-        if (! $ride->edit_token || ! hash_equals($ride->edit_token, $request->input('edit_token', ''))) {
-            return response()->json(['message' => 'Forbidden'], 403);
-        }
-
-        $data = $request->validate($this->rideRules($request));
-
-        return response()->json($this->applyRideUpdate($ride, $data));
+        return response()->json($this->applyRideUpdate($ride, $request->validated()));
     }
 
     public function destroy(Request $request, string $slug, Ride $ride): JsonResponse
     {
-        abort_unless($ride->event->slug === $slug, 404);
-
-        if (! $ride->edit_token || ! hash_equals($ride->edit_token, $request->input('edit_token', ''))) {
-            return response()->json(['message' => 'Forbidden'], 403);
-        }
+        $this->assertRideBelongsToEvent($slug, $ride);
+        $this->assertValidEditToken($request, $ride);
 
         $ride->delete();
 
@@ -95,11 +88,8 @@ class PublicRideController extends Controller
 
     public function confirm(Request $request, string $slug, Ride $ride): JsonResponse
     {
-        abort_unless($ride->event->slug === $slug, 404);
-
-        if (! $ride->edit_token || ! hash_equals($ride->edit_token, $request->input('edit_token', ''))) {
-            return response()->json(['message' => 'Forbidden'], 403);
-        }
+        $this->assertRideBelongsToEvent($slug, $ride);
+        $this->assertValidEditToken($request, $ride);
 
         if (! $ride->confirmed_at) {
             $ride->update(['confirmed_at' => now()]);
@@ -110,11 +100,8 @@ class PublicRideController extends Controller
 
     public function book(Request $request, string $slug, Ride $ride): JsonResponse
     {
-        abort_unless($ride->event->slug === $slug, 404);
-
-        if (! $ride->edit_token || ! hash_equals($ride->edit_token, $request->input('edit_token', ''))) {
-            return response()->json(['message' => 'Forbidden'], 403);
-        }
+        $this->assertRideBelongsToEvent($slug, $ride);
+        $this->assertValidEditToken($request, $ride);
 
         if ($ride->type !== 'offer') {
             return response()->json(['message' => 'Only ride offers can be marked as fully booked.'], 422);
@@ -129,7 +116,7 @@ class PublicRideController extends Controller
 
     public function route(Request $request, string $slug, Ride $ride, RoutingService $routingService): JsonResponse
     {
-        abort_unless($ride->event->slug === $slug, 404);
+        $this->assertRideBelongsToEvent($slug, $ride);
 
         $token = $request->query('edit_token', '');
 
@@ -140,5 +127,15 @@ class PublicRideController extends Controller
         }
 
         return response()->json($routingService->routeFor($ride->location, $ride->event->location));
+    }
+
+    private function assertRideBelongsToEvent(string $slug, Ride $ride): void
+    {
+        abort_unless($ride->event->slug === $slug, 404);
+    }
+
+    private function assertValidEditToken(Request $request, Ride $ride): void
+    {
+        abort_unless($ride->edit_token && hash_equals($ride->edit_token, $request->input('edit_token', '')), 403);
     }
 }

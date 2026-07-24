@@ -10,23 +10,15 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function index(Request $request): JsonResponse
+    public function index(): JsonResponse
     {
-        if (! $request->user()->is_admin) {
-            return response()->json(['message' => 'Forbidden'], 403);
-        }
-
         return response()->json(
             User::withCount('events')->orderBy('name')->get()
         );
     }
 
-    public function toggleApprove(Request $request, User $user): JsonResponse
+    public function toggleApprove(User $user): JsonResponse
     {
-        if (! $request->user()->is_admin) {
-            return response()->json(['message' => 'Forbidden'], 403);
-        }
-
         $user->update(['approved' => ! $user->approved]);
 
         return response()->json($user->fresh()->loadCount('events'));
@@ -34,10 +26,6 @@ class UserController extends Controller
 
     public function destroy(Request $request, User $user): JsonResponse
     {
-        if (! $request->user()->is_admin) {
-            return response()->json(['message' => 'Forbidden'], 403);
-        }
-
         if ($user->id === $request->user()->id) {
             return response()->json(['message' => 'Cannot delete yourself.'], 422);
         }

@@ -52,8 +52,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('analytics-login', [AnalyticsBridgeController::class, 'login'])->middleware('web');
 
     // Admin-only
-    Route::get('users', [UserController::class, 'index']);
-    Route::put('users/{user}/approve', [UserController::class, 'toggleApprove']);
-    Route::delete('users/{user}', [UserController::class, 'destroy']);
-    Route::put('settings', [SettingController::class, 'update']);
+    Route::middleware('admin')->group(function () {
+        Route::get('users', [UserController::class, 'index']);
+        Route::put('users/{user}/approve', [UserController::class, 'toggleApprove']);
+        Route::delete('users/{user}', [UserController::class, 'destroy']);
+        Route::put('settings', [SettingController::class, 'update']);
+    });
 });

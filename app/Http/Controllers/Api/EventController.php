@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\EventRequest;
 use App\Models\Event;
 use App\Models\Location;
 use Illuminate\Http\JsonResponse;
@@ -27,23 +28,9 @@ class EventController extends Controller
         return response()->json($query->get());
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(EventRequest $request): JsonResponse
     {
-        $data = $request->validate([
-            'name'                  => ['required', 'string', 'max:255'],
-            'start_at'              => ['required', 'date'],
-            'end_at'                => ['required', 'date', 'after:start_at'],
-            'location'                  => ['required', 'array'],
-            'location.address'          => ['required', 'string', 'max:500'],
-            'location.latitude'         => ['required', 'numeric', 'between:-90,90'],
-            'location.longitude'        => ['required', 'numeric', 'between:-180,180'],
-            'location.country_code'     => ['nullable', 'string', 'size:2'],
-            'location.street'           => ['nullable', 'string', 'max:255'],
-            'location.house_number'     => ['nullable', 'string', 'max:50'],
-            'location.postal_code'      => ['nullable', 'string', 'max:20'],
-            'location.city'             => ['nullable', 'string', 'max:255'],
-            'location.display_name'     => ['nullable', 'string', 'max:255'],
-        ]);
+        $data = $request->validated();
 
         $location = Location::create($data['location']);
 
@@ -60,9 +47,7 @@ class EventController extends Controller
 
     public function show(Request $request, Event $event): JsonResponse
     {
-        if (! $this->canAccess($request, $event)) {
-            return response()->json(['message' => 'Forbidden'], 403);
-        }
+        $this->authorize('manage', $event);
 
         $event->load(['location', 'createdBy', 'rides.location']);
         $event->rides->makeHidden('edit_token');
@@ -70,27 +55,9 @@ class EventController extends Controller
         return response()->json($event);
     }
 
-    public function update(Request $request, Event $event): JsonResponse
+    public function update(EventRequest $request, Event $event): JsonResponse
     {
-        if (! $this->canAccess($request, $event)) {
-            return response()->json(['message' => 'Forbidden'], 403);
-        }
-
-        $data = $request->validate([
-            'name'                  => ['required', 'string', 'max:255'],
-            'start_at'              => ['required', 'date'],
-            'end_at'                => ['required', 'date', 'after:start_at'],
-            'location'                  => ['required', 'array'],
-            'location.address'          => ['required', 'string', 'max:500'],
-            'location.latitude'         => ['required', 'numeric', 'between:-90,90'],
-            'location.longitude'        => ['required', 'numeric', 'between:-180,180'],
-            'location.country_code'     => ['nullable', 'string', 'size:2'],
-            'location.street'           => ['nullable', 'string', 'max:255'],
-            'location.house_number'     => ['nullable', 'string', 'max:50'],
-            'location.postal_code'      => ['nullable', 'string', 'max:20'],
-            'location.city'             => ['nullable', 'string', 'max:255'],
-            'location.display_name'     => ['nullable', 'string', 'max:255'],
-        ]);
+        $data = $request->validated();
 
         $event->location->update($data['location']);
         $event->update([
@@ -104,18 +71,10 @@ class EventController extends Controller
 
     public function destroy(Request $request, Event $event): JsonResponse
     {
-        if (! $this->canAccess($request, $event)) {
-            return response()->json(['message' => 'Forbidden'], 403);
-        }
+        $this->authorize('manage', $event);
 
         $event->deleteWithLocations();
 
         return response()->json(null, 204);
-    }
-
-    private function canAccess(Request $request, Event $event): bool
-    {
-        $user = $request->user();
-        return $user->is_admin || $event->created_by_id === $user->id;
     }
 }

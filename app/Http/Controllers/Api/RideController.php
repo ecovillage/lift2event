@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\Concerns\InteractsWithRides;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RideRequest;
 use App\Models\Event;
 use App\Models\Ride;
 use App\Services\RoutingService;
@@ -14,23 +15,20 @@ class RideController extends Controller
 {
     use InteractsWithRides;
 
-    public function update(Request $request, Event $event, Ride $ride): JsonResponse
+    public function update(RideRequest $request, Event $event, Ride $ride): JsonResponse
     {
-        if (! $this->canManage($request, $event, $ride)) {
-            return response()->json(['message' => 'Forbidden'], 403);
-        }
+        $this->assertRideBelongsToEvent($event, $ride);
+        $this->authorize('manage', $ride);
 
-        $data   = $request->validate($this->rideRules($request));
-        $result = $this->applyRideUpdate($ride, $data);
+        $result = $this->applyRideUpdate($ride, $request->validated());
 
         return response()->json($result->makeHidden('edit_token'));
     }
 
     public function destroy(Request $request, Event $event, Ride $ride): JsonResponse
     {
-        if (! $this->canManage($request, $event, $ride)) {
-            return response()->json(['message' => 'Forbidden'], 403);
-        }
+        $this->assertRideBelongsToEvent($event, $ride);
+        $this->authorize('manage', $ride);
 
         $ride->delete();
 
@@ -39,21 +37,14 @@ class RideController extends Controller
 
     public function route(Request $request, Event $event, Ride $ride, RoutingService $routingService): JsonResponse
     {
-        if (! $this->canManage($request, $event, $ride)) {
-            return response()->json(['message' => 'Forbidden'], 403);
-        }
+        $this->assertRideBelongsToEvent($event, $ride);
+        $this->authorize('manage', $ride);
 
         return response()->json($routingService->routeFor($ride->location, $event->location));
     }
 
-    private function canManage(Request $request, Event $event, Ride $ride): bool
+    private function assertRideBelongsToEvent(Event $event, Ride $ride): void
     {
-        if ($ride->event_id !== $event->id) {
-            abort(404);
-        }
-
-        $user = $request->user();
-
-        return $user->is_admin || $event->created_by_id === $user->id;
+        abort_unless($ride->event_id === $event->id, 404);
     }
 }
