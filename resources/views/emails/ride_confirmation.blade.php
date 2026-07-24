@@ -11,8 +11,6 @@
 @component('mail::button', ['url' => $confirmUrl, 'color' => 'success'])
 {{ $ride->type === 'offer' ? __('mail.confirm_offer') : __('mail.confirm_request') }}
 @endcomponent
-
-{{ __('mail.confirm_direct', ['url' => $confirmUrl]) }}
 @endif
 
 {{ __('mail.manage_prompt') }}
@@ -29,16 +27,6 @@
 @component('mail::button', ['url' => $bookUrl, 'color' => 'orange'])
 {{ __('mail.book_button') }}
 @endcomponent
-@endif
-
-{{ __('mail.direct_links') }}
-
-{{ __('mail.edit_direct', ['url' => $editUrl]) }}
-
-{{ __('mail.delete_direct', ['url' => $deleteUrl]) }}
-
-@if ($bookUrl && ! $ride->is_booked)
-{{ __('mail.book_direct', ['url' => $bookUrl]) }}
 @endif
 
 {{ __('mail.signoff') }},
