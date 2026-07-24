@@ -31,10 +31,10 @@ class RideConfirmation extends Mailable
         $id   = $ride->id;
         $tok  = $ride->edit_token;
 
-        $this->confirmUrl      = "{$base}/e/{$slug}/ride/{$id}/confirm?token={$tok}";
-        $this->editUrl         = "{$base}/e/{$slug}/ride/{$id}/edit?token={$tok}";
-        $this->deleteUrl       = "{$base}/e/{$slug}/ride/{$id}/delete?token={$tok}";
-        $this->bookUrl          = $ride->type === 'offer' ? "{$base}/e/{$slug}/ride/{$id}/book?token={$tok}" : null;
+        $this->confirmUrl      = "{$base}/events/{$slug}/ride/{$id}/confirm?token={$tok}";
+        $this->editUrl         = "{$base}/events/{$slug}/ride/{$id}/edit?token={$tok}";
+        $this->deleteUrl       = "{$base}/events/{$slug}/ride/{$id}/delete?token={$tok}";
+        $this->bookUrl          = $ride->type === 'offer' ? "{$base}/events/{$slug}/ride/{$id}/book?token={$tok}" : null;
         $this->organisationName = Setting::organisationName();
 
         $this->locale($ride->locale ?? 'de');

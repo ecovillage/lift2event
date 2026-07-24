@@ -2,29 +2,35 @@ import { createRouter, createWebHistory } from 'vue-router';
 import { useAuth } from '@/composables/useAuth';
 
 const routes = [
-    // Public event pages
+    // Public event pages. The /e/... paths are aliases kept so previously
+    // shared/emailed links (old adjective-noun slugs) stay reachable.
     {
-        path: '/e/:slug',
+        path: '/events/:slug',
+        alias: '/e/:slug',
         name: 'event.show',
         component: () => import('@/views/public/EventPage.vue'),
     },
     {
-        path: '/e/:slug/ride/:id/edit',
+        path: '/events/:slug/ride/:id/edit',
+        alias: '/e/:slug/ride/:id/edit',
         name: 'ride.edit',
         component: () => import('@/views/public/RideEdit.vue'),
     },
     {
-        path: '/e/:slug/ride/:id/delete',
+        path: '/events/:slug/ride/:id/delete',
+        alias: '/e/:slug/ride/:id/delete',
         name: 'ride.delete',
         component: () => import('@/views/public/RideDelete.vue'),
     },
     {
-        path: '/e/:slug/ride/:id/confirm',
+        path: '/events/:slug/ride/:id/confirm',
+        alias: '/e/:slug/ride/:id/confirm',
         name: 'ride.confirm',
         component: () => import('@/views/public/RideConfirm.vue'),
     },
     {
-        path: '/e/:slug/ride/:id/book',
+        path: '/events/:slug/ride/:id/book',
+        alias: '/e/:slug/ride/:id/book',
         name: 'ride.book',
         component: () => import('@/views/public/RideBook.vue'),
     },

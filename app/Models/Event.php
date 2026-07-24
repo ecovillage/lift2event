@@ -26,11 +26,13 @@ class Event extends Model
     {
         static::creating(function (Event $event) {
             if (empty($event->slug)) {
-                $adjectives = require base_path('app/Data/adjectives.php');
-                $nouns = require base_path('app/Data/nouns.php');
+                $alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 
                 do {
-                    $slug = $adjectives[array_rand($adjectives)] . '-' . $nouns[array_rand($nouns)];
+                    $slug = '';
+                    for ($i = 0; $i < 4; $i++) {
+                        $slug .= $alphabet[random_int(0, strlen($alphabet) - 1)];
+                    }
                 } while (static::where('slug', $slug)->exists());
 
                 $event->slug = $slug;

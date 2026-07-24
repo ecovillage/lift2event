@@ -16,6 +16,9 @@ $spa = fn () => view('app');
 // tracking is opt-in instead: only event pages and the backend/admin area
 // get the capture middleware attached.
 Route::middleware('request-analytics.web')->group(function () use ($spa) {
+    Route::get('/events/{slug}/{any?}', $spa)->where('any', '.*');
+    // Legacy prefix, kept so previously shared/emailed /e/... links (old
+    // adjective-noun slugs) stay reachable.
     Route::get('/e/{slug}/{any?}', $spa)->where('any', '.*');
     Route::get('/backend/{any?}', $spa)->where('any', '.*');
 });

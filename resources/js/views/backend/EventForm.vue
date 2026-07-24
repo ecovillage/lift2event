@@ -292,7 +292,7 @@ const createdEvent       = ref(null);
 const copiedCreated      = ref(false);
 
 const createdEventPublicLink = computed(() =>
-    createdEvent.value ? `${window.location.origin}/e/${createdEvent.value.slug}` : ''
+    createdEvent.value ? `${window.location.origin}/events/${createdEvent.value.slug}` : ''
 );
 
 const locationDisplayName = ref('');
@@ -318,7 +318,7 @@ const {
 });
 
 const publicLink = computed(() =>
-    event.value ? `${window.location.origin}/e/${event.value.slug}` : ''
+    event.value ? `${window.location.origin}/events/${event.value.slug}` : ''
 );
 
 // ── Field validation (validate on blur, re-validate earlier fields on focus) ───

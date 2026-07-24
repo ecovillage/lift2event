@@ -112,7 +112,7 @@ test.describe('Admin – Veranstaltungen', () => {
         await page.goto('/backend/events');
         await page.getByText(/Testveranstaltung Berlin/).click();
         // Public link is shown as a clickable link
-        const publicLink = page.locator('a[href*="/e/"]').first();
+        const publicLink = page.locator('a[href*="/events/"]').first();
         await expect(publicLink).toBeVisible({ timeout: 10000 });
         await expect(page.getByRole('button', { name: 'Kopieren' })).toBeVisible();
     });
