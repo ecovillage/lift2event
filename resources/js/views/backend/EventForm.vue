@@ -12,6 +12,7 @@
                 <!-- Map: top on mobile, right column on desktop -->
                 <div class="order-1 md:order-2 h-64 md:h-auto md:flex-1 rounded overflow-hidden relative">
                     <div ref="mapEl" class="absolute inset-0"></div>
+                    <RouteLegend />
                 </div>
 
                 <!-- Form: bottom on mobile, left column on desktop -->
@@ -264,6 +265,7 @@ import { locationFromNominatim, formatLocation } from '@/utils/formatLocation';
 import RideCard from '../public/RideCard.vue';
 import RideForm from '../public/RideForm.vue';
 import RidePopup from '../public/RidePopup.vue';
+import RouteLegend from '@/components/RouteLegend.vue';
 
 const { t }  = useI18n();
 const router = useRouter();

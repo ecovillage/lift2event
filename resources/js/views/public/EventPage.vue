@@ -97,6 +97,7 @@
             <!-- Right: Leaflet map (desktop flex-1 / mobile top half) -->
             <div class="order-1 md:order-2 flex-1 relative h-[50vh] md:h-auto">
                 <div ref="mapEl" class="absolute inset-0"></div>
+                <RouteLegend />
             </div>
         </div>
 
@@ -180,6 +181,7 @@ import { Bus, Calendar, MapPin, Plus, TriangleAlert } from '@lucide/vue';
 import RideCard from './RideCard.vue';
 import RideForm from './RideForm.vue';
 import RidePopup from './RidePopup.vue';
+import RouteLegend from '@/components/RouteLegend.vue';
 import FeedbackWidget from '@/components/FeedbackWidget.vue';
 import { useEscapeKey } from '@/composables/useEscapeKey';
 import { useAuth } from '@/composables/useAuth';
