@@ -16,7 +16,7 @@ class FeedbackController extends Controller
     {
         $key = 'feedback:' . $request->ip();
         if (RateLimiter::tooManyAttempts($key, 10)) {
-            return response()->json(['message' => 'Zu viele Anfragen.'], 429);
+            return response()->json(['message' => __('messages.too_many_requests')], 429);
         }
         RateLimiter::hit($key, 3600);
 
@@ -31,6 +31,6 @@ class FeedbackController extends Controller
         Mail::to($adminEmail)
             ->send(new Feedback($data['message'], $data['name'] ?? null, $data['email'] ?? null));
 
-        return response()->json(['message' => 'Feedback gesendet.']);
+        return response()->json(['message' => __('messages.feedback_sent')]);
     }
 }

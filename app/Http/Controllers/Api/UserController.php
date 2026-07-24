@@ -27,7 +27,7 @@ class UserController extends Controller
     public function destroy(Request $request, User $user): JsonResponse
     {
         if ($user->id === $request->user()->id) {
-            return response()->json(['message' => 'Du kannst dich nicht selbst löschen.'], 422);
+            return response()->json(['message' => __('messages.cannot_delete_self')], 422);
         }
 
         $user->delete();
@@ -57,8 +57,8 @@ class UserController extends Controller
         if (! empty($data['current_password'])) {
             if (! Hash::check($data['current_password'], $user->password)) {
                 return response()->json([
-                    'message' => 'Aktuelles Passwort ist falsch.',
-                    'errors'  => ['current_password' => ['Das aktuelle Passwort ist falsch.']],
+                    'message' => __('messages.current_password_incorrect'),
+                    'errors'  => ['current_password' => [__('messages.current_password_incorrect')]],
                 ], 422);
             }
         }

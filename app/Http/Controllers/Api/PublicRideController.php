@@ -60,7 +60,7 @@ class PublicRideController extends Controller
                 $location->delete();
 
                 return response()->json([
-                    'message' => 'Die Bestätigungsmail konnte nicht versendet werden. Bitte versuche es später noch einmal.',
+                    'message' => __('messages.ride_confirmation_mail_failed'),
                 ], 503);
             }
         }
@@ -104,7 +104,7 @@ class PublicRideController extends Controller
         $this->assertValidEditToken($request, $ride);
 
         if ($ride->type !== 'offer') {
-            return response()->json(['message' => 'Nur Mitfahrangebote können als ausgebucht markiert werden.'], 422);
+            return response()->json(['message' => __('messages.ride_book_offers_only')], 422);
         }
 
         if ($ride->seats !== 0) {

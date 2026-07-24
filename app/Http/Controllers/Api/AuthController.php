@@ -36,7 +36,7 @@ class AuthController extends Controller
         ]);
 
         if (! Auth::attempt($credentials)) {
-            return response()->json(['message' => 'Die eingegebenen Zugangsdaten sind falsch.'], 401);
+            return response()->json(['message' => __('messages.invalid_credentials')], 401);
         }
 
         $user  = Auth::user();
@@ -52,7 +52,7 @@ class AuthController extends Controller
     {
         $request->user()->currentAccessToken()->delete();
 
-        return response()->json(['message' => 'Abgemeldet.']);
+        return response()->json(['message' => __('messages.logged_out')]);
     }
 
     public function user(Request $request): JsonResponse
@@ -70,7 +70,7 @@ class AuthController extends Controller
 
         Password::sendResetLink($request->only('email'));
 
-        return response()->json(['message' => 'Falls diese E-Mail-Adresse bei uns registriert ist, haben wir einen Reset-Link verschickt.']);
+        return response()->json(['message' => __('messages.reset_link_sent')]);
     }
 
     public function resetPassword(Request $request): JsonResponse
@@ -90,7 +90,7 @@ class AuthController extends Controller
         );
 
         if ($status === Password::PASSWORD_RESET) {
-            return response()->json(['message' => 'Passwort erfolgreich zurückgesetzt.']);
+            return response()->json(['message' => __('messages.password_reset_success')]);
         }
 
         return response()->json(['message' => __($status)], 422);
