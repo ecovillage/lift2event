@@ -119,7 +119,8 @@
         "none": "添加第一个拼车信息！",
         "outside_viewport": "{n} 条拼车信息在当前地图范围之外，已被隐藏。",
         "show_all": "显示全部",
-        "confirmation_pending": "请通过确认邮件中的链接确认你的拼车信息，这样其他访客才能看到它。",
+        "confirmation_pending_title": "该条目仍处于未激活状态！",
+        "confirmation_pending": "你收到了一封邮件，点击邮件中的确认链接，让所有访客都能看到你的信息。",
         "confirmation_pending_dismiss": "关闭",
         "mail_send_failed": "确认邮件发送失败，请稍后再试。"
     },

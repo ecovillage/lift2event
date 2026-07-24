@@ -131,13 +131,14 @@
                 class="fixed inset-0 z-[2100] bg-black/50 flex items-end md:items-center justify-center"
             >
                 <div class="bg-white rounded-t-2xl md:rounded-xl w-full md:max-w-sm p-5 space-y-4">
-                    <div class="flex gap-3 items-start">
-                        <TriangleAlert class="w-5 h-5 text-amber-500 shrink-0" :stroke-width="2" />
-                        <p class="text-sm text-gray-700">{{ t('ride.confirmation_pending') }}</p>
+                    <div class="flex flex-col items-center text-center gap-2">
+                        <TriangleAlert class="w-10 h-10 text-amber-500 shrink-0" :stroke-width="2" />
+                        <p class="text-[1.6875rem] font-semibold text-gray-900">{{ t('ride.confirmation_pending_title') }}</p>
+                        <p class="text-[1.3125rem] text-gray-700">{{ t('ride.confirmation_pending') }}</p>
                     </div>
-                    <div class="flex justify-end">
+                    <div class="flex justify-center">
                         <button
-                            class="px-4 py-1.5 rounded text-sm font-medium text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] transition-colors"
+                            class="px-4 py-1.5 rounded text-[1.3125rem] font-medium text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] transition-colors"
                             @click="pendingConfirmation = false"
                         >{{ t('ride.confirmation_pending_dismiss') }}</button>
                     </div>

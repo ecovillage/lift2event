@@ -157,10 +157,10 @@ test.describe('Öffentliche Mitfahrbörse', () => {
         await expect(page.getByTestId('ride-submit')).toBeEnabled({ timeout: 5000 });
         await page.getByTestId('ride-submit').click();
 
-        await expect(page.getByText('Bitte bestätige deine Mitfahrt')).toBeVisible({ timeout: 8000 });
+        await expect(page.getByText('Eintrag ist noch deaktiviert!')).toBeVisible({ timeout: 8000 });
 
         await page.getByRole('button', { name: 'Schließen' }).click();
-        await expect(page.getByText('Bitte bestätige deine Mitfahrt')).not.toBeVisible();
+        await expect(page.getByText('Eintrag ist noch deaktiviert!')).not.toBeVisible();
     });
 
     test('Fehlschlag beim Mailversand zeigt übersetzte Fehlermeldung', async ({ page }) => {
@@ -206,7 +206,7 @@ test.describe('Öffentliche Mitfahrbörse', () => {
         await page.getByTestId('ride-submit').click();
 
         await expect(page.getByText(/Musterstraße/)).toBeVisible({ timeout: 8000 });
-        await expect(page.getByText('Bitte bestätige deine Mitfahrt')).not.toBeVisible();
+        await expect(page.getByText('Eintrag ist noch deaktiviert!')).not.toBeVisible();
     });
 
     test('Mitfahrt-Formular: Datum/Uhrzeit sind mit Veranstaltungsdaten vorbefüllt', async ({ page }) => {
