@@ -69,7 +69,7 @@
         <div v-else class="flex-1 flex flex-col md:flex-row overflow-hidden">
 
             <!-- Left: ride list (desktop 20% / mobile below map) -->
-            <div class="order-2 md:order-1 md:w-1/5 md:min-w-[200px] overflow-y-auto bg-gray-50 border-r border-gray-200">
+            <div class="order-2 md:order-1 md:w-1/5 md:min-w-[200px] min-h-0 overflow-y-auto bg-gray-50 border-r border-gray-200">
                 <div v-if="hiddenRideCount > 0" class="p-3 text-xs text-amber-700 bg-amber-50 border-b border-amber-200">
                     {{ t('ride.outside_viewport', { n: hiddenRideCount }) }}
                     <button type="button" class="ml-1 font-medium underline hover:no-underline" @click="showAllRides">{{ t('ride.show_all') }}</button>
@@ -95,7 +95,7 @@
             </div>
 
             <!-- Right: Leaflet map (desktop flex-1 / mobile top half) -->
-            <div class="order-1 md:order-2 flex-1 relative h-[50vh] md:h-auto">
+            <div class="order-1 md:order-2 flex-none md:flex-1 relative h-[50vh] md:h-auto">
                 <div ref="mapEl" class="absolute inset-0"></div>
                 <RouteLegend />
             </div>
