@@ -27,6 +27,21 @@ class RideDataRetentionCleanerTest extends TestCase
         $this->assertDatabaseCount('rides', 0);
     }
 
+    public function test_deletes_event_and_ride_locations(): void
+    {
+        Setting::instance()->update(['ride_data_retention_days' => 7]);
+
+        $expiredEvent = Event::factory()->create(['end_at' => now()->subDays(8)]);
+        $ride = Ride::factory()->create(['event_id' => $expiredEvent->id]);
+        $eventLocationId = $expiredEvent->location_id;
+        $rideLocationId = $ride->location_id;
+
+        app(RideDataRetentionCleaner::class)->run();
+
+        $this->assertDatabaseMissing('locations', ['id' => $eventLocationId]);
+        $this->assertDatabaseMissing('locations', ['id' => $rideLocationId]);
+    }
+
     public function test_keeps_events_within_retention_period(): void
     {
         Setting::instance()->update(['ride_data_retention_days' => 7]);

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\DB;
 
 class Event extends Model
 {
@@ -50,5 +51,23 @@ class Event extends Model
     public function rides(): HasMany
     {
         return $this->hasMany(Ride::class);
+    }
+
+    /**
+     * Deletes the event along with its own location and the locations of
+     * all its rides, so no orphaned Location/LocationRoute rows are left
+     * behind. Ride rows are removed via DB cascade on delete.
+     */
+    public function deleteWithLocations(): void
+    {
+        DB::transaction(function () {
+            $locationIds = $this->rides()->pluck('location_id')
+                ->push($this->location_id)
+                ->unique();
+
+            $this->delete();
+
+            Location::whereIn('id', $locationIds)->delete();
+        });
     }
 }

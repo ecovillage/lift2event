@@ -25,7 +25,7 @@ class RideDataRetentionCleaner
             foreach ($events as $event) {
                 $eventCount++;
                 if (! $dryRun) {
-                    $event->delete();
+                    $event->deleteWithLocations();
                 }
             }
         });
