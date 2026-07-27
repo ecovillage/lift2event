@@ -10,6 +10,9 @@
     --color-offer-light: #e8f5ee;
     --color-request: #e07b30;
     --color-request-light: #fdf0e4;
+    --color-warning: #ea580c;
+    --color-warning-light: #ffedd5;
+    --color-warning-dark: #9a3412;
     --color-primary: #028A0F;
     --color-primary-dark: #017008;
 }

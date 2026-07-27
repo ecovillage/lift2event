@@ -70,7 +70,7 @@
 
             <!-- Left: ride list (desktop 20% / mobile below map) -->
             <div class="order-2 md:order-1 md:w-1/5 md:min-w-[200px] md:min-h-0 md:overflow-y-auto bg-gray-50 border-r border-gray-200">
-                <div v-if="hiddenRideCount > 0" class="p-3 text-xs text-amber-700 bg-amber-50 border-b border-amber-200">
+                <div v-if="hiddenRideCount > 0" class="p-3 text-xs text-[var(--color-warning-dark)] bg-[var(--color-warning-light)] border-b border-[var(--color-warning)]/30">
                     {{ t('ride.outside_viewport', { n: hiddenRideCount }) }}
                     <button type="button" class="ml-1 font-medium underline hover:no-underline" @click="showAllRides">{{ t('ride.show_all') }}</button>
                 </div>
@@ -132,7 +132,7 @@
             >
                 <div class="bg-white rounded-t-2xl md:rounded-xl w-full md:max-w-sm p-5 space-y-4">
                     <div class="flex flex-col items-center text-center gap-2">
-                        <TriangleAlert class="w-10 h-10 text-amber-500 shrink-0" :stroke-width="2" />
+                        <TriangleAlert class="w-10 h-10 text-[var(--color-warning)] shrink-0" :stroke-width="2" />
                         <p class="text-[1.6875rem] font-semibold text-gray-900">{{ t('ride.confirmation_pending_title') }}</p>
                         <p class="text-[1.3125rem] text-gray-700">{{ t('ride.confirmation_pending') }}</p>
                     </div>

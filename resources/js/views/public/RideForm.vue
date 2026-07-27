@@ -84,7 +84,7 @@
                         id="ride-phone" v-model="form.phone" type="tel" class="field-input" data-testid="ride-phone"
                         @focus="onFocus('phone')" @blur="onBlur('phone')"
                     />
-                    <p v-if="countryWarning" class="mt-1 text-xs text-amber-600">{{ t('error.phone_country') }}</p>
+                    <p v-if="countryWarning" class="mt-1 text-xs text-[var(--color-warning)]">{{ t('error.phone_country') }}</p>
                 </div>
 
                 <!-- Contact methods -->
@@ -158,7 +158,7 @@
                         >{{ s.display_name }}</li>
                       </ul>
                     </div>
-                    <p v-if="addressNotFound" class="mt-1 text-xs text-amber-600">
+                    <p v-if="addressNotFound" class="mt-1 text-xs text-red-400">
                         {{ t('ride.address_not_found', { query: addressNotFoundQuery }) }}
                     </p>
                     <p v-else-if="fieldErrors.address" class="mt-1 text-xs text-red-400">
@@ -224,7 +224,7 @@
                             <span class="px-5 py-2 border-y border-[var(--color-primary)] text-sm font-medium text-center min-w-[3rem]">{{ form.seats }}</span>
                             <button type="button" class="stepper-btn rounded-r" @click="form.seats = Math.min(8, form.seats + 1)">+</button>
                         </div>
-                        <span v-if="form.type === 'offer' && form.seats === 0" class="text-xs font-medium text-orange-600">{{ t('ride.booked') }}</span>
+                        <span v-if="form.type === 'offer' && form.seats === 0" class="text-xs font-medium text-[var(--color-warning)]">{{ t('ride.booked') }}</span>
                     </div>
                 </div>
 
@@ -244,8 +244,8 @@
             <p v-for="e in errors" :key="e" class="text-sm text-red-500">{{ e }}</p>
 
             <!-- Privacy notice (create mode only) -->
-            <div v-if="!isEdit" class="bg-amber-50 border border-amber-200 rounded-lg p-3">
-                <p class="text-xs text-amber-800 leading-snug">{{ organisationName ? t('ride.privacy_notice_with_org', { eventName: event.name, organisationName, n: retentionDays }) : t('ride.privacy_notice', { eventName: event.name, n: retentionDays }) }}</p>
+            <div v-if="!isEdit" class="bg-[var(--color-warning-light)] border border-[var(--color-warning)]/30 rounded-lg p-3">
+                <p class="text-xs text-[var(--color-warning-dark)] leading-snug">{{ organisationName ? t('ride.privacy_notice_with_org', { eventName: event.name, organisationName, n: retentionDays }) : t('ride.privacy_notice', { eventName: event.name, n: retentionDays }) }}</p>
             </div>
 
             <!-- Buttons -->

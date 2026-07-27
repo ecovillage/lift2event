@@ -59,12 +59,12 @@
 
             <!-- Outbound date/time -->
             <p v-if="hasOutbound" class="text-sm text-gray-500 mt-1">
-                <ArrowRight class="w-3 h-3 inline align-middle" /> <strong>{{ outboundTime }}</strong><template v-if="outboundWarning">&nbsp;&nbsp;<TriangleAlert class="w-3 h-3 inline align-middle text-amber-500" :title="t('ride.warning_date')" />&nbsp;{{ outboundDayText }}</template>
+                <ArrowRight class="w-3 h-3 inline align-middle" /> <strong>{{ outboundTime }}</strong><template v-if="outboundWarning">&nbsp;&nbsp;<TriangleAlert class="w-3 h-3 inline align-middle text-[var(--color-warning)]" :title="t('ride.warning_date')" />&nbsp;{{ outboundDayText }}</template>
             </p>
 
             <!-- Return date/time (only shown when deviating from event end) -->
             <p v-if="hasReturn && returnWarning" class="text-sm text-gray-500 mt-0.5">
-                <ArrowLeft class="w-3 h-3 inline align-middle" /> <strong>{{ returnTime }}</strong>&nbsp;&nbsp;<TriangleAlert class="w-3 h-3 inline align-middle text-amber-500" :title="t('ride.warning_date')" />&nbsp;{{ returnDayText }}
+                <ArrowLeft class="w-3 h-3 inline align-middle" /> <strong>{{ returnTime }}</strong>&nbsp;&nbsp;<TriangleAlert class="w-3 h-3 inline align-middle text-[var(--color-warning)]" :title="t('ride.warning_date')" />&nbsp;{{ returnDayText }}
             </p>
         </div>
     </div>

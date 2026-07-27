@@ -15,7 +15,7 @@ const props = defineProps({
 const colorClass = computed(() => ({
     offer:   'bg-[var(--color-offer-light)] text-[var(--color-offer)]',
     request: 'bg-[var(--color-request-light)] text-[var(--color-request)]',
-    warning: 'bg-orange-100 text-orange-600',
+    warning: 'bg-[var(--color-warning-light)] text-[var(--color-warning)]',
 }[props.variant]));
 
 const sizeClass = computed(() => props.size === 'sm'

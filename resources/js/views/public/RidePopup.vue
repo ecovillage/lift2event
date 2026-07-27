@@ -39,7 +39,7 @@
                             <div>
                                 <span class="font-medium">{{ t('ride.outbound_label') }}</span>
                                 <span class="ml-2 text-gray-600">{{ fmtDateTime(ride.outbound_at) }}</span>
-                                <span v-if="outboundWarning" class="ml-2 text-amber-600 text-xs inline-flex items-center gap-1">
+                                <span v-if="outboundWarning" class="ml-2 text-[var(--color-warning)] text-xs inline-flex items-center gap-1">
                                     <TriangleAlert class="w-3 h-3" :stroke-width="2" /> {{ outboundRelLabel }}
                                 </span>
                             </div>
@@ -49,7 +49,7 @@
                             <div>
                                 <span class="font-medium">{{ t('ride.return_label') }}</span>
                                 <span class="ml-2 text-gray-600">{{ fmtDateTime(ride.return_at) }}</span>
-                                <span v-if="returnWarning" class="ml-2 text-amber-600 text-xs inline-flex items-center gap-1">
+                                <span v-if="returnWarning" class="ml-2 text-[var(--color-warning)] text-xs inline-flex items-center gap-1">
                                     <TriangleAlert class="w-3 h-3" :stroke-width="2" /> {{ returnRelLabel }}
                                 </span>
                             </div>
