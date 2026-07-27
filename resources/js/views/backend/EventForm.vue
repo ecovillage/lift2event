@@ -370,7 +370,7 @@ function setMarker(lat, lng) {
 let drawGeneration = 0;
 const routeCache = new Map();
 
-// Draw a route (line + pin) for every ride, green for offers, orange for requests
+// Draw a route (line + pin) for every ride, dark green for offers, lilac for requests
 function drawRides() {
     if (!rideLayer || !form.location) return;
     const generation = ++drawGeneration;
