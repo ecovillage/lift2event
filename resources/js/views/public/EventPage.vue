@@ -187,6 +187,7 @@ import FeedbackWidget from '@/components/FeedbackWidget.vue';
 import { useEscapeKey } from '@/composables/useEscapeKey';
 import { useAuth } from '@/composables/useAuth';
 import { formatLocation } from '@/utils/formatLocation';
+import { OFFER_COLOR, REQUEST_COLOR, BOOKED_COLOR } from '@/constants/rideColors';
 
 const { t, locale } = useI18n();
 const route = useRoute();
@@ -325,10 +326,6 @@ const eventRangeSegments = computed(() => {
 
 // ── Map ───────────────────────────────────────────────────────────────────────
 
-const offerColor   = '#7c3aed';
-const requestColor = '#e07b30';
-const bookedColor  = '#9ca3af';
-
 function starIcon() {
     return L.divIcon({
         html: '<span style="font-size:22px;display:block;transform:translate(-50%,-50%)">⭐</span>',
@@ -388,7 +385,7 @@ function drawRides() {
         const lat   = parseFloat(ride.location.latitude);
         const lng   = parseFloat(ride.location.longitude);
         const booked = ride.type === 'offer' && ride.seats === 0;
-        const color  = booked ? bookedColor : (ride.type === 'offer' ? offerColor : requestColor);
+        const color  = booked ? BOOKED_COLOR : (ride.type === 'offer' ? OFFER_COLOR : REQUEST_COLOR);
 
         if (evLat !== null) {
             const polyline = L.polyline([[lat, lng], [evLat, evLng]], { color, weight: 4, opacity: 0.85 })

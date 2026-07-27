@@ -267,6 +267,7 @@ import RideCard from '../public/RideCard.vue';
 import RideForm from '../public/RideForm.vue';
 import RidePopup from '../public/RidePopup.vue';
 import RouteLegend from '@/components/RouteLegend.vue';
+import { OFFER_COLOR, REQUEST_COLOR, BOOKED_COLOR } from '@/constants/rideColors';
 
 const { t }  = useI18n();
 const router = useRouter();
@@ -355,10 +356,6 @@ let map       = null;
 let marker    = null;
 let rideLayer = null;
 
-const offerColor   = '#7c3aed';
-const requestColor = '#e07b30';
-const bookedColor  = '#9ca3af';
-
 const starIcon = () => L.divIcon({
     html: '<span style="font-size:22px;display:block;transform:translate(-50%,-50%)">⭐</span>',
     className: '',
@@ -390,7 +387,7 @@ function drawRides() {
         const lat   = parseFloat(ride.location.latitude);
         const lng   = parseFloat(ride.location.longitude);
         const booked = ride.type === 'offer' && ride.seats === 0;
-        const color  = booked ? bookedColor : (ride.type === 'offer' ? offerColor : requestColor);
+        const color  = booked ? BOOKED_COLOR : (ride.type === 'offer' ? OFFER_COLOR : REQUEST_COLOR);
 
         const polyline = L.polyline([[lat, lng], [evLat, evLng]], { color, weight: 4, opacity: 0.85 })
             .addTo(rideLayer);
