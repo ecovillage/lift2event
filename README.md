@@ -4,7 +4,7 @@ A self-hosted rideshare board for events. Attendees with cars can post ride offe
 
 ## Features
 
-- Public rideshare board per event (`/e/{slug}`) — no account required to browse or post
+- Public rideshare board per event (`/events/{slug}`) — no account required to browse or post
 - Interactive map (Leaflet + OpenStreetMap) showing routes and the event location
 - Ride offers (green) and ride requests (orange) with client-side filtering by type and date
 - Confirmation email with edit/delete token links for anonymous entries
