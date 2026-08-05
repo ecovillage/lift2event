@@ -55,7 +55,8 @@
         "created_link_hint": "Dieser Link ist auch auf der Bearbeiten-Seite der Veranstaltung zu sehen und kann an Teilnehmer weitergegeben werden.",
         "created_close": "Schließen",
         "delete": "Löschen",
-        "delete_confirm": "„{name}“ in {location} wirklich löschen?\n\n{count} Mitfahrt-Einträge werden ebenfalls gelöscht."
+        "delete_confirm": "„{name}“ in {location} wirklich löschen?\n\n{count} Mitfahrt-Einträge werden ebenfalls gelöscht.",
+        "deletion_warning": "Die Mitfahrbörse zu dieser Veranstaltung inklusive aller von Nutzern eingegebenen Daten wird am {date} um {time} gelöscht."
     },
     "ride": {
         "offer": "Angebot",

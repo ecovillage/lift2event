@@ -1,6 +1,14 @@
 <template>
     <div class="flex flex-col md:h-screen md:overflow-hidden">
 
+        <!-- Deletion warning banner -->
+        <div
+            v-if="showDeletionWarning"
+            class="flex-shrink-0 px-4 py-2 text-xs sm:text-sm text-center font-medium text-[var(--color-warning-dark)] bg-[var(--color-warning-light)] border-b border-[var(--color-warning)]/30"
+        >
+            {{ t('event.deletion_warning', { date: fmtEventDate(deleteAt), time: fmtEventTime(deleteAt) }) }}
+        </div>
+
         <!-- Header -->
         <div class="bg-white border-b flex-shrink-0 relative" style="border-top: 4px solid var(--color-primary)">
             <router-link
@@ -322,6 +330,23 @@ const eventRangeSegments = computed(() => {
     }
     segments.push({ bold: true, text: fmtEventTime(end) });
     return segments;
+});
+
+// Matches the backend's retention cutoff (RideDataRetentionCleaner): the
+// board is scheduled for deletion once `retentionDays` have passed since
+// the event ended.
+const deleteAt = computed(() => {
+    if (!event.value?.end_at) return null;
+    const d = new Date(event.value.end_at);
+    d.setUTCDate(d.getUTCDate() + retentionDays.value);
+    return d;
+});
+
+const showDeletionWarning = computed(() => {
+    const ev = event.value;
+    if (!ev?.end_at || !deleteAt.value) return false;
+    const now = new Date();
+    return now >= new Date(ev.end_at) && now < deleteAt.value;
 });
 
 // ── Map ───────────────────────────────────────────────────────────────────────

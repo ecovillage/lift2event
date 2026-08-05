@@ -20,6 +20,20 @@ export async function loginAs(page, email, password = PASSWORD) {
     await page.waitForURL('**/backend/**');
 }
 
+/** Formats a date `offsetDays` from now as a MySQL DATETIME string (UTC). */
+export function mysqlDateTime(offsetDays) {
+    const d = new Date(Date.now() + offsetDays * 24 * 60 * 60 * 1000);
+    return d.toISOString().slice(0, 19).replace('T', ' ');
+}
+
+/** Overwrites an event's end_at (e.g. to move it into/past the retention window). */
+export function setEventEndAt(slug, mysqlDateTimeString) {
+    execSync(
+        `docker compose -f docker-compose.yml -f docker-compose.e2e.yml exec -T app_e2e php artisan tinker --execute="\\App\\Models\\Event::where('slug','${slug}')->update(['end_at' => '${mysqlDateTimeString}']);"`,
+        { cwd: PROJECT, stdio: 'pipe', timeout: 30_000 }
+    );
+}
+
 /** Mock the geocoding endpoint for the duration of this page context. */
 export async function mockGeocode(page, results = null) {
     const defaults = [{

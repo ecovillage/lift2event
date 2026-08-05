@@ -55,7 +55,8 @@
         "created_link_hint": "This link is also shown on the event edit page and can be shared with participants.",
         "created_close": "Close",
         "delete": "Delete",
-        "delete_confirm": "Really delete \"{name}\" in {location}?\n\n{count} ride entries will also be deleted."
+        "delete_confirm": "Really delete \"{name}\" in {location}?\n\n{count} ride entries will also be deleted.",
+        "deletion_warning": "The rideshare board for this event, including all data entered by users, will be deleted on {date} at {time}."
     },
     "ride": {
         "offer": "Offer",

@@ -55,7 +55,8 @@
         "created_link_hint": "此链接也显示在活动编辑页面上，可以分享给参与者。",
         "created_close": "关闭",
         "delete": "删除",
-        "delete_confirm": "确定要删除”{name}”（{location}）吗？\n\n{count} 条拼车信息将一并删除。"
+        "delete_confirm": "确定要删除”{name}”（{location}）吗？\n\n{count} 条拼车信息将一并删除。",
+        "deletion_warning": "此活动的拼车平台及所有用户填写的数据将于 {date} {time} 删除。"
     },
     "ride": {
         "offer": "提供搭车",

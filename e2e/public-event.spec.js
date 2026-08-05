@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { resetDb, mockGeocode, loginAs } from './helpers.js';
+import { resetDb, mockGeocode, loginAs, setEventEndAt, mysqlDateTime } from './helpers.js';
 import { ADMIN_EVENT_SLUG, USER_EVENT_SLUG, UNAPPROVED_EMAIL, ADMIN_EMAIL } from './fixtures.js';
 
 test.describe('Öffentliche Mitfahrbörse', () => {
@@ -329,5 +329,18 @@ test.describe('Öffentliche Mitfahrbörse', () => {
         await page.goto('/e/nichtvorhandener0slug');
         // Should not show an event – either show error or redirect
         await expect(page.getByText(/Testveranstaltung Berlin/)).not.toBeVisible();
+    });
+
+    // These two tests mutate the seeded event's end_at, so they run last.
+    test('Zeigt Lösch-Hinweis, wenn Veranstaltung vorbei aber Löschfrist noch nicht erreicht ist', async ({ page }) => {
+        setEventEndAt(ADMIN_EVENT_SLUG, mysqlDateTime(-2)); // default retention: 7 days
+        await page.goto(eventUrl);
+        await expect(page.getByText(/wird am .+ um .+ gelöscht/)).toBeVisible();
+    });
+
+    test('Zeigt keinen Lösch-Hinweis vor Ende der Veranstaltung', async ({ page }) => {
+        setEventEndAt(ADMIN_EVENT_SLUG, mysqlDateTime(2)); // Veranstaltung noch nicht zu Ende
+        await page.goto(eventUrl);
+        await expect(page.getByText(/wird am .+ um .+ gelöscht/)).not.toBeVisible();
     });
 });
