@@ -19,7 +19,6 @@ class RunDueRideDataCleanup
      */
     public function handle(Request $request, Closure $next): Response
     {
-        return $next($request);
         // A broken or unreachable database must never turn every request
         // into a 500 just because of this side effect, so the whole check
         // (including the claim itself) is guarded.
