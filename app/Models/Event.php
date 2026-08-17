@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\RideDataRetentionCleaner;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -37,6 +38,22 @@ class Event extends Model
 
                 $event->slug = $slug;
             }
+        });
+
+        // Keeps Setting::rides_cleanup_next_due_at in sync with the events
+        // table, so RunDueRideDataCleanup can decide "is anything due?" from
+        // a single cheap column instead of scanning events on every request.
+        // Covers every way an event's retention cutoff can change: created,
+        // its end_at edited, or deleted (including via deleteWithLocations()
+        // in RideDataRetentionCleaner itself).
+        static::saved(function (Event $event) {
+            if ($event->wasRecentlyCreated || $event->wasChanged('end_at')) {
+                app(RideDataRetentionCleaner::class)->rescheduleNextDue();
+            }
+        });
+
+        static::deleted(function () {
+            app(RideDataRetentionCleaner::class)->rescheduleNextDue();
         });
     }
 

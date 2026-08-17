@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
+use App\Services\RideDataRetentionCleaner;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -29,6 +30,13 @@ class SettingController extends Controller
 
         $settings = Setting::instance();
         $settings->update($data);
+
+        // A shorter (or longer) retention period shifts every event's
+        // cutoff, so the cached next-due date must be recomputed too -
+        // otherwise a stale, too-late value could delay overdue cleanup.
+        if (array_key_exists('ride_data_retention_days', $data)) {
+            app(RideDataRetentionCleaner::class)->rescheduleNextDue();
+        }
 
         return $this->settingsResponse($settings->fresh());
     }

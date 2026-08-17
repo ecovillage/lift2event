@@ -67,4 +67,43 @@ class RideDataRetentionCleanerTest extends TestCase
         $this->assertSame(['events' => 1, 'rides' => 1], $result);
         $this->assertDatabaseHas('events', ['id' => $expiredEvent->id]);
     }
+
+    public function test_run_reschedules_next_due_at_to_the_soonest_remaining_event(): void
+    {
+        Setting::instance()->update(['ride_data_retention_days' => 7]);
+
+        $expiredEvent = Event::factory()->create(['end_at' => now()->subDays(8)]);
+        $remainingEvent = Event::factory()->create(['end_at' => now()->addDays(3)]);
+
+        app(RideDataRetentionCleaner::class)->run();
+
+        $this->assertTrue(
+            Setting::instance()->fresh()->rides_cleanup_next_due_at
+                ->equalTo($remainingEvent->end_at->copy()->addDays(7))
+        );
+    }
+
+    public function test_run_sets_next_due_at_to_null_when_no_events_remain(): void
+    {
+        Setting::instance()->update(['ride_data_retention_days' => 7]);
+        Event::factory()->create(['end_at' => now()->subDays(8)]);
+
+        app(RideDataRetentionCleaner::class)->run();
+
+        $this->assertNull(Setting::instance()->fresh()->rides_cleanup_next_due_at);
+    }
+
+    public function test_dry_run_does_not_reschedule_next_due_at(): void
+    {
+        Setting::instance()->update(['ride_data_retention_days' => 7]);
+        Event::factory()->create(['end_at' => now()->subDays(8)]);
+        // Overwrite whatever the creation's saved-hook just computed, so we
+        // can isolate that run(dryRun: true) itself leaves it alone.
+        Setting::instance()->update(['rides_cleanup_next_due_at' => now()->addDay()]);
+        $sentinel = Setting::instance()->rides_cleanup_next_due_at;
+
+        app(RideDataRetentionCleaner::class)->run(dryRun: true);
+
+        $this->assertTrue($sentinel->equalTo(Setting::instance()->fresh()->rides_cleanup_next_due_at));
+    }
 }
